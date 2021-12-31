@@ -4,4 +4,6 @@
     <string name="saves">Saves</string>
     <string name="settings">Settings</string>
     <string name="power">Toggle On/Off</string>
+    <string name="overlay_notification">CSAC overlay is now on</string>
+    <string name="overlay_notification_title">CSAC</string>
 </resources>

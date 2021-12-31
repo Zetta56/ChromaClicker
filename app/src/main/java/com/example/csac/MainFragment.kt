@@ -13,8 +13,10 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 
 class MainFragment : Fragment(), View.OnClickListener {
+    private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
     private lateinit var powerButton: ImageButton
+    private lateinit var overlayIntent: Intent
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,9 +28,18 @@ class MainFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mainActivity = activity as MainActivity
         navController = findNavController()
+        // ::class.java takes OverlayService's metadata and spits out its Java class
+        overlayIntent = Intent(mainActivity.applicationContext, OverlayService::class.java)
         powerButton = view.findViewById<ImageButton>(R.id.powerButton)
-        updatePowerImage()
+
+        // Set power button color
+        if(mainActivity.overlayVisible) {
+            powerButton.setImageResource(R.drawable.power_on)
+        } else {
+            powerButton.setImageResource(R.drawable.power_off)
+        }
 
         // Add click listeners
         powerButton.setOnClickListener(this)
@@ -39,32 +50,21 @@ class MainFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         when(p0!!.id) {
             R.id.powerButton -> {
-                val mainActivity = activity as MainActivity
                 mainActivity.overlayVisible = !mainActivity.overlayVisible
-                updatePowerImage()
-
-                if((activity as MainActivity).overlayVisible) {
-                    // Start the Overlay service
-                    val context = (activity as MainActivity).applicationContext
-                    // ::class.java takes OverlayService's metadata and spits out its Java class
-                    val intent = Intent(context, OverlayService::class.java)
+                if(mainActivity.overlayVisible) {
+                    powerButton.setImageResource(R.drawable.power_on)
                     if (Build.VERSION.SDK_INT >= 26) {
-                        context.startForegroundService(intent)
+                        mainActivity.applicationContext.startForegroundService(overlayIntent)
                     } else {
-                        context.startService(intent)
+                        mainActivity.applicationContext.startService(overlayIntent)
                     }
+                } else {
+                    powerButton.setImageResource(R.drawable.power_off)
+                    mainActivity.applicationContext.stopService(overlayIntent)
                 }
             }
             R.id.savesButton -> navController.navigate(R.id.action_mainFragment_to_savesFragment)
             R.id.settingsButton -> navController.navigate(R.id.action_mainFragment_to_settingsFragment)
-        }
-    }
-
-    private fun updatePowerImage() {
-        if((activity as MainActivity).overlayVisible) {
-            powerButton.setImageResource(R.drawable.power_on)
-        } else {
-            powerButton.setImageResource(R.drawable.power_off)
         }
     }
 }

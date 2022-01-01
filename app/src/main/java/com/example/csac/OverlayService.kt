@@ -1,5 +1,6 @@
 package com.example.csac
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,13 +9,18 @@ import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageButton
 
 class OverlayService : Service() {
-    lateinit var windowManager: WindowManager
+    private val buttonIds = arrayOf(R.id.playButton, R.id.plusButton, R.id.minusButton)
     lateinit var view: View
+    lateinit var windowManager: WindowManager
+    lateinit var layoutParams: WindowManager.LayoutParams
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate() {
         super.onCreate()
         val typeParam = if(Build.VERSION.SDK_INT >= 26) {
@@ -22,10 +28,10 @@ class OverlayService : Service() {
         } else {
             WindowManager.LayoutParams.TYPE_PHONE
         }
-        val layoutParams = WindowManager.LayoutParams(
-            // Set the width and height to wrap_content
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
+        layoutParams = WindowManager.LayoutParams(
+            // Convert dimensions from pixels to dp
+            (55 * applicationContext.resources.displayMetrics.density).toInt(),
+            (165 * applicationContext.resources.displayMetrics.density).toInt(),
             // Display this on top of other application windows
             typeParam,
             // Don't grab input focus
@@ -33,9 +39,18 @@ class OverlayService : Service() {
             // Make the underlying application window visible through any transparent sections
             PixelFormat.TRANSLUCENT
         )
+        layoutParams.gravity = Gravity.START
         view = View.inflate(applicationContext, R.layout.overlay, null)
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         windowManager.addView(view, layoutParams)
+
+        // Add event listeners
+        val listener = OverlayListener(this)
+        for(buttonId in buttonIds) {
+            view.findViewById<ImageButton>(buttonId).setOnClickListener(listener)
+            view.findViewById<ImageButton>(buttonId).setOnTouchListener(listener)
+        }
+        view.setOnTouchListener(listener)
         makeNotification()
     }
 

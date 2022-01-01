@@ -15,8 +15,8 @@ import androidx.navigation.fragment.findNavController
 class MainFragment : Fragment(), View.OnClickListener {
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
-    private lateinit var powerButton: ImageButton
     private lateinit var overlayIntent: Intent
+    private lateinit var powerButton: ImageButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,14 +32,11 @@ class MainFragment : Fragment(), View.OnClickListener {
         navController = findNavController()
         // ::class.java takes OverlayService's metadata and spits out its Java class
         overlayIntent = Intent(mainActivity.applicationContext, OverlayService::class.java)
-        powerButton = view.findViewById<ImageButton>(R.id.powerButton)
+        powerButton = view.findViewById(R.id.powerButton)
 
-        // Set power button color
-        if(mainActivity.overlayVisible) {
-            powerButton.setImageResource(R.drawable.power_on)
-        } else {
-            powerButton.setImageResource(R.drawable.power_off)
-        }
+        // Set power button image
+        val powerImage = if(mainActivity.overlayVisible) R.drawable.power_on else R.drawable.power_off
+        powerButton.setImageResource(powerImage)
 
         // Add click listeners
         powerButton.setOnClickListener(this)

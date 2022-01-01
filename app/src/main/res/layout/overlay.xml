@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#222222"
+    android:orientation="vertical"
+    android:padding="10dp">
 
-    <TextView
+    <ImageButton
+        android:id="@+id/playButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Overlay"/>
+        android:layout_weight="1"
+        android:background="@null"
+        android:contentDescription="@string/play"
+        android:src="@drawable/play"
+        android:scaleType="fitCenter" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageButton
+        android:id="@+id/plusButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/plus"
+        android:background="@null"
+        android:contentDescription="@string/plus"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="10dp" />
+
+    <ImageButton
+        android:id="@+id/minusButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/minus"
+        android:background="@null"
+        android:contentDescription="@string/plus"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="10dp" />
+
+
+</LinearLayout>

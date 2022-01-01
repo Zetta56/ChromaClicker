@@ -6,4 +6,7 @@
     <string name="power">Toggle On/Off</string>
     <string name="overlay_notification">CSAC overlay is now on</string>
     <string name="overlay_notification_title">CSAC</string>
+    <string name="play">Pause/Play</string>
+    <string name="plus">Plus</string>
+    <string name="move">Move</string>
 </resources>

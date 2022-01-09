@@ -12,31 +12,19 @@ import android.os.IBinder
 import android.view.*
 import com.example.csac.databinding.OverlayMenuBinding
 
-// To add another view, just add it with a new layoutparam and call windowManager.addView()
+// To add another view, just add it with a new layoutParams and call windowManager.addView()
 class OverlayService : Service(), View.OnClickListener {
+
     private lateinit var menu: OverlayMenuBinding
     private lateinit var autoClickIntent: Intent
     private lateinit var windowManager: WindowManager
     private var playing = false
 
-    @SuppressLint("ClickableViewAccessibility")
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val layoutParams = createOverlayLayout(55, 165, Gravity.START)
-        menu = OverlayMenuBinding.inflate(LayoutInflater.from(applicationContext))
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        windowManager.addView(menu.root, layoutParams)
         autoClickIntent = Intent(applicationContext, AutoClickService::class.java)
-
-        // Add event listeners
-        val draggable = Draggable(windowManager, layoutParams, menu.root)
-        menu.root.setOnTouchListener(draggable)
-        menu.playButton.setOnTouchListener(draggable)
-        menu.plusButton.setOnTouchListener(draggable)
-        menu.minusButton.setOnTouchListener(draggable)
-        menu.playButton.setOnClickListener(this)
-        menu.plusButton.setOnClickListener(this)
-        menu.minusButton.setOnClickListener(this)
-
+        addMenu()
         makeNotification()
         return super.onStartCommand(intent, flags, startId)
     }
@@ -48,8 +36,8 @@ class OverlayService : Service(), View.OnClickListener {
 
     // Destroy created views when this service is stopped
     override fun onDestroy() {
-        super.onDestroy()
         windowManager.removeView(menu.root)
+        super.onDestroy()
     }
 
     override fun onClick(p0: View?) {
@@ -71,6 +59,23 @@ class OverlayService : Service(), View.OnClickListener {
                 println("minus clicked")
             }
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun addMenu() {
+        val layoutParams = createOverlayLayout(55, 165, Gravity.START)
+        menu = OverlayMenuBinding.inflate(LayoutInflater.from(applicationContext))
+        windowManager.addView(menu.root, layoutParams)
+
+        // Add event listeners
+        val draggable = Draggable(windowManager, layoutParams, menu.root)
+        menu.root.setOnTouchListener(draggable)
+        menu.playButton.setOnTouchListener(draggable)
+        menu.plusButton.setOnTouchListener(draggable)
+        menu.minusButton.setOnTouchListener(draggable)
+        menu.playButton.setOnClickListener(this)
+        menu.plusButton.setOnClickListener(this)
+        menu.minusButton.setOnClickListener(this)
     }
 
     private fun createOverlayLayout(width: Int, height: Int, gravity: Int): WindowManager.LayoutParams {

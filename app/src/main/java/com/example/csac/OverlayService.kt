@@ -9,49 +9,36 @@ import android.content.Intent
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
-import android.view.Gravity
-import android.view.View
-import android.view.WindowManager
-import android.widget.ImageButton
+import android.view.*
+import com.example.csac.databinding.OverlayMenuBinding
 
-class OverlayService : Service() {
-    private val buttonIds = arrayOf(R.id.playButton, R.id.plusButton, R.id.minusButton)
-    lateinit var view: View
-    lateinit var windowManager: WindowManager
-    lateinit var layoutParams: WindowManager.LayoutParams
+// To add another view, just add it with a new layoutparam and call windowManager.addView()
+class OverlayService : Service(), View.OnClickListener {
+    private lateinit var menu: OverlayMenuBinding
+    private lateinit var autoClickIntent: Intent
+    private lateinit var windowManager: WindowManager
+    private var playing = false
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onCreate() {
-        super.onCreate()
-        val typeParam = if(Build.VERSION.SDK_INT >= 26) {
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-        } else {
-            WindowManager.LayoutParams.TYPE_PHONE
-        }
-        layoutParams = WindowManager.LayoutParams(
-            // Convert dimensions from pixels to dp
-            (55 * applicationContext.resources.displayMetrics.density).toInt(),
-            (165 * applicationContext.resources.displayMetrics.density).toInt(),
-            // Display this on top of other application windows
-            typeParam,
-            // Don't grab input focus
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-            // Make the underlying application window visible through any transparent sections
-            PixelFormat.TRANSLUCENT
-        )
-        layoutParams.gravity = Gravity.START
-        view = View.inflate(applicationContext, R.layout.overlay, null)
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val layoutParams = createOverlayLayout(55, 165, Gravity.START)
+        menu = OverlayMenuBinding.inflate(LayoutInflater.from(applicationContext))
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
-        windowManager.addView(view, layoutParams)
+        windowManager.addView(menu.root, layoutParams)
+        autoClickIntent = Intent(applicationContext, AutoClickService::class.java)
 
         // Add event listeners
-        val listener = OverlayListener(this)
-        for(buttonId in buttonIds) {
-            view.findViewById<ImageButton>(buttonId).setOnClickListener(listener)
-            view.findViewById<ImageButton>(buttonId).setOnTouchListener(listener)
-        }
-        view.setOnTouchListener(listener)
+        val draggable = Draggable(windowManager, layoutParams, menu.root)
+        menu.root.setOnTouchListener(draggable)
+        menu.playButton.setOnTouchListener(draggable)
+        menu.plusButton.setOnTouchListener(draggable)
+        menu.minusButton.setOnTouchListener(draggable)
+        menu.playButton.setOnClickListener(this)
+        menu.plusButton.setOnClickListener(this)
+        menu.minusButton.setOnClickListener(this)
+
         makeNotification()
+        return super.onStartCommand(intent, flags, startId)
     }
 
     // Don't bind this service to anything
@@ -59,10 +46,52 @@ class OverlayService : Service() {
         return null
     }
 
-    // Destroy the created view when this service is stopped
+    // Destroy created views when this service is stopped
     override fun onDestroy() {
         super.onDestroy()
-        windowManager.removeView(view)
+        windowManager.removeView(menu.root)
+    }
+
+    override fun onClick(p0: View?) {
+        when(p0!!.id) {
+            R.id.playButton -> {
+                playing = !playing
+                if(playing) {
+                    menu.playButton.setImageResource(R.drawable.pause)
+                    applicationContext.startService(autoClickIntent)
+                } else {
+                    menu.playButton.setImageResource(R.drawable.play)
+                    applicationContext.stopService(autoClickIntent)
+                }
+            }
+            R.id.plusButton -> {
+                println("plus clicked")
+            }
+            R.id.minusButton -> {
+                println("minus clicked")
+            }
+        }
+    }
+
+    private fun createOverlayLayout(width: Int, height: Int, gravity: Int): WindowManager.LayoutParams {
+        val layoutParams = WindowManager.LayoutParams()
+        // Convert width and height from pixels to dp
+        layoutParams.width = (width * applicationContext.resources.displayMetrics.density).toInt()
+        layoutParams.height = (height * applicationContext.resources.displayMetrics.density).toInt()
+        // Display this on top of other applications
+        layoutParams.type = if(Build.VERSION.SDK_INT >= 26) {
+            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        } else {
+            @Suppress("Deprecation")
+            WindowManager.LayoutParams.TYPE_PHONE
+        }
+        // Don't grab input focus
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        // Make the underlying application visible through any transparent sections
+        layoutParams.format = PixelFormat.TRANSLUCENT
+        // Position layout using gravity
+        layoutParams.gravity = gravity
+        return layoutParams
     }
 
     private fun makeNotification() {

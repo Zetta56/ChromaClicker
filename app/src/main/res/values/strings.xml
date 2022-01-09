@@ -9,4 +9,5 @@
     <string name="play">Pause/Play</string>
     <string name="plus">Plus</string>
     <string name="move">Move</string>
+    <string name="accessibility_description">This is used to dispatch clicks onto your screen</string>
 </resources>

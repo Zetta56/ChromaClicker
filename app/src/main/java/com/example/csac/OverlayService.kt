@@ -13,7 +13,7 @@ import android.view.*
 import com.example.csac.databinding.OverlayMenuBinding
 
 // To add another view, just add it with a new layoutParams and call windowManager.addView()
-class OverlayService : Service(), View.OnClickListener {
+class OverlayService : Service() {
 
     private lateinit var menu: OverlayMenuBinding
     private lateinit var autoClickIntent: Intent
@@ -40,27 +40,6 @@ class OverlayService : Service(), View.OnClickListener {
         super.onDestroy()
     }
 
-    override fun onClick(p0: View?) {
-        when(p0!!.id) {
-            R.id.playButton -> {
-                playing = !playing
-                if(playing) {
-                    menu.playButton.setImageResource(R.drawable.pause)
-                    applicationContext.startService(autoClickIntent)
-                } else {
-                    menu.playButton.setImageResource(R.drawable.play)
-                    applicationContext.stopService(autoClickIntent)
-                }
-            }
-            R.id.plusButton -> {
-                println("plus clicked")
-            }
-            R.id.minusButton -> {
-                println("minus clicked")
-            }
-        }
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     private fun addMenu() {
         val layoutParams = createOverlayLayout(55, 165, Gravity.START)
@@ -73,9 +52,32 @@ class OverlayService : Service(), View.OnClickListener {
         menu.playButton.setOnTouchListener(draggable)
         menu.plusButton.setOnTouchListener(draggable)
         menu.minusButton.setOnTouchListener(draggable)
-        menu.playButton.setOnClickListener(this)
-        menu.plusButton.setOnClickListener(this)
-        menu.minusButton.setOnClickListener(this)
+        menu.playButton.setOnClickListener { toggleClicker() }
+        menu.plusButton.setOnClickListener { addCircle() }
+        menu.minusButton.setOnClickListener { removeCircle() }
+    }
+
+    private fun toggleClicker() {
+        playing = !playing
+        if(playing) {
+            menu.playButton.setImageResource(R.drawable.pause)
+            applicationContext.startService(autoClickIntent)
+        } else {
+            menu.playButton.setImageResource(R.drawable.play)
+            applicationContext.stopService(autoClickIntent)
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun addCircle() {
+        val circle = CircleView(applicationContext)
+        val layoutParams = createOverlayLayout(60, 60, Gravity.NO_GRAVITY)
+        circle.setOnTouchListener(Draggable(windowManager, layoutParams, circle))
+        windowManager.addView(circle, layoutParams)
+    }
+
+    private fun removeCircle() {
+        println("removing")
     }
 
     private fun createOverlayLayout(width: Int, height: Int, gravity: Int): WindowManager.LayoutParams {

@@ -9,12 +9,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.csac.databinding.FragmentMainBinding
 
-class MainFragment : Fragment(), View.OnClickListener {
+class MainFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
     private lateinit var binding: FragmentMainBinding
@@ -41,35 +40,38 @@ class MainFragment : Fragment(), View.OnClickListener {
         binding.powerButton.setImageResource(powerImage)
 
         // Add click listeners
-        binding.powerButton.setOnClickListener(this)
-        view.findViewById<Button>(R.id.savesButton).setOnClickListener(this)
-        view.findViewById<Button>(R.id.settingsButton).setOnClickListener(this)
+        binding.powerButton.setOnClickListener { toggleOverlay() }
+        binding.savesButton.setOnClickListener { navigateSaves() }
+        binding.settingsButton.setOnClickListener { navigateSettings() }
     }
 
-    override fun onClick(p0: View?) {
-        when(p0!!.id) {
-            R.id.powerButton -> {
-//                if(checkPermissions()) {
-                    mainActivity.overlayVisible = !mainActivity.overlayVisible
-                    if (mainActivity.overlayVisible) {
-                        binding.powerButton.setImageResource(R.drawable.power_on)
-                        if (Build.VERSION.SDK_INT >= 26) {
-                            mainActivity.applicationContext.startForegroundService(overlayIntent)
-                        } else {
-                            mainActivity.applicationContext.startService(overlayIntent)
-                        }
-                    } else {
-                        binding.powerButton.setImageResource(R.drawable.power_off)
-                        mainActivity.applicationContext.stopService(overlayIntent)
-                    }
-//                }
+    private fun toggleOverlay() {
+        if(!hasPermissions()) {
+            return
+        }
+        mainActivity.overlayVisible = !mainActivity.overlayVisible
+        if (mainActivity.overlayVisible) {
+            binding.powerButton.setImageResource(R.drawable.power_on)
+            if (Build.VERSION.SDK_INT >= 26) {
+                mainActivity.applicationContext.startForegroundService(overlayIntent)
+            } else {
+                mainActivity.applicationContext.startService(overlayIntent)
             }
-            R.id.savesButton -> navController.navigate(R.id.action_mainFragment_to_savesFragment)
-            R.id.settingsButton -> navController.navigate(R.id.action_mainFragment_to_settingsFragment)
+        } else {
+            binding.powerButton.setImageResource(R.drawable.power_off)
+            mainActivity.applicationContext.stopService(overlayIntent)
         }
     }
 
-    private fun checkPermissions(): Boolean {
+    private fun navigateSaves() {
+        navController.navigate(R.id.action_mainFragment_to_savesFragment)
+    }
+
+    private fun navigateSettings() {
+        navController.navigate(R.id.action_mainFragment_to_settingsFragment)
+    }
+
+    private fun hasPermissions(): Boolean {
         if(!Settings.canDrawOverlays(mainActivity)) {
             // Redirect to overlay permission screen for this app
             val intent = Intent(
@@ -78,7 +80,8 @@ class MainFragment : Fragment(), View.OnClickListener {
             )
             mainActivity.applicationContext.startActivity(intent)
             return false
-        } else if(Settings.Secure.getInt(mainActivity.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED) == 0) {
+        }
+        if(Settings.Secure.getInt(mainActivity.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED) == 0) {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             mainActivity.applicationContext.startActivity(intent)
             return false

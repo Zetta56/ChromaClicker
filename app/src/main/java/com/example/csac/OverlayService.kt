@@ -18,6 +18,7 @@ class OverlayService : Service() {
     private lateinit var menu: OverlayMenuBinding
     private lateinit var autoClickIntent: Intent
     private lateinit var windowManager: WindowManager
+    private var circles = mutableListOf<CircleView>()
     private var playing = false
 
 
@@ -37,6 +38,9 @@ class OverlayService : Service() {
     // Destroy created views when this service is stopped
     override fun onDestroy() {
         windowManager.removeView(menu.root)
+        circles.forEach { circle -> windowManager.removeView(circle) }
+        autoClickIntent.putExtra("enabled", false)
+        applicationContext.startService(autoClickIntent)
         super.onDestroy()
     }
 
@@ -60,11 +64,18 @@ class OverlayService : Service() {
     private fun toggleClicker() {
         playing = !playing
         if(playing) {
+            circles.forEach { circle -> circle.visibility = View.INVISIBLE }
             menu.playButton.setImageResource(R.drawable.pause)
+
+            val circleParcels = ArrayList(circles.map { circle -> CircleParcel(circle) })
+            autoClickIntent.putParcelableArrayListExtra("circles", circleParcels)
+            autoClickIntent.putExtra("enabled", true)
             applicationContext.startService(autoClickIntent)
         } else {
+            circles.forEach { circle -> circle.visibility = View.VISIBLE }
             menu.playButton.setImageResource(R.drawable.play)
-            applicationContext.stopService(autoClickIntent)
+            autoClickIntent.putExtra("enabled", false)
+            applicationContext.startService(autoClickIntent)
         }
     }
 
@@ -74,6 +85,7 @@ class OverlayService : Service() {
         val layoutParams = createOverlayLayout(60, 60, Gravity.NO_GRAVITY)
         circle.setOnTouchListener(Draggable(windowManager, layoutParams, circle))
         windowManager.addView(circle, layoutParams)
+        circles += circle
     }
 
     private fun removeCircle() {

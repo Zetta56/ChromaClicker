@@ -1,4 +1,4 @@
-package com.example.csac
+package com.example.csac.activity
 
 import android.content.Intent
 import android.net.Uri
@@ -11,6 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import com.example.csac.overlay.OverlayService
+import com.example.csac.R
 import com.example.csac.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {

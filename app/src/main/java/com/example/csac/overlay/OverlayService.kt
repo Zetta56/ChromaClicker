@@ -1,4 +1,4 @@
-package com.example.csac
+package com.example.csac.overlay
 
 import android.annotation.SuppressLint
 import android.app.Notification
@@ -10,6 +10,9 @@ import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
 import android.view.*
+import com.example.csac.AutoClickService
+import com.example.csac.models.CircleParcel
+import com.example.csac.R
 import com.example.csac.databinding.OverlayMenuBinding
 
 // To add another view, just add it with a new layoutParams and call windowManager.addView()
@@ -89,7 +92,10 @@ class OverlayService : Service() {
     }
 
     private fun removeCircle() {
-        println("removing")
+        if(circles.size > 0) {
+            windowManager.removeView(circles[circles.lastIndex])
+            circles.removeAt(circles.lastIndex)
+        }
     }
 
     private fun createOverlayLayout(width: Int, height: Int, gravity: Int): WindowManager.LayoutParams {

@@ -1,8 +1,9 @@
-package com.example.csac
+package com.example.csac.activity
 
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.csac.R
 
 
 class MainActivity : AppCompatActivity() {

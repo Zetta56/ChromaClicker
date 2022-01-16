@@ -1,4 +1,4 @@
-package com.example.csac
+package com.example.csac.models
 
 import android.os.Parcel
 import android.os.Parcelable

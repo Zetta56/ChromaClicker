@@ -14,7 +14,7 @@
         android:theme="@style/Theme.CSAC">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".OverlayService" />
+        <service android:name=".overlay.OverlayService" />
 
         <service
             android:name=".AutoClickService"

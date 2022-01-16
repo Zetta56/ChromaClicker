@@ -1,11 +1,9 @@
-package com.example.csac
+package com.example.csac.overlay
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.util.AttributeSet
 import android.view.View
 
 class CircleView(context: Context?) : View(context) {

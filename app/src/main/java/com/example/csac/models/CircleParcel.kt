@@ -1,7 +1,8 @@
-package com.example.csac
+package com.example.csac.models
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.example.csac.overlay.CircleView
 
 class CircleParcel(var x: Int, var y: Int, var detectors: Array<DetectorParcel>) : Parcelable {
     constructor() : this(0, 0, arrayOf<DetectorParcel>())
@@ -10,7 +11,7 @@ class CircleParcel(var x: Int, var y: Int, var detectors: Array<DetectorParcel>)
         x = parcel.readInt(),
         y = parcel.readInt(),
         detectors = arrayOf<DetectorParcel>().apply {
-            parcel.createTypedArray(DetectorParcel.CREATOR)
+            parcel.createTypedArray(DetectorParcel)
         }
     )
 

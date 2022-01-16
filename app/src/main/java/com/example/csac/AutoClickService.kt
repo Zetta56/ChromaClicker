@@ -7,6 +7,7 @@ import android.graphics.Path
 import android.os.Handler
 import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
+import com.example.csac.models.CircleParcel
 
 class AutoClickService : AccessibilityService() {
     private lateinit var handler: Handler

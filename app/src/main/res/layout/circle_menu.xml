@@ -13,8 +13,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:background="@null"
-        android:contentDescription="@string/play"
-        android:src="@drawable/play"
+        android:contentDescription="@string/check"
+        android:src="@drawable/check"
         android:scaleType="fitCenter" />
 
     <ImageButton
@@ -33,9 +33,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/minus"
+        android:src="@drawable/cross"
         android:background="@null"
-        android:contentDescription="@string/minus"
+        android:contentDescription="@string/cross"
         android:scaleType="fitCenter"
         android:layout_marginTop="10dp" />
 

@@ -10,4 +10,7 @@
     <string name="plus">Plus</string>
     <string name="move">Move</string>
     <string name="accessibility_description">This is used to dispatch clicks onto your screen</string>
+    <string name="check">Check</string>
+    <string name="minus">Minus</string>
+    <string name="cross">Cross</string>
 </resources>

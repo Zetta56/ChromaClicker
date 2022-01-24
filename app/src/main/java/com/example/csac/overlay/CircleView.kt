@@ -8,23 +8,21 @@ import android.view.View
 
 class CircleView(context: Context?) : View(context) {
     private val borderPaint = Paint()
-    private val fillPaint = Paint()
     private val centerPaint = Paint()
 
     init {
-        borderPaint.color = Color.parseColor("#a02256b5")
-        fillPaint.color = Color.parseColor("#a02697ed")
+        borderPaint.color = Color.parseColor("#2256b5")
+        borderPaint.strokeWidth = 15f
+        borderPaint.style = Paint.Style.STROKE
         centerPaint.color = Color.parseColor("#2256b5")
     }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        canvas?.drawCircle(halve(measuredWidth), halve(measuredHeight), halve(measuredWidth), borderPaint)
-        canvas?.drawCircle(halve(measuredWidth), halve(measuredHeight), halve(measuredWidth) - 20f, fillPaint)
-        canvas?.drawCircle(halve(measuredWidth), halve(measuredHeight), 15f, fillPaint)
-    }
-
-    private fun halve(num: Int): Float {
-        return (num / 2).toFloat()
+        // Measured properties can only be used after onMeasure finishes running
+        val centerX = (measuredWidth / 2).toFloat()
+        val centerY = (measuredHeight / 2).toFloat()
+        canvas?.drawCircle(centerX, centerY, centerX - borderPaint.strokeWidth, borderPaint)
+        canvas?.drawCircle(centerX, centerY, 15f, centerPaint)
     }
 }

@@ -13,4 +13,8 @@
     <string name="check">Check</string>
     <string name="minus">Minus</string>
     <string name="cross">Cross</string>
+    <string name="dipper">Color Dipper</string>
+    <string name="x">X:</string>
+    <string name="y">Y:</string>
+    <string name="color">Color:</string>
 </resources>

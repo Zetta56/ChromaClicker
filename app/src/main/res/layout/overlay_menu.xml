@@ -39,4 +39,15 @@
         android:scaleType="fitCenter"
         android:layout_marginTop="10dp" />
 
+    <ImageButton
+        android:id="@+id/dipperButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/dipper_off"
+        android:background="@null"
+        android:contentDescription="@string/dipper"
+        android:scaleType="fitCenter"
+        android:layout_marginTop="10dp" />
+
 </LinearLayout>

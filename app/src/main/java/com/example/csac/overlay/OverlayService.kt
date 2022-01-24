@@ -22,7 +22,8 @@ class OverlayService : Service() {
     private var circles = mutableListOf<CircleView>()
 
     companion object {
-        fun createOverlayLayout(width: Int, height: Int, gravity: Int): WindowManager.LayoutParams {
+        fun createOverlayLayout(width: Int, height: Int, gravity: Int = Gravity.NO_GRAVITY,
+                focusable: Boolean = false): WindowManager.LayoutParams {
             val layoutParams = WindowManager.LayoutParams()
             // Convert width and height from pixels to dp
             layoutParams.width = (width * Resources.getSystem().displayMetrics.density).toInt()
@@ -35,7 +36,9 @@ class OverlayService : Service() {
                 WindowManager.LayoutParams.TYPE_PHONE
             }
             // Don't grab input focus
-            layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            if(!focusable) {
+                layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+            }
             // Make the underlying application visible through any transparent sections
             layoutParams.format = PixelFormat.TRANSLUCENT
             // Position layout using gravity

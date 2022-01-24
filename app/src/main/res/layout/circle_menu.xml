@@ -5,38 +5,47 @@
     android:layout_height="match_parent"
     android:background="#222222"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="15dp">
 
-    <ImageButton
-        android:id="@+id/playButton"
+    <LinearLayout
+        android:id="@+id/topSection"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_height="30dp"
         android:background="@null"
-        android:contentDescription="@string/check"
-        android:src="@drawable/check"
-        android:scaleType="fitCenter" />
+        android:orientation="horizontal">
 
-    <ImageButton
-        android:id="@+id/plusButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:src="@drawable/plus"
-        android:background="@null"
-        android:contentDescription="@string/plus"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="10dp" />
+        <ImageButton
+            android:id="@+id/crossButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/cross"
+            android:background="@null"
+            android:contentDescription="@string/cross"
+            android:scaleType="fitCenter" />
 
-    <ImageButton
-        android:id="@+id/minusButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:src="@drawable/cross"
-        android:background="@null"
-        android:contentDescription="@string/cross"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="10dp" />
+        <ImageButton
+            android:id="@+id/plusButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/plus"
+            android:background="@null"
+            android:contentDescription="@string/plus"
+            android:scaleType="fitCenter"
+            android:layout_marginStart="10dp" />
+
+        <ImageButton
+            android:id="@+id/checkButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:contentDescription="@string/check"
+            android:src="@drawable/check"
+            android:scaleType="fitCenter"
+            android:layout_marginStart="10dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>

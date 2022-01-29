@@ -17,4 +17,8 @@
     <string name="x">X:</string>
     <string name="y">Y:</string>
     <string name="color">Color:</string>
+    <string name="eye">Toggle Visibility</string>
+    <string name="default_y">0</string>
+    <string name="default_x">0</string>
+    <string name="default_color">00ff00</string>
 </resources>

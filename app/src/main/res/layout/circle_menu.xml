@@ -25,6 +25,17 @@
             android:scaleType="fitCenter" />
 
         <ImageButton
+            android:id="@+id/dipperButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/dipper_off"
+            android:background="@null"
+            android:contentDescription="@string/dipper"
+            android:scaleType="fitCenter"
+            android:layout_marginStart="10dp" />
+
+        <ImageButton
             android:id="@+id/plusButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -32,6 +43,17 @@
             android:src="@drawable/plus"
             android:background="@null"
             android:contentDescription="@string/plus"
+            android:scaleType="fitCenter"
+            android:layout_marginStart="10dp" />
+
+        <ImageButton
+            android:id="@+id/eyeButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/eye"
+            android:background="@null"
+            android:contentDescription="@string/eye"
             android:scaleType="fitCenter"
             android:layout_marginStart="10dp" />
 
@@ -47,5 +69,11 @@
             android:layout_marginStart="10dp"/>
 
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/detectorForms"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 </LinearLayout>

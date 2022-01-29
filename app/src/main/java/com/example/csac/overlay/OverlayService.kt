@@ -1,56 +1,36 @@
 package com.example.csac.overlay
 
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
-import android.content.res.Resources
-import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
 import android.view.*
 import com.example.csac.AutoClickService
+import com.example.csac.models.CircleParcel
 import com.example.csac.R
+import com.example.csac.createOverlayLayout
+import com.example.csac.databinding.OverlayCanvasBinding
+import com.example.csac.databinding.OverlayMenuBinding
+import com.example.csac.setRecursiveTouchListener
 
 // To add another view, just add it with a new layoutParams and call windowManager.addView()
 class OverlayService : Service() {
 
-    private lateinit var overlayMenu: OverlayMenu
+    private lateinit var binding: OverlayMenuBinding
     private lateinit var autoClickIntent: Intent
     private lateinit var windowManager: WindowManager
     private var circles = mutableListOf<CircleView>()
+    private var playing = false
 
-    companion object {
-        fun createOverlayLayout(width: Int, height: Int, gravity: Int = Gravity.NO_GRAVITY,
-                focusable: Boolean = false): WindowManager.LayoutParams {
-            val layoutParams = WindowManager.LayoutParams()
-            // Convert width and height from pixels to dp
-            layoutParams.width = (width * Resources.getSystem().displayMetrics.density).toInt()
-            layoutParams.height = (height * Resources.getSystem().displayMetrics.density).toInt()
-            // Display this on top of other applications
-            layoutParams.type = if(Build.VERSION.SDK_INT >= 26) {
-                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-            } else {
-                @Suppress("Deprecation")
-                WindowManager.LayoutParams.TYPE_PHONE
-            }
-            // Don't grab input focus
-            if(!focusable) {
-                layoutParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-            }
-            // Make the underlying application visible through any transparent sections
-            layoutParams.format = PixelFormat.TRANSLUCENT
-            // Position layout using gravity
-            layoutParams.gravity = gravity
-            return layoutParams
-        }
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         autoClickIntent = Intent(applicationContext, AutoClickService::class.java)
-        overlayMenu = OverlayMenu(applicationContext, windowManager, circles, autoClickIntent)
+        addMenu()
         makeNotification()
         return super.onStartCommand(intent, flags, startId)
     }
@@ -62,11 +42,59 @@ class OverlayService : Service() {
 
     // Destroy created views when this service is stopped
     override fun onDestroy() {
-        circles.forEach { circle -> windowManager.removeView(circle) }
-        overlayMenu.onDestroy()
+        windowManager.removeView(binding.root)
+        circles.forEach { circle -> circle.onDestroy(windowManager) }
         autoClickIntent.putExtra("enabled", false)
         applicationContext.startService(autoClickIntent)
         super.onDestroy()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun addMenu() {
+        val layoutParams = createOverlayLayout(55, 165, Gravity.START)
+        binding = OverlayMenuBinding.inflate(LayoutInflater.from(applicationContext))
+        windowManager.addView(binding.root, layoutParams)
+
+        // Add event listeners
+        val draggable = Draggable(windowManager, layoutParams, binding.root)
+        setRecursiveTouchListener(binding.root, draggable)
+        binding.playButton.setOnClickListener { toggleClicker() }
+        binding.plusButton.setOnClickListener { addCircle() }
+        binding.minusButton.setOnClickListener { removeCircle() }
+    }
+
+    private fun toggleClicker() {
+        playing = !playing
+        if(playing) {
+            circles.forEach { circle -> circle.visibility = View.INVISIBLE }
+            binding.playButton.setImageResource(R.drawable.pause)
+
+            val circleParcels = ArrayList(circles.map { circle -> CircleParcel(circle) })
+            autoClickIntent.putParcelableArrayListExtra("circles", circleParcels)
+            autoClickIntent.putExtra("enabled", true)
+            applicationContext.startService(autoClickIntent)
+        } else {
+            circles.forEach { circle -> circle.visibility = View.VISIBLE }
+            binding.playButton.setImageResource(R.drawable.play)
+            autoClickIntent.putExtra("enabled", false)
+            applicationContext.startService(autoClickIntent)
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun addCircle() {
+        val circleLayout = createOverlayLayout(60, 60)
+        val circle = CircleView(applicationContext, null)
+        circle.addListeners(windowManager, circleLayout, circles, binding.root)
+        windowManager.addView(circle, circleLayout)
+        circles += circle
+    }
+
+    private fun removeCircle() {
+        if(circles.size > 0) {
+            windowManager.removeView(circles[circles.lastIndex])
+            circles.removeAt(circles.lastIndex)
+        }
     }
 
     private fun makeNotification() {

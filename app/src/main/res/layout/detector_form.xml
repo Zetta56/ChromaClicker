@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="30dp">
+    android:layout_height="40dp">
 
     <TextView
         android:layout_width="15dp"
@@ -17,6 +17,7 @@
         android:layout_height="match_parent"
         android:inputType="number"
         android:importantForAutofill="no"
+        android:text="@string/default_x"
         android:textColor="@color/white"
         android:textSize="14sp"
         android:backgroundTint="@color/white"
@@ -36,6 +37,7 @@
         android:layout_height="match_parent"
         android:inputType="number"
         android:importantForAutofill="no"
+        android:text="@string/default_y"
         android:textColor="@color/white"
         android:textSize="14sp"
         android:backgroundTint="@color/white"
@@ -55,6 +57,7 @@
         android:layout_height="match_parent"
         android:inputType="text"
         android:importantForAutofill="no"
+        android:text="@string/default_color"
         android:textColor="@color/white"
         android:textSize="14sp"
         android:backgroundTint="@color/white"

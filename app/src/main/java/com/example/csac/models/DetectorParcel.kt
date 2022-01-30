@@ -3,16 +3,16 @@ package com.example.csac.models
 import android.os.Parcel
 import android.os.Parcelable
 
-class DetectorParcel(val x: Int, val y: Int, val color: String) : Parcelable {
+class DetectorParcel(val x: Float, val y: Float, val color: String) : Parcelable {
     constructor(parcel: Parcel) : this(
-        x = parcel.readInt(),
-        y = parcel.readInt(),
+        x = parcel.readFloat(),
+        y = parcel.readFloat(),
         color = parcel.readString()!!
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(x)
-        parcel.writeInt(y)
+        parcel.writeFloat(x)
+        parcel.writeFloat(y)
         parcel.writeString(color)
     }
 

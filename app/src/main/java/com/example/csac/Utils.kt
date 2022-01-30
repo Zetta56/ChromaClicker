@@ -51,3 +51,13 @@ fun setRecursiveTouchListener(viewGroup: ViewGroup, listener: View.OnTouchListen
         }
     }
 }
+
+fun getCoordinates(view: View, useCenter: Boolean = false): FloatArray {
+    val position = intArrayOf(0, 0)
+    view.getLocationOnScreen(position)
+    if(useCenter) {
+        position[0] += view.width / 2
+        position[1] += view.height / 2
+    }
+    return floatArrayOf(position[0].toFloat(), position[1].toFloat())
+}

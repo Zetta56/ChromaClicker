@@ -44,15 +44,15 @@ class AutoClickService : AccessibilityService() {
         handler.post(runnable)
     }
 
-    private fun click(x: Int, y: Int) {
+    private fun click(x: Float, y: Float) {
         val path = Path()
-        path.moveTo(x.toFloat(), y.toFloat())
+        path.moveTo(x, y)
 
         val builder = GestureDescription.Builder()
         val strokeDescription = GestureDescription.StrokeDescription(path, 0, 1)
         builder.addStroke(strokeDescription)
         dispatchGesture(builder.build(), null, null)
-        println(x.toFloat())
-        println(y.toFloat())
+        println(x)
+        println(y)
     }
 }

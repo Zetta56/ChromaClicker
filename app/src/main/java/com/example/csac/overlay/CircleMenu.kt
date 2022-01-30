@@ -2,8 +2,6 @@ package com.example.csac.overlay
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.Color
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -15,19 +13,20 @@ import com.example.csac.databinding.OverlayCanvasBinding
 import com.example.csac.models.DetectorParcel
 
 class CircleMenu(
-    context: Context,
+    private val context: Context,
     private val windowManager: WindowManager,
     private val circles: MutableList<CircleView>,
-    private val circleView: View,
+    private val circleCenter: FloatArray,
     private val menuView: View,
     private val overlayCanvas: OverlayCanvasBinding,
 ) {
 
     private val binding = CircleMenuBinding.inflate(LayoutInflater.from(context))
     private val layoutParams = createOverlayLayout(270, 60, focusable=true)
-    private val paint = Paint()
-    private val detectors = mutableListOf<DetectorParcel>()
-    private val detectorAdapter = DetectorAdapter(detectors, overlayCanvas.surface)
+//    private val paint = Paint()
+    private val detectorParcels = mutableListOf<DetectorParcel>()
+    private val detectors = mutableListOf<DetectorView>()
+    private val detectorAdapter = DetectorAdapter(detectors, detectorParcels)
     private var dipping = false
     private var visible = true
 
@@ -41,24 +40,20 @@ class CircleMenu(
         binding.dipperButton.setOnClickListener { toggleDipper() }
         binding.plusButton.setOnClickListener { addDetector() }
         binding.eyeButton.setOnClickListener { toggleVisibility() }
-        binding.crossButton.setOnClickListener { onDestroy(true) }
+        binding.crossButton.setOnClickListener { cancel() }
     }
 
     fun hasWindowToken(): Boolean {
         return binding.root.windowToken != null
     }
 
-    fun onDestroy(showOverlay: Boolean = false) {
-        if(showOverlay) {
-            circles.forEach { circle -> circle.visibility = View.VISIBLE }
-            menuView.visibility = View.VISIBLE
-        }
+    fun onDestroy() {
         windowManager.removeView(overlayCanvas.root)
         windowManager.removeView(binding.root)
     }
 
     private fun confirm() {
-        onDestroy(true)
+        cancel()
     }
 
     private fun toggleDipper() {
@@ -71,18 +66,18 @@ class CircleMenu(
     }
 
     private fun addDetector() {
-        val detector = DetectorParcel(0, 0, "00ff00")
-        paint.color = Color.parseColor("#${detector.color}")
-        detectors.add(detector)
+        val detector = DetectorView(context, null)
+        detector.startX = circleCenter[0]
+        detector.startY = circleCenter[1]
+        detector.invalidate()
+        detectors += detector
+        overlayCanvas.root.addView(detector)
+
         detectorAdapter.notifyItemInserted(detectors.size - 1)
         if(layoutParams.height < (235 * Resources.getSystem().displayMetrics.density).toInt()) {
             layoutParams.height += (40 * Resources.getSystem().displayMetrics.density).toInt()
             windowManager.updateViewLayout(binding.root, layoutParams)
         }
-
-        val canvas = overlayCanvas.surface.holder.lockCanvas()
-        canvas.drawLine(circleView.x, circleView.y, (detector.x).toFloat(), (detector.y).toFloat(), paint)
-        overlayCanvas.surface.holder.unlockCanvasAndPost(canvas)
     }
 
     private fun toggleVisibility() {
@@ -93,5 +88,11 @@ class CircleMenu(
             layoutParams.alpha = 0.1f
         }
         windowManager.updateViewLayout(binding.root, layoutParams)
+    }
+
+    private fun cancel() {
+        circles.forEach { circle -> circle.visibility = View.VISIBLE }
+        menuView.visibility = View.VISIBLE
+        onDestroy()
     }
 }

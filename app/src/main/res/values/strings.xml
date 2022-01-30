@@ -20,5 +20,5 @@
     <string name="eye">Toggle Visibility</string>
     <string name="default_y">0</string>
     <string name="default_x">0</string>
-    <string name="default_color">00ff00</string>
+    <string name="default_color">000000</string>
 </resources>

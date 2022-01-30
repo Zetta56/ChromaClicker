@@ -5,12 +5,14 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.PixelFormat
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import com.example.csac.createOverlayLayout
 import com.example.csac.databinding.OverlayCanvasBinding
+import com.example.csac.getCoordinates
 
 class CircleView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private lateinit var circleMenu: CircleMenu
@@ -43,16 +45,20 @@ class CircleView(context: Context?, attrs: AttributeSet?) : View(context, attrs)
             val canvasLayout = createOverlayLayout(displayMetrics.widthPixels,
                 displayMetrics.heightPixels, touchable=false, unit="px")
             val overlayCanvas = OverlayCanvasBinding.inflate(LayoutInflater.from(context))
+            overlayCanvas.surface.setZOrderMediaOverlay(true)
+            overlayCanvas.surface.holder.setFormat(PixelFormat.TRANSLUCENT)
             windowManager.addView(overlayCanvas.root, canvasLayout)
 
             // Position canvas circle
-            val position = IntArray(2)
-            getLocationOnScreen(position)
-            overlayCanvas.circle.x = (position[0]).toFloat()
-            overlayCanvas.circle.y = (position[1]).toFloat()
+            val circlePosition = getCoordinates(this)
+            overlayCanvas.circle.x = circlePosition[0]
+            overlayCanvas.circle.y = circlePosition[1]
 
-            // Add circle menu and hide other views
-            circleMenu = CircleMenu(context, windowManager, circles, this, menuView, overlayCanvas)
+            // Add circleMenu
+            val circleCenter = getCoordinates(this, true)
+            circleMenu = CircleMenu(context, windowManager, circles, circleCenter, menuView, overlayCanvas)
+
+            // Hide other views
             circles.forEach { circle -> circle.visibility = INVISIBLE }
             menuView.visibility = INVISIBLE
         }

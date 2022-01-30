@@ -2,32 +2,31 @@ package com.example.csac.models
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.example.csac.getCoordinates
 import com.example.csac.overlay.CircleView
 
-class CircleParcel(var x: Int, var y: Int, var detectors: Array<DetectorParcel>) : Parcelable {
-    constructor() : this(0, 0, arrayOf<DetectorParcel>())
+class CircleParcel(var x: Float, var y: Float, var detectors: Array<DetectorParcel>) : Parcelable {
+
+    constructor() : this(0f, 0f, arrayOf<DetectorParcel>())
 
     constructor(parcel: Parcel) : this(
-        x = parcel.readInt(),
-        y = parcel.readInt(),
+        x = parcel.readFloat(),
+        y = parcel.readFloat(),
         detectors = arrayOf<DetectorParcel>().apply {
             parcel.createTypedArray(DetectorParcel)
         }
     )
 
     constructor(view: CircleView) : this() {
-        val position = intArrayOf(0, 0)
-        view.getLocationOnScreen(position)
+        val position = getCoordinates(view)
         x = position[0] + (view.width / 2)
         y = position[1] + (view.height / 2)
-        detectors = arrayOf<DetectorParcel>(
-            DetectorParcel(0, 0, "#EEEEEE")
-        )
+        detectors = arrayOf()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(x)
-        parcel.writeInt(y)
+        parcel.writeFloat(x)
+        parcel.writeFloat(y)
         parcel.writeTypedArray(detectors, 0)
     }
 

@@ -13,7 +13,6 @@ import com.example.csac.AutoClickService
 import com.example.csac.models.CircleParcel
 import com.example.csac.R
 import com.example.csac.createOverlayLayout
-import com.example.csac.databinding.OverlayCanvasBinding
 import com.example.csac.databinding.OverlayMenuBinding
 import com.example.csac.setRecursiveTouchListener
 
@@ -86,8 +85,8 @@ class OverlayService : Service() {
         val circleLayout = createOverlayLayout(60, 60)
         val circle = CircleView(applicationContext, null)
         circle.addListeners(windowManager, circleLayout, circles, binding.root)
-        windowManager.addView(circle, circleLayout)
         circles += circle
+        windowManager.addView(circle, circleLayout)
     }
 
     private fun removeCircle() {

@@ -5,14 +5,15 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PixelFormat
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
 import com.example.csac.createOverlayLayout
-import com.example.csac.databinding.OverlayCanvasBinding
 import com.example.csac.getCoordinates
+import com.example.csac.toDP
+import com.example.csac.toPixels
 
 class CircleView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private lateinit var circleMenu: CircleMenu
@@ -35,39 +36,44 @@ class CircleView(context: Context?, attrs: AttributeSet?) : View(context, attrs)
         canvas?.drawCircle(centerX, centerY, 15f, centerPaint)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    fun addListeners(windowManager: WindowManager, layoutParams: WindowManager.LayoutParams,
-                     circles: MutableList<CircleView>, menuView: View) {
-        setOnTouchListener(Draggable(windowManager, layoutParams, this))
-        setOnClickListener {
-            // Add overlay canvas
-            val displayMetrics = context.resources.displayMetrics
-            val canvasLayout = createOverlayLayout(displayMetrics.widthPixels,
-                displayMetrics.heightPixels, touchable=false, unit="px")
-            val overlayCanvas = OverlayCanvasBinding.inflate(LayoutInflater.from(context))
-            overlayCanvas.surface.setZOrderMediaOverlay(true)
-            overlayCanvas.surface.holder.setFormat(PixelFormat.TRANSLUCENT)
-            windowManager.addView(overlayCanvas.root, canvasLayout)
-
-            // Position canvas circle
-            val circlePosition = getCoordinates(this)
-            overlayCanvas.circle.x = circlePosition[0]
-            overlayCanvas.circle.y = circlePosition[1]
-
-            // Add circleMenu
-            val circleCenter = getCoordinates(this, true)
-            circleMenu = CircleMenu(context, windowManager, circles, circleCenter, menuView, overlayCanvas)
-
-            // Hide other views
-            circles.forEach { circle -> circle.visibility = INVISIBLE }
-            menuView.visibility = INVISIBLE
-        }
-    }
-
     fun onDestroy(windowManager: WindowManager) {
         if(this::circleMenu.isInitialized && circleMenu.hasWindowToken()) {
             circleMenu.onDestroy()
         }
         windowManager.removeView(this)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun addListeners(windowManager: WindowManager, layoutParams: WindowManager.LayoutParams,
+                     circles: MutableList<CircleView>, overlayMenu: View) {
+        setOnTouchListener(Draggable(windowManager, layoutParams, this))
+        setOnClickListener {
+            val circleCenter = getCoordinates(this, true)
+            val drawing = addDrawing(windowManager)
+            circleMenu = CircleMenu(context, windowManager, drawing, circleCenter, circles, overlayMenu)
+
+            // Hide other views
+            circles.forEach { circle -> circle.visibility = INVISIBLE }
+            overlayMenu.visibility = INVISIBLE
+        }
+    }
+
+    private fun addDrawing(windowManager: WindowManager): ViewGroup {
+        val drawing = FrameLayout(context, null)
+        val circle = CircleView(context, null)
+        drawing.addView(circle)
+
+        // Set circle dimensions and position
+        val circlePosition = getCoordinates(this)
+        circle.x = circlePosition[0]
+        circle.y = circlePosition[1]
+        circle.layoutParams.width = toPixels(60)
+        circle.layoutParams.height = toPixels(60)
+
+        // Make drawing window
+        val displayMetrics = context.resources.displayMetrics
+        val drawingLayout = createOverlayLayout(toDP(displayMetrics.widthPixels), toDP(displayMetrics.heightPixels), touchable=false)
+        windowManager.addView(drawing, drawingLayout)
+        return drawing
     }
 }

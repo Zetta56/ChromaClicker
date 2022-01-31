@@ -6,21 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.ImageButton
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.example.csac.R
-import com.example.csac.databinding.OverlayCanvasBinding
-import com.example.csac.models.DetectorParcel
 
 class DetectorAdapter(
     private val detectors: MutableList<DetectorView>,
-    private val detectorParcels: MutableList<DetectorParcel>
+    private val drawing: ViewGroup
 ) : RecyclerView.Adapter<DetectorAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) :  RecyclerView.ViewHolder(view) {
         val inputX: EditText = view.findViewById(R.id.inputX)
         val inputY: EditText = view.findViewById(R.id.inputY)
         val inputColor: EditText = view.findViewById(R.id.inputColor)
+        val inputDelete: ImageButton = view.findViewById(R.id.inputDelete)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -51,6 +51,12 @@ class DetectorAdapter(
                 detectors[position].color = color
                 detectors[position].invalidate()
             } catch(e: IllegalArgumentException) {}
+        }
+        holder.inputDelete.setOnClickListener {
+            drawing.removeView(detectors[position])
+            detectors.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, itemCount)
         }
     }
 

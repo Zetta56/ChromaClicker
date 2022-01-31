@@ -9,16 +9,11 @@ import android.view.ViewGroup
 import android.view.WindowManager
 
 fun createOverlayLayout(width: Int, height: Int, gravity: Int = Gravity.NO_GRAVITY,
-        focusable: Boolean = false, touchable: Boolean = true, unit: String = "dp"): WindowManager.LayoutParams {
+        focusable: Boolean = false, touchable: Boolean = true): WindowManager.LayoutParams {
     val layoutParams = WindowManager.LayoutParams()
-    // Convert width and height from pixels to other units
-    if(unit == "dp") {
-        layoutParams.width = (width * Resources.getSystem().displayMetrics.density).toInt()
-        layoutParams.height = (height * Resources.getSystem().displayMetrics.density).toInt()
-    } else {
-        layoutParams.width = width
-        layoutParams.height = height
-    }
+    // Convert width and height from dp to pixels
+    layoutParams.width = toPixels(width)
+    layoutParams.height = toPixels(height)
     // Display this on top of other applications
     layoutParams.type = if(Build.VERSION.SDK_INT >= 26) {
         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -60,4 +55,12 @@ fun getCoordinates(view: View, useCenter: Boolean = false): FloatArray {
         position[1] += view.height / 2
     }
     return floatArrayOf(position[0].toFloat(), position[1].toFloat())
+}
+
+fun toPixels(dp: Int): Int {
+    return (dp * Resources.getSystem().displayMetrics.density).toInt()
+}
+
+fun toDP(pixels: Int): Int {
+    return (pixels / Resources.getSystem().displayMetrics.density).toInt()
 }

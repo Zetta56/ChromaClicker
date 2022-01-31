@@ -1,32 +1,30 @@
 package com.example.csac.overlay
 
 import android.content.Context
-import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.csac.R
 import com.example.csac.createOverlayLayout
 import com.example.csac.databinding.CircleMenuBinding
-import com.example.csac.databinding.OverlayCanvasBinding
 import com.example.csac.models.DetectorParcel
+import com.example.csac.toPixels
 
 class CircleMenu(
     private val context: Context,
     private val windowManager: WindowManager,
-    private val circles: MutableList<CircleView>,
+    private val drawing: ViewGroup,
     private val circleCenter: FloatArray,
-    private val menuView: View,
-    private val overlayCanvas: OverlayCanvasBinding,
+    private val circles: MutableList<CircleView>,
+    private val overlayMenu: View,
 ) {
 
     private val binding = CircleMenuBinding.inflate(LayoutInflater.from(context))
     private val layoutParams = createOverlayLayout(270, 60, focusable=true)
-//    private val paint = Paint()
-    private val detectorParcels = mutableListOf<DetectorParcel>()
     private val detectors = mutableListOf<DetectorView>()
-    private val detectorAdapter = DetectorAdapter(detectors, detectorParcels)
+    private val detectorAdapter = DetectorAdapter(detectors, drawing)
     private var dipping = false
     private var visible = true
 
@@ -48,7 +46,7 @@ class CircleMenu(
     }
 
     fun onDestroy() {
-        windowManager.removeView(overlayCanvas.root)
+        windowManager.removeView(drawing)
         windowManager.removeView(binding.root)
     }
 
@@ -71,28 +69,25 @@ class CircleMenu(
         detector.startY = circleCenter[1]
         detector.invalidate()
         detectors += detector
-        overlayCanvas.root.addView(detector)
-
+        drawing.addView(detector)
         detectorAdapter.notifyItemInserted(detectors.size - 1)
-        if(layoutParams.height < (235 * Resources.getSystem().displayMetrics.density).toInt()) {
-            layoutParams.height += (40 * Resources.getSystem().displayMetrics.density).toInt()
+
+        // Increase layoutParams height
+        if(layoutParams.height < toPixels(235)) {
+            layoutParams.height += toPixels(40)
             windowManager.updateViewLayout(binding.root, layoutParams)
         }
     }
 
     private fun toggleVisibility() {
         visible = !visible
-        if(visible) {
-            layoutParams.alpha = 1f
-        } else {
-            layoutParams.alpha = 0.1f
-        }
+        layoutParams.alpha = if(visible) 1f else 0.1f
         windowManager.updateViewLayout(binding.root, layoutParams)
     }
 
     private fun cancel() {
         circles.forEach { circle -> circle.visibility = View.VISIBLE }
-        menuView.visibility = View.VISIBLE
+        overlayMenu.visibility = View.VISIBLE
         onDestroy()
     }
 }

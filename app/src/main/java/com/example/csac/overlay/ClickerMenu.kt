@@ -8,23 +8,25 @@ import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.csac.R
 import com.example.csac.createOverlayLayout
-import com.example.csac.databinding.CircleMenuBinding
-import com.example.csac.models.DetectorParcel
+import com.example.csac.databinding.ClickerMenuBinding
+import com.example.csac.models.Clicker
+import com.example.csac.models.Detector
 import com.example.csac.toPixels
 
-class CircleMenu(
+class ClickerMenu(
     private val context: Context,
     private val windowManager: WindowManager,
+    private val clicker: Clicker,
     private val drawing: ViewGroup,
-    private val circleCenter: FloatArray,
-    private val circles: MutableList<CircleView>,
+    private val clickerCenter: Array<Float>,
+    private val clickerViews: MutableList<ClickerView>,
     private val overlayMenu: View,
 ) {
 
-    private val binding = CircleMenuBinding.inflate(LayoutInflater.from(context))
-    private val layoutParams = createOverlayLayout(270, 60, focusable=true)
-    private val detectors = mutableListOf<DetectorView>()
-    private val detectorAdapter = DetectorAdapter(detectors, drawing)
+    private val binding = ClickerMenuBinding.inflate(LayoutInflater.from(context))
+    private val layoutParams = createOverlayLayout(270, 235, focusable=true)
+    private val detectorViews = mutableListOf<DetectorView>()
+    private val detectorAdapter = DetectorAdapter(detectorViews, drawing)
     private var dipping = false
     private var visible = true
 
@@ -51,6 +53,8 @@ class CircleMenu(
     }
 
     private fun confirm() {
+        val detectorList = detectorViews.map { detectorView -> Detector(detectorView) }
+        clicker.detectors = detectorList.toTypedArray()
         cancel()
     }
 
@@ -64,19 +68,13 @@ class CircleMenu(
     }
 
     private fun addDetector() {
-        val detector = DetectorView(context, null)
-        detector.startX = circleCenter[0]
-        detector.startY = circleCenter[1]
-        detector.invalidate()
-        detectors += detector
-        drawing.addView(detector)
-        detectorAdapter.notifyItemInserted(detectors.size - 1)
-
-        // Increase layoutParams height
-        if(layoutParams.height < toPixels(235)) {
-            layoutParams.height += toPixels(40)
-            windowManager.updateViewLayout(binding.root, layoutParams)
-        }
+        val detectorView = DetectorView(context, null)
+        detectorView.startX = clickerCenter[0]
+        detectorView.startY = clickerCenter[1]
+        detectorView.invalidate()
+        detectorViews += detectorView
+        drawing.addView(detectorView)
+        detectorAdapter.notifyItemInserted(detectorViews.size - 1)
     }
 
     private fun toggleVisibility() {
@@ -86,7 +84,7 @@ class CircleMenu(
     }
 
     private fun cancel() {
-        circles.forEach { circle -> circle.visibility = View.VISIBLE }
+        clickerViews.forEach { clickerView -> clickerView.visibility = View.VISIBLE }
         overlayMenu.visibility = View.VISIBLE
         onDestroy()
     }

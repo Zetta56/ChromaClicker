@@ -10,7 +10,7 @@ import android.os.Build
 import android.os.IBinder
 import android.view.*
 import com.example.csac.AutoClickService
-import com.example.csac.models.CircleParcel
+import com.example.csac.models.Clicker
 import com.example.csac.R
 import com.example.csac.createOverlayLayout
 import com.example.csac.databinding.OverlayMenuBinding
@@ -22,11 +22,13 @@ class OverlayService : Service() {
     private lateinit var binding: OverlayMenuBinding
     private lateinit var autoClickIntent: Intent
     private lateinit var windowManager: WindowManager
-    private var circles = mutableListOf<CircleView>()
+    private lateinit var clickers: ArrayList<Clicker>
+    private var clickerViews = mutableListOf<ClickerView>()
     private var playing = false
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        clickers = intent?.extras!!.getParcelableArrayList("clickers")!!
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         autoClickIntent = Intent(applicationContext, AutoClickService::class.java)
         addMenu()
@@ -42,7 +44,7 @@ class OverlayService : Service() {
     // Destroy created views when this service is stopped
     override fun onDestroy() {
         windowManager.removeView(binding.root)
-        circles.forEach { circle -> circle.onDestroy(windowManager) }
+        clickerViews.forEach { clickerView -> clickerView.onDestroy(windowManager) }
         autoClickIntent.putExtra("enabled", false)
         applicationContext.startService(autoClickIntent)
         super.onDestroy()
@@ -57,42 +59,42 @@ class OverlayService : Service() {
         // Add event listeners
         val draggable = Draggable(windowManager, layoutParams, binding.root)
         setRecursiveTouchListener(binding.root, draggable)
-        binding.playButton.setOnClickListener { toggleClicker() }
-        binding.plusButton.setOnClickListener { addCircle() }
-        binding.minusButton.setOnClickListener { removeCircle() }
+        binding.playButton.setOnClickListener { toggleAutoClicker() }
+        binding.plusButton.setOnClickListener { addClicker() }
+        binding.minusButton.setOnClickListener { removeClicker() }
     }
 
-    private fun toggleClicker() {
+    private fun toggleAutoClicker() {
         playing = !playing
         if(playing) {
-            circles.forEach { circle -> circle.visibility = View.INVISIBLE }
+            clickerViews.forEach { clickerView -> clickerView.visibility = View.INVISIBLE }
             binding.playButton.setImageResource(R.drawable.pause)
-
-            val circleParcels = ArrayList(circles.map { circle -> CircleParcel(circle) })
-            autoClickIntent.putParcelableArrayListExtra("circles", circleParcels)
-            autoClickIntent.putExtra("enabled", true)
-            applicationContext.startService(autoClickIntent)
+            autoClickIntent.putParcelableArrayListExtra("clickers", clickers)
         } else {
-            circles.forEach { circle -> circle.visibility = View.VISIBLE }
+            clickerViews.forEach { clickerView -> clickerView.visibility = View.VISIBLE }
             binding.playButton.setImageResource(R.drawable.play)
-            autoClickIntent.putExtra("enabled", false)
-            applicationContext.startService(autoClickIntent)
         }
+        autoClickIntent.putExtra("enabled", playing)
+        applicationContext.startService(autoClickIntent)
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun addCircle() {
-        val circleLayout = createOverlayLayout(60, 60)
-        val circle = CircleView(applicationContext, null)
-        circle.addListeners(windowManager, circleLayout, circles, binding.root)
-        circles += circle
-        windowManager.addView(circle, circleLayout)
+    private fun addClicker() {
+        val clickerLayout = createOverlayLayout(60, 60)
+        val clickerView = ClickerView(applicationContext, null)
+        val clicker = Clicker(clickerLayout)
+        clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root)
+
+        clickers += clicker
+        clickerViews += clickerView
+        windowManager.addView(clickerView, clickerLayout)
     }
 
-    private fun removeCircle() {
-        if(circles.size > 0) {
-            windowManager.removeView(circles[circles.lastIndex])
-            circles.removeAt(circles.lastIndex)
+    private fun removeClicker() {
+        if(clickerViews.size > 0) {
+            windowManager.removeView(clickerViews[clickerViews.lastIndex])
+            clickerViews.removeAt(clickerViews.lastIndex)
+            clickers.removeAt(clickerViews.lastIndex)
         }
     }
 

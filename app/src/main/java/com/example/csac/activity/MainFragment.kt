@@ -14,12 +14,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.csac.overlay.OverlayService
 import com.example.csac.R
 import com.example.csac.databinding.FragmentMainBinding
+import com.example.csac.models.Clicker
 
 class MainFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
     private lateinit var binding: FragmentMainBinding
     private lateinit var overlayIntent: Intent
+    private val clickers = arrayListOf<Clicker>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +56,7 @@ class MainFragment : Fragment() {
         mainActivity.overlayVisible = !mainActivity.overlayVisible
         if (mainActivity.overlayVisible) {
             binding.powerButton.setImageResource(R.drawable.power_on)
+            overlayIntent.putParcelableArrayListExtra("clickers", clickers)
             if (Build.VERSION.SDK_INT >= 26) {
                 mainActivity.applicationContext.startForegroundService(overlayIntent)
             } else {

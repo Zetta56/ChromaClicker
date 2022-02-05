@@ -8,7 +8,8 @@ import kotlin.math.abs
 class Draggable(
     private val windowManager: WindowManager,
     private val layoutParams: WindowManager.LayoutParams,
-    private val view: View
+    private val view: View,
+    private val onActionUp: (() -> Unit)? = null
 ) : View.OnTouchListener {
 
     private val moveThreshold = 25
@@ -42,6 +43,8 @@ class Draggable(
                 if(!dragging) {
                     p0!!.performClick()
                 }
+                // Call onActionUp if it is not null
+                onActionUp?.invoke()
                 true
             }
             else -> false

@@ -10,9 +10,10 @@ import android.widget.ImageButton
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.example.csac.R
+import com.example.csac.models.Clicker
 
 class DetectorAdapter(
-    private val detectors: MutableList<DetectorView>,
+    private val detectorViews: MutableList<DetectorView>,
     private val drawing: ViewGroup
 ) : RecyclerView.Adapter<DetectorAdapter.ViewHolder>() {
 
@@ -29,18 +30,19 @@ class DetectorAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val detectorView = detectorViews[position]
         holder.inputX.doAfterTextChanged {
             val x = holder.inputX.text.toString()
             if(x.isNotEmpty() && 0 <= x.toFloat() && x.toFloat() <= Resources.getSystem().displayMetrics.widthPixels) {
-                detectors[position].endX = x.toFloat()
-                detectors[position].invalidate()
+                detectorView.endX = x.toFloat()
+                detectorView.invalidate()
             }
         }
         holder.inputY.doAfterTextChanged {
             val y = holder.inputY.text.toString()
             if(y.isNotEmpty() && 0 <= y.toFloat() && y.toFloat() <= Resources.getSystem().displayMetrics.heightPixels) {
-                detectors[position].endY = y.toFloat()
-                detectors[position].invalidate()
+                detectorView.endY = y.toFloat()
+                detectorView.invalidate()
             }
         }
         holder.inputColor.doAfterTextChanged {
@@ -48,19 +50,19 @@ class DetectorAdapter(
             // parseColor inside try...catch makes sure inputted color-string is valid
             try {
                 Color.parseColor(color)
-                detectors[position].color = color
-                detectors[position].invalidate()
+                detectorView.color = color
+                detectorView.invalidate()
             } catch(e: IllegalArgumentException) {}
         }
         holder.inputDelete.setOnClickListener {
-            drawing.removeView(detectors[position])
-            detectors.removeAt(position)
+            drawing.removeView(detectorView)
+            detectorViews.removeAt(position)
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, itemCount)
         }
     }
 
     override fun getItemCount(): Int {
-        return detectors.size
+        return detectorViews.size
     }
 }

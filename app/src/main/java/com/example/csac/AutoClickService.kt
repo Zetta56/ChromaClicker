@@ -35,15 +35,15 @@ class AutoClickService : AccessibilityService() {
 
     private fun startClicking(clickers: ArrayList<Clicker>) {
         // Offsets used to get coordinates from top-left instead of screen center
-        val offsetX = Resources.getSystem().displayMetrics.widthPixels / 2
-        val offsetY = Resources.getSystem().displayMetrics.heightPixels / 2
+//        val offsetX = Resources.getSystem().displayMetrics.widthPixels / 2
+//        val offsetY = Resources.getSystem().displayMetrics.heightPixels / 2
 
         handler = Handler(Looper.getMainLooper())
         runnable = object : Runnable {
             override fun run() {
                 for(clicker in clickers) {
                     Resources.getSystem().displayMetrics.widthPixels
-                    click(clicker.x + offsetX, clicker.y + offsetY)
+                    click(clicker.x, clicker.y)
                 }
                 handler.postDelayed(this, 1000)
             }

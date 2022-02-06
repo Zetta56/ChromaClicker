@@ -11,7 +11,6 @@ import com.example.csac.createOverlayLayout
 import com.example.csac.databinding.ClickerMenuBinding
 import com.example.csac.models.Clicker
 import com.example.csac.models.Detector
-import com.example.csac.toPixels
 
 class ClickerMenu(
     private val context: Context,

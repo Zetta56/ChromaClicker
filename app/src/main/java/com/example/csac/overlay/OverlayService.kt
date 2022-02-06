@@ -6,15 +6,13 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Build
 import android.os.IBinder
 import android.view.*
-import com.example.csac.AutoClickService
+import com.example.csac.*
 import com.example.csac.models.Clicker
-import com.example.csac.R
-import com.example.csac.createOverlayLayout
 import com.example.csac.databinding.OverlayMenuBinding
-import com.example.csac.setRecursiveTouchListener
 
 // To add another view, just add it with a new layoutParams and call windowManager.addView()
 class OverlayService : Service() {
@@ -52,7 +50,7 @@ class OverlayService : Service() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun addMenu() {
-        val layoutParams = createOverlayLayout(55, 165, Gravity.START)
+        val layoutParams = createOverlayLayout(55, 165, gravity=Gravity.START)
         binding = OverlayMenuBinding.inflate(LayoutInflater.from(applicationContext))
         windowManager.addView(binding.root, layoutParams)
 
@@ -80,11 +78,14 @@ class OverlayService : Service() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun addClicker() {
-        val clickerLayout = createOverlayLayout(60, 60)
+        val radius = 30
+        val x = toDP(Resources.getSystem().displayMetrics.widthPixels / 2) - radius
+        val y = toDP(Resources.getSystem().displayMetrics.heightPixels / 2) - radius
+        val clickerLayout = createOverlayLayout(radius * 2, radius * 2, x=x, y=y, gravity=(Gravity.TOP or Gravity.START))
         val clickerView = ClickerView(applicationContext, null)
         val clicker = Clicker(clickerLayout)
-        clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root)
 
+        clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root)
         clickers += clicker
         clickerViews += clickerView
         windowManager.addView(clickerView, clickerLayout)

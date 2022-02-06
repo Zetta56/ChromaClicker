@@ -10,7 +10,6 @@ import android.widget.ImageButton
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.example.csac.R
-import com.example.csac.models.Clicker
 
 class DetectorAdapter(
     private val detectorViews: MutableList<DetectorView>,

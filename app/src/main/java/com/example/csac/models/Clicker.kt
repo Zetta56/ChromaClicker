@@ -3,8 +3,6 @@ package com.example.csac.models
 import android.os.Parcel
 import android.os.Parcelable
 import android.view.WindowManager
-import com.example.csac.getCoordinates
-import com.example.csac.overlay.ClickerView
 
 class Clicker(var x: Float, var y: Float, var detectors: Array<Detector>) : Parcelable {
 

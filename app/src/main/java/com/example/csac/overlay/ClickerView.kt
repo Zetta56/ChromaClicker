@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import com.example.csac.createOverlayLayout
-import com.example.csac.getCoordinates
 import com.example.csac.models.Clicker
 import com.example.csac.toDP
 import com.example.csac.toPixels
@@ -48,12 +47,11 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
     fun addListeners(windowManager: WindowManager, clicker: Clicker, layoutParams: WindowManager.LayoutParams,
                      clickerViews: MutableList<ClickerView>, overlayMenu: View) {
         setOnClickListener {
-//            val center = getCoordinates(this, true)
             val clickerCenter = arrayOf(
                 (layoutParams.x + this.width / 2).toFloat(),
                 (layoutParams.y + this.height / 2).toFloat()
             )
-            val drawing = addDrawing(windowManager, clickerCenter)
+            val drawing = addDrawing(windowManager, layoutParams.x.toFloat(), layoutParams.y.toFloat())
             clickerMenu = ClickerMenu(context, windowManager, clicker, drawing, clickerCenter, clickerViews, overlayMenu)
 
             // Hide other views
@@ -66,14 +64,14 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         }))
     }
 
-    private fun addDrawing(windowManager: WindowManager, clickerCenter: Array<Float>): ViewGroup {
+    private fun addDrawing(windowManager: WindowManager, clickerX: Float, clickerY: Float): ViewGroup {
         val drawing = FrameLayout(context, null)
         val clickerView = ClickerView(context, null)
         drawing.addView(clickerView)
 
         // Set clicker view dimensions and position
-        clickerView.x = clickerCenter[0]
-        clickerView.y = clickerCenter[1]
+        clickerView.x = clickerX
+        clickerView.y = clickerY
         clickerView.layoutParams.width = toPixels(60)
         clickerView.layoutParams.height = toPixels(60)
 

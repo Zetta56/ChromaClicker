@@ -8,12 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 
-fun createOverlayLayout(width: Int, height: Int, gravity: Int = Gravity.NO_GRAVITY,
+fun createOverlayLayout(width: Int, height: Int, x: Int = 0, y: Int = 0, gravity: Int = Gravity.NO_GRAVITY,
         focusable: Boolean = false, touchable: Boolean = true): WindowManager.LayoutParams {
     val layoutParams = WindowManager.LayoutParams()
     // Convert width and height from dp to pixels
     layoutParams.width = toPixels(width)
     layoutParams.height = toPixels(height)
+    layoutParams.x = toPixels(x)
+    layoutParams.y = toPixels(y)
     // Display this on top of other applications
     layoutParams.type = if(Build.VERSION.SDK_INT >= 26) {
         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -45,16 +47,6 @@ fun setRecursiveTouchListener(viewGroup: ViewGroup, listener: View.OnTouchListen
             child.setOnTouchListener(listener)
         }
     }
-}
-
-fun getCoordinates(view: View, useCenter: Boolean = false): FloatArray {
-    val position = intArrayOf(0, 0)
-    view.getLocationOnScreen(position)
-    if(useCenter) {
-        position[0] += view.width / 2
-        position[1] += view.height / 2
-    }
-    return floatArrayOf(position[0].toFloat(), position[1].toFloat())
 }
 
 fun toPixels(dp: Int): Int {

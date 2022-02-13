@@ -29,8 +29,10 @@ class OverlayService : Service() {
         clickers = intent?.extras!!.getParcelableArrayList("clickers")!!
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         autoClickIntent = Intent(applicationContext, AutoClickService::class.java)
+        autoClickIntent.action = "toggle"
         addMenu()
         makeNotification()
+        ProjectionActivity.launch(applicationContext)
         return super.onStartCommand(intent, flags, startId)
     }
 

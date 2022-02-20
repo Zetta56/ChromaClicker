@@ -1,6 +1,7 @@
 package com.example.csac.activity
 
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.csac.overlay.OverlayService
@@ -53,10 +55,14 @@ class MainFragment : Fragment() {
         if(!hasPermissions()) {
             return
         }
+
+        val windowRect = Rect()
+        mainActivity.window.decorView.getWindowVisibleDisplayFrame(windowRect)
         mainActivity.overlayVisible = !mainActivity.overlayVisible
         if (mainActivity.overlayVisible) {
             binding.powerButton.setImageResource(R.drawable.power_on)
             overlayIntent.putParcelableArrayListExtra("clickers", clickers)
+            overlayIntent.putExtra("statusBarHeight", windowRect.top)
             if (Build.VERSION.SDK_INT >= 26) {
                 mainActivity.applicationContext.startForegroundService(overlayIntent)
             } else {

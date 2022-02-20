@@ -6,19 +6,11 @@ import android.view.WindowManager
 
 class Clicker(var x: Float, var y: Float, var detectors: Array<Detector>) : Parcelable {
 
-    constructor() : this(0f, 0f, arrayOf<Detector>())
-
     constructor(parcel: Parcel) : this(
         x = parcel.readFloat(),
         y = parcel.readFloat(),
         detectors = parcel.createTypedArray(Detector.CREATOR) as Array<Detector>
     )
-
-    constructor(clickerLayout: WindowManager.LayoutParams) : this() {
-        x = clickerLayout.x.toFloat()
-        y = clickerLayout.y.toFloat()
-        detectors = arrayOf()
-    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeFloat(x)

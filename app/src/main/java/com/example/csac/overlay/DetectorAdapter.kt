@@ -46,12 +46,17 @@ class DetectorAdapter(
         }
         holder.inputColor.doAfterTextChanged {
             val color = "#${holder.inputColor.text}"
-            // parseColor inside try...catch makes sure inputted color-string is valid
+            // parseColor is inside try...catch to make sure inputted color-string is valid
             try {
                 Color.parseColor(color)
                 detectorView.color = color
                 detectorView.invalidate()
             } catch(e: IllegalArgumentException) {}
+        }
+        holder.inputColor.setOnFocusChangeListener { _, hasFocus: Boolean ->
+            if(hasFocus) {
+                holder.inputColor.setSelection(holder.inputColor.length())
+            }
         }
         holder.inputDelete.setOnClickListener {
             drawing.removeView(detectorView)

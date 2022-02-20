@@ -7,6 +7,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import kotlin.math.max
+import kotlin.math.min
 
 fun createOverlayLayout(width: Int, height: Int, x: Int = 0, y: Int = 0, gravity: Int = Gravity.NO_GRAVITY,
         focusable: Boolean = false, touchable: Boolean = true): WindowManager.LayoutParams {
@@ -55,4 +57,8 @@ fun toPixels(dp: Int): Int {
 
 fun toDP(pixels: Int): Int {
     return (pixels / Resources.getSystem().displayMetrics.density).toInt()
+}
+
+fun clamp(num: Int, lower: Int, upper: Int): Int {
+    return min(max(num, lower), upper)
 }

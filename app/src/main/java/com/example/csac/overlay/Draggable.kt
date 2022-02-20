@@ -1,8 +1,10 @@
 package com.example.csac.overlay
 
+import android.content.res.Resources
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import com.example.csac.clamp
 import kotlin.math.abs
 
 class Draggable(
@@ -12,9 +14,10 @@ class Draggable(
     private val onActionUp: (() -> Unit)? = null
 ) : View.OnTouchListener {
 
+    private val displayMetrics = Resources.getSystem().displayMetrics
     private val moveThreshold = 25
-    private var offsetX = 0f
-    private var offsetY = 0f
+    private var offsetX = 0
+    private var offsetY = 0
     private var initialX = 0f
     private var initialY = 0f
     private var dragging = false
@@ -23,8 +26,9 @@ class Draggable(
         return when(p1?.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 dragging = false
-                offsetX = layoutParams.x - p1.rawX
-                offsetY = layoutParams.y - p1.rawY
+                // Offsets represent distance from top-left corner of layout to the cursor
+                offsetX = (p1.rawX - layoutParams.x).toInt()
+                offsetY = (p1.rawY - layoutParams.y).toInt()
                 initialX = p1.rawX
                 initialY = p1.rawY
                 true
@@ -34,8 +38,9 @@ class Draggable(
                 if(!dragging && moved) {
                     dragging = true
                 }
-                layoutParams.x = (p1.rawX + offsetX).toInt()
-                layoutParams.y = (p1.rawY + offsetY).toInt()
+                // Set layout position to cursor position bounded within the screen
+                layoutParams.x = clamp(p1.rawX.toInt() - offsetX, 0, displayMetrics.widthPixels - layoutParams.width)
+                layoutParams.y = clamp(p1.rawY.toInt() - offsetY, 0, displayMetrics.heightPixels - layoutParams.height)
                 windowManager.updateViewLayout(view, layoutParams)
                 true
             }
@@ -43,7 +48,7 @@ class Draggable(
                 if(!dragging) {
                     p0!!.performClick()
                 }
-                // Call onActionUp if it is not null
+                // Call onActionUp if it isn't null
                 onActionUp?.invoke()
                 true
             }

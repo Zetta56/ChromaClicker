@@ -45,22 +45,19 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
 
     @SuppressLint("ClickableViewAccessibility")
     fun addListeners(windowManager: WindowManager, clicker: Clicker, layoutParams: WindowManager.LayoutParams,
-                     clickerViews: MutableList<ClickerView>, overlayMenu: View) {
+                     clickerViews: MutableList<ClickerView>, overlayMenu: View, statusBarHeight: Int) {
         setOnClickListener {
-            val clickerCenter = arrayOf(
-                (layoutParams.x + this.width / 2).toFloat(),
-                (layoutParams.y + this.height / 2).toFloat()
-            )
             val drawing = addDrawing(windowManager, layoutParams.x.toFloat(), layoutParams.y.toFloat())
-            clickerMenu = ClickerMenu(context, windowManager, clicker, drawing, clickerCenter, clickerViews, overlayMenu)
+            clickerMenu = ClickerMenu(context, windowManager, clicker, drawing, getCenter(layoutParams), clickerViews, overlayMenu)
 
             // Hide other views
             clickerViews.forEach { clickerView -> clickerView.visibility = INVISIBLE }
             overlayMenu.visibility = INVISIBLE
         }
         setOnTouchListener(Draggable(windowManager, layoutParams, this, onActionUp={
-            clicker.x = layoutParams.x.toFloat()
-            clicker.y = layoutParams.y.toFloat()
+            val center = getCenter(layoutParams)
+            clicker.x = center[0]
+            clicker.y = center[1] + statusBarHeight
         }))
     }
 
@@ -81,5 +78,12 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         windowManager.addView(drawing, drawingLayout)
 
         return drawing
+    }
+
+    private fun getCenter(layoutParams: WindowManager.LayoutParams): Array<Float> {
+        return arrayOf(
+            (layoutParams.x + layoutParams.width / 2).toFloat(),
+            (layoutParams.y + layoutParams.height / 2).toFloat()
+        )
     }
 }

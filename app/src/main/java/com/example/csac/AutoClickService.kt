@@ -14,19 +14,40 @@ import android.hardware.display.DisplayManager
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
 import androidx.activity.result.ActivityResult
 import com.example.csac.models.Clicker
-import com.example.csac.overlay.ProjectionActivity
-import java.lang.Float.max
 
 class AutoClickService : AccessibilityService() {
+    var projection: MediaProjection? = null
     private lateinit var handler: Handler
-    private lateinit var runnable: Runnable
-    private lateinit var projection: MediaProjection
+    private lateinit var clickRunnable: Runnable
+    private lateinit var detectRunnable: Runnable
+    private lateinit var clickerStates: BooleanArray
+    private var screenBitmap: Bitmap? = null
+
+    // Make this service accessible to other classes using a static field
+    companion object {
+        var instance: AutoClickService? = null
+    }
+
+    override fun onServiceConnected() {
+        instance = this
+        super.onServiceConnected()
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        instance = null
+        return super.onUnbind(intent)
+    }
+
+    // Don't do anything when receiving accessibility event
+    override fun onAccessibilityEvent(p0: AccessibilityEvent?) {}
+
+    // Don't do anything when interrupted
+    override fun onInterrupt() {}
 
     // Runs when this service is started using an intent
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -36,9 +57,10 @@ class AutoClickService : AccessibilityService() {
                     val enabled = intent.extras!!.getBoolean("enabled")
                     if(enabled) {
                         val clickers = intent.extras!!.getParcelableArrayList<Clicker>("clickers")!!
-                        startClicking(clickers)
+                        clickerStates = BooleanArray(clickers.size)
+                        startRunners(clickers)
                     } else {
-                        stopClicking()
+                        stopRunners()
                     }
                 }
                 "request_projection" -> {
@@ -52,40 +74,37 @@ class AutoClickService : AccessibilityService() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    // Don't do anything when receiving accessibility event
-    override fun onAccessibilityEvent(p0: AccessibilityEvent?) {}
-
-    // Don't do anything when interrupted
-    override fun onInterrupt() {}
-
-    private fun startClicking(clickers: ArrayList<Clicker>) {
-//        val screenShotIntent = Intent(applicationContext, ProjectionRequester::class.java)
-//        screenShotIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//        startActivity(screenShotIntent)
-        takeScreenshot()
+    private fun startRunners(clickers: ArrayList<Clicker>) {
         handler = Handler(Looper.getMainLooper())
-        runnable = object : Runnable {
+        clickRunnable = object : Runnable {
             override fun run() {
-                for(clicker in clickers) {
-                    Resources.getSystem().displayMetrics.widthPixels
-                    click(clicker.x, clicker.y)
+                for((index, clicker) in clickers.withIndex()) {
+                    if(clickerStates[index]) {
+                        click(clicker.x, clicker.y)
+                    }
                 }
                 handler.postDelayed(this, 1000)
             }
         }
-        handler.post(runnable)
+        detectRunnable = object : Runnable {
+            override fun run() {
+                updateScreenBitmap()
+                updateClickerStates(clickers)
+                handler.postDelayed(this, 5000)
+            }
+        }
+        handler.post(clickRunnable)
+        handler.post(detectRunnable)
     }
 
-    private fun stopClicking() {
-        if(this::handler.isInitialized && this::runnable.isInitialized) {
-            handler.removeCallbacks(runnable)
-        }
+    private fun stopRunners() {
+        handler.removeCallbacks(clickRunnable)
+        handler.removeCallbacks(detectRunnable)
     }
 
     private fun click(x: Float, y: Float) {
         val path = Path()
-        // max function prevents x and y from being negative
-        path.moveTo(max(0f, x), max(0f, y))
+        path.moveTo(x, y)
 
         val builder = GestureDescription.Builder()
         val strokeDescription = GestureDescription.StrokeDescription(path, 0, 1)
@@ -95,40 +114,49 @@ class AutoClickService : AccessibilityService() {
         println(y)
     }
 
-    @SuppressLint("WrongConstant")
-    fun takeScreenshot() {
-        if(!this::projection.isInitialized) {
-            ProjectionActivity.launch(applicationContext)
-            return
+    private fun updateClickerStates(clickers: ArrayList<Clicker>) {
+        for((index, clicker) in clickers.withIndex()) {
+            var state = true
+            for(detector in clicker.detectors) {
+                val pixelColor = screenBitmap?.getPixel(detector.x.toInt(), detector.y.toInt())
+                if(pixelColor != Color.parseColor(detector.color)) {
+                    state = false
+                    break
+                }
+            }
+            clickerStates[index] = state
         }
+    }
 
+    @SuppressLint("WrongConstant")
+    private fun updateScreenBitmap() {
         val displayMetrics = Resources.getSystem().displayMetrics
         // Image reader receives images from a virtual display
         val imageReader = ImageReader.newInstance(displayMetrics.widthPixels, displayMetrics.heightPixels, PixelFormat.RGBA_8888, 2)
         // Create a display that can mirror the screen, but cannot show other virtual displays
         val flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC or DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY
-        val virtualDisplay = projection.createVirtualDisplay("screen-mirror", displayMetrics.widthPixels,
+        val virtualDisplay = projection!!.createVirtualDisplay("screen-mirror", displayMetrics.widthPixels,
             displayMetrics.heightPixels, displayMetrics.densityDpi, flags, imageReader.surface, null , null)
 
         imageReader.setOnImageAvailableListener({ reader ->
+            // Copy read image to a new bitmap
             val image = reader.acquireLatestImage()
             val plane = image.planes[0]
             val rowPadding = plane.rowStride - plane.pixelStride * displayMetrics.widthPixels
             val bitmap = Bitmap.createBitmap(displayMetrics.widthPixels + (rowPadding.toFloat() /
                 plane.pixelStride).toInt(), displayMetrics.heightPixels, Bitmap.Config.ARGB_8888)
             bitmap.copyPixelsFromBuffer(plane.buffer)
+            screenBitmap = bitmap
 
-            println(Color.red(bitmap.getPixel(200, 200)))
-            println(Color.green(bitmap.getPixel(200, 200)))
-            println(Color.blue(bitmap.getPixel(200, 200)))
+//             val fos = openFileOutput("testBitmap", MODE_PRIVATE)
+//             bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
+//             fos.close()
 
-            val fos = openFileOutput("testBitmap", MODE_PRIVATE)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
-            fos.close()
-
+            // Cleanup
             image.close()
-            virtualDisplay.release()
+            virtualDisplay?.release()
             reader.close()
         }, null)
     }
 }
+

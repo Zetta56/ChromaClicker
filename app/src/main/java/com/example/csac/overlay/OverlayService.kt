@@ -22,17 +22,17 @@ class OverlayService : Service() {
     private lateinit var windowManager: WindowManager
     private lateinit var clickers: ArrayList<Clicker>
     private var clickerViews = mutableListOf<ClickerView>()
+    private var statusBarHeight = 0
     private var playing = false
-
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         clickers = intent?.extras!!.getParcelableArrayList("clickers")!!
+        statusBarHeight = intent.extras!!.getInt("statusBarHeight")
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         autoClickIntent = Intent(applicationContext, AutoClickService::class.java)
         autoClickIntent.action = "toggle"
         addMenu()
         makeNotification()
-        ProjectionActivity.launch(applicationContext)
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -65,6 +65,12 @@ class OverlayService : Service() {
     }
 
     private fun toggleAutoClicker() {
+        // If AutoClickService doesn't have a projection, request it from ProjectionActivity
+        if(AutoClickService.instance?.projection == null) {
+            ProjectionActivity.launch(applicationContext)
+            return
+        }
+
         playing = !playing
         if(playing) {
             clickerViews.forEach { clickerView -> clickerView.visibility = View.INVISIBLE }
@@ -85,9 +91,13 @@ class OverlayService : Service() {
         val y = toDP(Resources.getSystem().displayMetrics.heightPixels / 2) - radius
         val clickerLayout = createOverlayLayout(radius * 2, radius * 2, x=x, y=y, gravity=(Gravity.TOP or Gravity.START))
         val clickerView = ClickerView(applicationContext, null)
-        val clicker = Clicker(clickerLayout)
+        val clicker = Clicker(
+            (clickerLayout.x + clickerLayout.width / 2).toFloat(),
+            (clickerLayout.y + clickerLayout.height / 2 + statusBarHeight).toFloat(),
+            arrayOf()
+        )
 
-        clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root)
+        clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root, statusBarHeight)
         clickers += clicker
         clickerViews += clickerView
         windowManager.addView(clickerView, clickerLayout)
@@ -96,8 +106,8 @@ class OverlayService : Service() {
     private fun removeClicker() {
         if(clickerViews.size > 0) {
             windowManager.removeView(clickerViews[clickerViews.lastIndex])
-            clickerViews.removeAt(clickerViews.lastIndex)
             clickers.removeAt(clickerViews.lastIndex)
+            clickerViews.removeAt(clickerViews.lastIndex)
         }
     }
 

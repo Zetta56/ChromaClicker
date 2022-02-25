@@ -30,6 +30,13 @@ class DetectorAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val detectorView = detectorViews[position]
+
+        // Set default values
+        holder.inputX.setText(detectorView.endX.toInt().toString())
+        holder.inputY.setText(detectorView.endY.toInt().toString())
+        holder.inputColor.setText(detectorView.color.substring(1)) // Starting at index 1 excludes hashbang
+
+        // Set input handlers
         holder.inputX.doAfterTextChanged {
             val x = holder.inputX.text.toString()
             if(x.isNotEmpty() && 0 <= x.toFloat() && x.toFloat() <= Resources.getSystem().displayMetrics.widthPixels) {
@@ -46,7 +53,7 @@ class DetectorAdapter(
         }
         holder.inputColor.doAfterTextChanged {
             val color = "#${holder.inputColor.text}"
-            // parseColor is inside try...catch to make sure inputted color-string is valid
+            // parseColor inside try...catch makes sure inputted color-string is valid
             try {
                 Color.parseColor(color)
                 detectorView.color = color

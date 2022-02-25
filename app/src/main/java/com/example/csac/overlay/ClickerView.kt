@@ -37,6 +37,7 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
     }
 
     fun onDestroy(windowManager: WindowManager) {
+        // Destroy clicker-menu if it was fully initialized
         if(this::clickerMenu.isInitialized && clickerMenu.hasWindowToken()) {
             clickerMenu.onDestroy()
         }
@@ -49,11 +50,11 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         setOnClickListener {
             val drawing = addDrawing(windowManager, layoutParams.x.toFloat(), layoutParams.y.toFloat())
             clickerMenu = ClickerMenu(context, windowManager, clicker, drawing, getCenter(layoutParams), clickerViews, overlayMenu)
-
             // Hide other views
             clickerViews.forEach { clickerView -> clickerView.visibility = INVISIBLE }
             overlayMenu.visibility = INVISIBLE
         }
+
         setOnTouchListener(Draggable(windowManager, layoutParams, this, onActionUp={
             val center = getCenter(layoutParams)
             clicker.x = center[0]
@@ -61,12 +62,13 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
         }))
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun addDrawing(windowManager: WindowManager, clickerX: Float, clickerY: Float): ViewGroup {
         val drawing = FrameLayout(context, null)
         val clickerView = ClickerView(context, null)
         drawing.addView(clickerView)
 
-        // Set clicker view dimensions and position
+        // Set clicker position and dimensions
         clickerView.x = clickerX
         clickerView.y = clickerY
         clickerView.layoutParams.width = toPixels(60)
@@ -74,7 +76,7 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
 
         // Make drawing window
         val displayMetrics = context.resources.displayMetrics
-        val drawingLayout = createOverlayLayout(toDP(displayMetrics.widthPixels), toDP(displayMetrics.heightPixels), touchable=false)
+        val drawingLayout = createOverlayLayout(toDP(displayMetrics.widthPixels), toDP(displayMetrics.heightPixels))
         windowManager.addView(drawing, drawingLayout)
 
         return drawing

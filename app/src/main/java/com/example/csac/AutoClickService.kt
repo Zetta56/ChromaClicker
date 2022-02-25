@@ -3,6 +3,8 @@ package com.example.csac
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -17,16 +19,18 @@ import android.media.projection.MediaProjectionManager
 import android.os.Handler
 import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import com.example.csac.models.Clicker
 
 class AutoClickService : AccessibilityService() {
     var projection: MediaProjection? = null
-    private lateinit var handler: Handler
-    private lateinit var clickRunnable: Runnable
-    private lateinit var detectRunnable: Runnable
-    private lateinit var clickerStates: BooleanArray
+    private var handler: Handler = Handler(Looper.getMainLooper())
+    private var clickerStates: BooleanArray? = null
+    private var clickRunnable: Runnable? = null
+    private var detectRunnable: Runnable? = null
     private var screenBitmap: Bitmap? = null
+    private var statusBarHeight = 0
 
     // Make this service accessible to other classes using a static field
     companion object {
@@ -57,17 +61,36 @@ class AutoClickService : AccessibilityService() {
                     val enabled = intent.extras!!.getBoolean("enabled")
                     if(enabled) {
                         val clickers = intent.extras!!.getParcelableArrayList<Clicker>("clickers")!!
+                        statusBarHeight = intent.extras!!.getInt("statusBarHeight")
                         clickerStates = BooleanArray(clickers.size)
                         startRunners(clickers)
                     } else {
                         stopRunners()
                     }
                 }
-                "request_projection" -> {
+                "send_projection" -> {
                     val projectionResult: ActivityResult = intent.extras!!.getParcelable("projectionResult")!!
                     val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
                     // Media projection is a token that lets this app record the screen
                     projection = projectionManager.getMediaProjection(projectionResult.resultCode, projectionResult.data!!)
+                }
+                "get_pixel_color" -> {
+                    val x = intent.extras!!.getInt("x")
+                    val y = intent.extras!!.getInt("y")
+                    updateScreenBitmap()
+                    // Waiting a bit for updateScreenBitmap() to take a screenshot
+                    handler.postDelayed({
+                        if(screenBitmap != null) {
+                            val colorInt = screenBitmap!!.getPixel(x, y + statusBarHeight)
+                            val colorString = Integer.toHexString(colorInt).substring(2)
+                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clipData = ClipData.newPlainText(colorString, colorString)
+                            clipboard.setPrimaryClip(clipData)
+                            Toast.makeText(applicationContext, "Copied to clipboard: $colorString", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(applicationContext, "An error has occurred. Please try again.", Toast.LENGTH_SHORT).show()
+                        }
+                    }, 500)
                 }
             }
         }
@@ -75,11 +98,10 @@ class AutoClickService : AccessibilityService() {
     }
 
     private fun startRunners(clickers: ArrayList<Clicker>) {
-        handler = Handler(Looper.getMainLooper())
         clickRunnable = object : Runnable {
             override fun run() {
                 for((index, clicker) in clickers.withIndex()) {
-                    if(clickerStates[index]) {
+                    if(clickerStates != null && clickerStates!![index]) {
                         click(clicker.x, clicker.y)
                     }
                 }
@@ -93,13 +115,17 @@ class AutoClickService : AccessibilityService() {
                 handler.postDelayed(this, 5000)
             }
         }
-        handler.post(clickRunnable)
-        handler.post(detectRunnable)
+        handler.post(clickRunnable!!)
+        handler.post(detectRunnable!!)
     }
 
     private fun stopRunners() {
-        handler.removeCallbacks(clickRunnable)
-        handler.removeCallbacks(detectRunnable)
+        if(clickRunnable != null) {
+            handler.removeCallbacks(clickRunnable!!)
+        }
+        if(detectRunnable != null) {
+            handler.removeCallbacks(detectRunnable!!)
+        }
     }
 
     private fun click(x: Float, y: Float) {
@@ -115,16 +141,19 @@ class AutoClickService : AccessibilityService() {
     }
 
     private fun updateClickerStates(clickers: ArrayList<Clicker>) {
+        if(clickerStates == null) {
+            return
+        }
         for((index, clicker) in clickers.withIndex()) {
             var state = true
             for(detector in clicker.detectors) {
-                val pixelColor = screenBitmap?.getPixel(detector.x.toInt(), detector.y.toInt())
+                val pixelColor = screenBitmap?.getPixel(detector.x.toInt(), detector.y.toInt() + statusBarHeight)
                 if(pixelColor != Color.parseColor(detector.color)) {
                     state = false
                     break
                 }
             }
-            clickerStates[index] = state
+            clickerStates!![index] = state
         }
     }
 

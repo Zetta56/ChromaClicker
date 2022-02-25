@@ -30,7 +30,6 @@ class OverlayService : Service() {
         statusBarHeight = intent.extras!!.getInt("statusBarHeight")
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         autoClickIntent = Intent(applicationContext, AutoClickService::class.java)
-        autoClickIntent.action = "toggle"
         addMenu()
         makeNotification()
         return super.onStartCommand(intent, flags, startId)
@@ -67,7 +66,7 @@ class OverlayService : Service() {
     private fun toggleAutoClicker() {
         // If AutoClickService doesn't have a projection, request it from ProjectionActivity
         if(AutoClickService.instance?.projection == null) {
-            ProjectionActivity.launch(applicationContext)
+            ProjectionRequester.launch(applicationContext)
             return
         }
 
@@ -76,11 +75,13 @@ class OverlayService : Service() {
             clickerViews.forEach { clickerView -> clickerView.visibility = View.INVISIBLE }
             binding.playButton.setImageResource(R.drawable.pause)
             autoClickIntent.putParcelableArrayListExtra("clickers", clickers)
+            autoClickIntent.putExtra("statusBarHeight", statusBarHeight)
         } else {
             clickerViews.forEach { clickerView -> clickerView.visibility = View.VISIBLE }
             binding.playButton.setImageResource(R.drawable.play)
         }
         autoClickIntent.putExtra("enabled", playing)
+        autoClickIntent.action = "toggle"
         applicationContext.startService(autoClickIntent)
     }
 

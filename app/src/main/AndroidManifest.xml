@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".overlay.ProjectionActivity"
+            android:name=".overlay.ProjectionRequester"
             android:theme="@style/transparentTheme" />
 
         <service android:name=".overlay.OverlayService" />

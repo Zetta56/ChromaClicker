@@ -11,7 +11,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 fun createOverlayLayout(width: Int, height: Int, x: Int = 0, y: Int = 0, gravity: Int = Gravity.NO_GRAVITY,
-        focusable: Boolean = false, touchable: Boolean = true): WindowManager.LayoutParams {
+        focusable: Boolean = false): WindowManager.LayoutParams {
     val layoutParams = WindowManager.LayoutParams()
     // Convert width and height from dp to pixels
     layoutParams.width = toPixels(width)
@@ -25,12 +25,9 @@ fun createOverlayLayout(width: Int, height: Int, x: Int = 0, y: Int = 0, gravity
         @Suppress("Deprecation")
         WindowManager.LayoutParams.TYPE_PHONE
     }
-    // Conditionally add bitwise flags
+    // Conditionally make user unable to give input focus to this
     if(!focusable) {
         layoutParams.flags = layoutParams.flags or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-    }
-    if(!touchable) {
-        layoutParams.flags = layoutParams.flags or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
     }
     // Make the underlying application visible through any transparent sections
     layoutParams.format = PixelFormat.TRANSLUCENT

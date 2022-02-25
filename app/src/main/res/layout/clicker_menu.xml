@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/dipper_off"
+            android:src="@drawable/dipper"
             android:background="@null"
             android:contentDescription="@string/dipper"
             android:scaleType="fitCenter"

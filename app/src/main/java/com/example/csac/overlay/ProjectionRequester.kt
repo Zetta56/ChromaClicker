@@ -9,10 +9,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.csac.AutoClickService
 
-class ProjectionActivity : AppCompatActivity() {
+class ProjectionRequester : AppCompatActivity() {
     companion object {
         fun launch(context: Context) {
-            val intent = Intent(context, ProjectionActivity::class.java)
+            val intent = Intent(context, ProjectionRequester::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         }
@@ -24,7 +24,7 @@ class ProjectionActivity : AppCompatActivity() {
         val activityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if(result.resultCode == Activity.RESULT_OK) {
                 val intent = Intent(applicationContext, AutoClickService::class.java)
-                intent.action = "request_projection"
+                intent.action = "send_projection"
                 intent.putExtra("projectionResult", result)
                 startService(intent)
                 this.finish()

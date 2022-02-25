@@ -1,17 +1,20 @@
 package com.example.csac.overlay
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.csac.R
+import com.example.csac.AutoClickService
 import com.example.csac.createOverlayLayout
 import com.example.csac.databinding.ClickerMenuBinding
 import com.example.csac.models.Clicker
 import com.example.csac.models.Detector
 
+@SuppressLint("ClickableViewAccessibility")
 class ClickerMenu(
     private val context: Context,
     private val windowManager: WindowManager,
@@ -24,31 +27,61 @@ class ClickerMenu(
 
     private val binding = ClickerMenuBinding.inflate(LayoutInflater.from(context))
     private val layoutParams = createOverlayLayout(270, 235, focusable=true)
-    private val detectorViews = mutableListOf<DetectorView>()
+    private val detectorViews = convertDetectors(clicker.detectors)
     private val detectorAdapter = DetectorAdapter(detectorViews, drawing)
     private var dipping = false
     private var visible = true
 
     init {
         windowManager.addView(binding.root, layoutParams)
+        detectorViews.forEach { view -> drawing.addView(view) }
         binding.detectorForms.adapter = detectorAdapter
         binding.detectorForms.layoutManager = LinearLayoutManager(context)
 
-        // Add listeners
+        // Add click listeners
         binding.checkButton.setOnClickListener { confirm() }
         binding.dipperButton.setOnClickListener { toggleDipper() }
         binding.plusButton.setOnClickListener { addDetector() }
         binding.eyeButton.setOnClickListener { toggleVisibility() }
         binding.crossButton.setOnClickListener { cancel() }
+
+        // Add dipping listener to drawing
+        drawing.setOnTouchListener { _, event ->
+            if(dipping) {
+                val intent = Intent(context, AutoClickService::class.java)
+                intent.putExtra("x", event.rawX.toInt())
+                intent.putExtra("y", event.rawY.toInt())
+                intent.action = "get_pixel_color"
+                context.startService(intent)
+                dipping = false
+                binding.root.visibility = View.VISIBLE
+            }
+            return@setOnTouchListener dipping
+        }
     }
 
     fun hasWindowToken(): Boolean {
+        // Returns whether this layout was added to the window manager
         return binding.root.windowToken != null
     }
 
     fun onDestroy() {
         windowManager.removeView(drawing)
         windowManager.removeView(binding.root)
+    }
+
+    private fun convertDetectors(detectors: Array<Detector>): MutableList<DetectorView> {
+        val viewList = detectors.map { detector ->
+            val view = DetectorView(context, null)
+            view.startX = clickerCenter[0]
+            view.startY = clickerCenter[1]
+            view.endX = detector.x
+            view.endY = detector.y
+            view.color = detector.color
+            view.invalidate()
+            return@map view
+        }
+        return viewList.toMutableList()
     }
 
     private fun confirm() {
@@ -58,11 +91,11 @@ class ClickerMenu(
     }
 
     private fun toggleDipper() {
-        dipping = !dipping
-        if(dipping) {
-            binding.dipperButton.setImageResource(R.drawable.dipper_on)
+        if(AutoClickService.instance?.projection == null) {
+            ProjectionRequester.launch(context)
         } else {
-            binding.dipperButton.setImageResource(R.drawable.dipper_off)
+            dipping = true
+            binding.root.visibility = View.INVISIBLE
         }
     }
 
@@ -71,8 +104,8 @@ class ClickerMenu(
         detectorView.startX = clickerCenter[0]
         detectorView.startY = clickerCenter[1]
         detectorView.invalidate()
-        detectorViews += detectorView
         drawing.addView(detectorView)
+        detectorViews += detectorView
         detectorAdapter.notifyItemInserted(detectorViews.size - 1)
     }
 

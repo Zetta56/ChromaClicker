@@ -13,6 +13,7 @@ import android.graphics.Color
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.hardware.display.DisplayManager
+import android.hardware.display.VirtualDisplay
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
@@ -30,6 +31,9 @@ class AutoClickService : AccessibilityService() {
     private var clickRunnable: Runnable? = null
     private var detectRunnable: Runnable? = null
     private var screenBitmap: Bitmap? = null
+    private var imageReader: ImageReader? = null
+    private var virtualDisplay: VirtualDisplay? = null
+    private var screenshotting = false
     private var statusBarHeight = 0
 
     // Make this service accessible to other classes using a static field
@@ -77,20 +81,14 @@ class AutoClickService : AccessibilityService() {
                 "get_pixel_color" -> {
                     val x = intent.extras!!.getInt("x")
                     val y = intent.extras!!.getInt("y")
-                    updateScreenBitmap()
-                    // Waiting a bit for updateScreenBitmap() to take a screenshot
-                    handler.postDelayed({
-                        if(screenBitmap != null) {
-                            val colorInt = screenBitmap!!.getPixel(x, y + statusBarHeight)
-                            val colorString = Integer.toHexString(colorInt).substring(2)
-                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clipData = ClipData.newPlainText(colorString, colorString)
-                            clipboard.setPrimaryClip(clipData)
-                            Toast.makeText(applicationContext, "Copied to clipboard: $colorString", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(applicationContext, "An error has occurred. Please try again.", Toast.LENGTH_SHORT).show()
-                        }
-                    }, 500)
+                    updateScreenBitmap {
+                        val colorInt = screenBitmap!!.getPixel(x, y + statusBarHeight)
+                        val colorString = Integer.toHexString(colorInt).substring(2)
+                        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clipData = ClipData.newPlainText(colorString, colorString)
+                        clipboard.setPrimaryClip(clipData)
+                        Toast.makeText(applicationContext, "Copied to clipboard: $colorString", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -110,8 +108,9 @@ class AutoClickService : AccessibilityService() {
         }
         detectRunnable = object : Runnable {
             override fun run() {
-                updateScreenBitmap()
-                updateClickerStates(clickers)
+                updateScreenBitmap {
+                    updateClickerStates(clickers)
+                }
                 handler.postDelayed(this, 5000)
             }
         }
@@ -158,16 +157,20 @@ class AutoClickService : AccessibilityService() {
     }
 
     @SuppressLint("WrongConstant")
-    private fun updateScreenBitmap() {
+    private fun updateScreenBitmap(callback: () -> Unit = {}) {
         val displayMetrics = Resources.getSystem().displayMetrics
-        // Image reader receives images from a virtual display
-        val imageReader = ImageReader.newInstance(displayMetrics.widthPixels, displayMetrics.heightPixels, PixelFormat.RGBA_8888, 2)
-        // Create a display that can mirror the screen, but cannot show other virtual displays
-        val flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC or DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY
-        val virtualDisplay = projection!!.createVirtualDisplay("screen-mirror", displayMetrics.widthPixels,
-            displayMetrics.heightPixels, displayMetrics.densityDpi, flags, imageReader.surface, null , null)
+        // ImageReader and VirtualDisplay are stored as properties to avoid garbage-collection/early-destruction
+        if(!screenshotting) {
+            // Image reader receives images from a virtual display
+            imageReader = ImageReader.newInstance(displayMetrics.widthPixels, displayMetrics.heightPixels, PixelFormat.RGBA_8888, 2)
+            val flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC or DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY
+            // Create a display that can mirror the screen, but cannot show other virtual displays
+            virtualDisplay = projection!!.createVirtualDisplay("screen-mirror", displayMetrics.widthPixels,
+                displayMetrics.heightPixels, displayMetrics.densityDpi, flags, imageReader!!.surface, null , null)
+            screenshotting = true
+        }
 
-        imageReader.setOnImageAvailableListener({ reader ->
+        imageReader!!.setOnImageAvailableListener({ reader ->
             // Copy read image to a new bitmap
             val image = reader.acquireLatestImage()
             val plane = image.planes[0]
@@ -176,6 +179,7 @@ class AutoClickService : AccessibilityService() {
                 plane.pixelStride).toInt(), displayMetrics.heightPixels, Bitmap.Config.ARGB_8888)
             bitmap.copyPixelsFromBuffer(plane.buffer)
             screenBitmap = bitmap
+            callback()
 
 //             val fos = openFileOutput("testBitmap", MODE_PRIVATE)
 //             bitmap.compress(Bitmap.CompressFormat.PNG, 90, fos)
@@ -185,6 +189,7 @@ class AutoClickService : AccessibilityService() {
             image.close()
             virtualDisplay?.release()
             reader.close()
+            screenshotting = false
         }, null)
     }
 }

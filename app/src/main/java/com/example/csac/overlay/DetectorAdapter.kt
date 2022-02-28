@@ -60,11 +60,11 @@ class DetectorAdapter(
                 detectorView.invalidate()
             } catch(e: IllegalArgumentException) {}
         }
-        holder.inputColor.setOnFocusChangeListener { _, hasFocus: Boolean ->
-            if(hasFocus) {
-                holder.inputColor.setSelection(holder.inputColor.length())
-            }
-        }
+//        holder.inputColor.setOnFocusChangeListener { _, hasFocus: Boolean ->
+//            if(hasFocus) {
+//                holder.inputColor.setSelection(holder.inputColor.length())
+//            }
+//        }
         holder.inputDelete.setOnClickListener {
             drawing.removeView(detectorView)
             detectorViews.removeAt(position)

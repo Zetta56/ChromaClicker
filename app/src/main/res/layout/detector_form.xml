@@ -3,6 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="40dp">
 
+    <ImageButton
+        android:id="@+id/pasteButton"
+        android:layout_width="15dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/paste"
+        android:background="@null"
+        android:contentDescription="@string/paste"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="5dp" />
+
     <TextView
         android:layout_width="15dp"
         android:layout_height="match_parent"
@@ -16,6 +27,7 @@
         android:layout_width="40dp"
         android:layout_height="match_parent"
         android:inputType="number"
+        android:maxLength="4"
         android:importantForAutofill="no"
         android:text="@string/default_x"
         android:textColor="@color/white"
@@ -36,6 +48,7 @@
         android:layout_width="40dp"
         android:layout_height="match_parent"
         android:inputType="number"
+        android:maxLength="4"
         android:importantForAutofill="no"
         android:text="@string/default_y"
         android:textColor="@color/white"
@@ -53,9 +66,10 @@
 
     <EditText
         android:id="@+id/inputColor"
-        android:layout_width="60dp"
+        android:layout_width="65dp"
         android:layout_height="match_parent"
         android:inputType="text"
+        android:maxLength="7"
         android:importantForAutofill="no"
         android:text="@string/default_color"
         android:textColor="@color/white"
@@ -64,7 +78,7 @@
         android:layout_marginEnd="5dp" />
 
     <ImageButton
-        android:id="@+id/inputDelete"
+        android:id="@+id/crossButton"
         android:layout_width="15dp"
         android:layout_height="match_parent"
         android:src="@drawable/cross"

@@ -1,4 +1,4 @@
-package com.example.csac.overlay
+package com.example.csac.autoclick
 
 import android.app.Activity
 import android.content.Context
@@ -7,7 +7,6 @@ import android.media.projection.MediaProjectionManager
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import com.example.csac.AutoClickService
 
 class ProjectionRequester : AppCompatActivity() {
     companion object {

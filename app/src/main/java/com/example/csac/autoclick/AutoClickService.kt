@@ -1,4 +1,4 @@
-package com.example.csac
+package com.example.csac.autoclick
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
@@ -80,14 +80,15 @@ class AutoClickService : AccessibilityService() {
                 }
                 "get_pixel_color" -> {
                     val x = intent.extras!!.getInt("x")
-                    val y = intent.extras!!.getInt("y")
+                    val y = intent.extras!!.getInt("y") + statusBarHeight
                     updateScreenBitmap {
-                        val colorInt = screenBitmap!!.getPixel(x, y + statusBarHeight)
+                        val colorInt = screenBitmap!!.getPixel(x, y)
+                        // Substring starts at 3rd character to ignore alpha value
                         val colorString = Integer.toHexString(colorInt).substring(2)
                         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clipData = ClipData.newPlainText(colorString, colorString)
+                        val clipData = ClipData.newPlainText(colorString, "${x},${y},#${colorString}")
                         clipboard.setPrimaryClip(clipData)
-                        Toast.makeText(applicationContext, "Copied to clipboard: $colorString", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "Copied to Clipboard: ${clipData.getItemAt(0).text}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

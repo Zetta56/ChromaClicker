@@ -3,12 +3,10 @@ package com.example.csac.overlay
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.csac.AutoClickService
+import com.example.csac.autoclick.AutoClickService
+import com.example.csac.autoclick.ProjectionRequester
 import com.example.csac.createOverlayLayout
 import com.example.csac.databinding.ClickerMenuBinding
 import com.example.csac.models.Clicker
@@ -26,9 +24,9 @@ class ClickerMenu(
 ) {
 
     private val binding = ClickerMenuBinding.inflate(LayoutInflater.from(context))
-    private val layoutParams = createOverlayLayout(270, 235, focusable=true)
+    private val layoutParams = createOverlayLayout(295, 235, focusable=true)
     private val detectorViews = convertDetectors(clicker.detectors)
-    private val detectorAdapter = DetectorAdapter(detectorViews, drawing)
+    private val detectorAdapter = DetectorAdapter(context, detectorViews, drawing)
     private var dipping = false
     private var visible = true
 
@@ -38,26 +36,13 @@ class ClickerMenu(
         binding.detectorForms.adapter = detectorAdapter
         binding.detectorForms.layoutManager = LinearLayoutManager(context)
 
-        // Add click listeners
+        // Add listeners
         binding.checkButton.setOnClickListener { confirm() }
         binding.dipperButton.setOnClickListener { toggleDipper() }
         binding.plusButton.setOnClickListener { addDetector() }
         binding.eyeButton.setOnClickListener { toggleVisibility() }
         binding.crossButton.setOnClickListener { cancel() }
-
-        // Add dipping listener to drawing
-        drawing.setOnTouchListener { _, event ->
-            if(dipping) {
-                val intent = Intent(context, AutoClickService::class.java)
-                intent.putExtra("x", event.rawX.toInt())
-                intent.putExtra("y", event.rawY.toInt())
-                intent.action = "get_pixel_color"
-                context.startService(intent)
-                dipping = false
-                binding.root.visibility = View.VISIBLE
-            }
-            return@setOnTouchListener dipping
-        }
+        drawing.setOnTouchListener { _, event -> dip(event) }
     }
 
     fun hasWindowToken(): Boolean {
@@ -97,6 +82,19 @@ class ClickerMenu(
             dipping = true
             binding.root.visibility = View.INVISIBLE
         }
+    }
+
+    private fun dip(event: MotionEvent): Boolean {
+        if(dipping) {
+            val intent = Intent(context, AutoClickService::class.java)
+            intent.putExtra("x", event.rawX.toInt())
+            intent.putExtra("y", event.rawY.toInt())
+            intent.action = "get_pixel_color"
+            context.startService(intent)
+            dipping = false
+            binding.root.visibility = View.VISIBLE
+        }
+        return dipping
     }
 
     private fun addDetector() {

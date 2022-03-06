@@ -11,6 +11,8 @@ import android.os.Build
 import android.os.IBinder
 import android.view.*
 import com.example.csac.*
+import com.example.csac.autoclick.AutoClickService
+import com.example.csac.autoclick.ProjectionRequester
 import com.example.csac.models.Clicker
 import com.example.csac.databinding.OverlayMenuBinding
 

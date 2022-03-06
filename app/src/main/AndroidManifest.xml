@@ -23,13 +23,13 @@
         </activity>
 
         <activity
-            android:name=".overlay.ProjectionRequester"
+            android:name=".autoclick.ProjectionRequester"
             android:theme="@style/transparentTheme" />
 
         <service android:name=".overlay.OverlayService" />
 
         <service
-            android:name=".AutoClickService"
+            android:name=".autoclick.AutoClickService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="false">
             <intent-filter>

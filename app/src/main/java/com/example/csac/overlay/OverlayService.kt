@@ -15,6 +15,11 @@ import com.example.csac.autoclick.AutoClickService
 import com.example.csac.autoclick.ProjectionRequester
 import com.example.csac.models.Clicker
 import com.example.csac.databinding.OverlayMenuBinding
+import com.example.csac.models.Save
+import kotlinx.serialization.json.Json
+import java.io.File
+import java.io.FileOutputStream
+import java.io.ObjectOutputStream
 
 // To add another view, just add it with a new layoutParams and call windowManager.addView()
 class OverlayService : Service() {
@@ -53,7 +58,7 @@ class OverlayService : Service() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun addMenu() {
-        val layoutParams = createOverlayLayout(55, 165, gravity=Gravity.START)
+        val layoutParams = createOverlayLayout(55, 220, gravity=Gravity.START)
         binding = OverlayMenuBinding.inflate(LayoutInflater.from(applicationContext))
         windowManager.addView(binding.root, layoutParams)
 
@@ -63,6 +68,7 @@ class OverlayService : Service() {
         binding.playButton.setOnClickListener { toggleAutoClicker() }
         binding.plusButton.setOnClickListener { addClicker() }
         binding.minusButton.setOnClickListener { removeClicker() }
+        binding.saveButton.setOnClickListener { saveClickers() }
     }
 
     private fun toggleAutoClicker() {
@@ -112,6 +118,15 @@ class OverlayService : Service() {
             clickers.removeAt(clickerViews.lastIndex)
             clickerViews.removeAt(clickerViews.lastIndex)
         }
+    }
+
+    private fun saveClickers() {
+        val name = "test name"
+        val save = Save(name, clickers)
+        val file = File(filesDir, "save-$name")
+        val objectStream = ObjectOutputStream(FileOutputStream(file))
+        objectStream.writeObject(Json.encodeToString(Save.serializer(), save))
+        objectStream.close()
     }
 
     private fun makeNotification() {

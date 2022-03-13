@@ -22,4 +22,5 @@
     <string name="default_x">0</string>
     <string name="default_color">#000000</string>
     <string name="paste">Paste</string>
+    <string name="save">Save</string>
 </resources>

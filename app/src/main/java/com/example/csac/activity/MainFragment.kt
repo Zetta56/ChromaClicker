@@ -37,7 +37,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
-        // ::class.java takes OverlayService's metadata and spits out its Java class
+        // ::class.java gets OverlayService's java class
         overlayIntent = Intent(mainActivity.applicationContext, OverlayService::class.java)
 
         // Set power button image

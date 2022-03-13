@@ -17,9 +17,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        val inputStream = File(filesDir, "save-test name").inputStream()
-//        val inputString = inputStream.bufferedReader().use { it.readText() }
-//        println(inputString)
     }
 
 //    override fun onSaveInstanceState(outState: Bundle) {

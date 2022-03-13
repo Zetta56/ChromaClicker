@@ -20,6 +20,8 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileOutputStream
 import java.io.ObjectOutputStream
+import java.util.*
+import kotlin.collections.ArrayList
 
 // To add another view, just add it with a new layoutParams and call windowManager.addView()
 class OverlayService : Service() {
@@ -121,12 +123,17 @@ class OverlayService : Service() {
     }
 
     private fun saveClickers() {
-        val name = "test name"
-        val save = Save(name, clickers)
-        val file = File(filesDir, "save-$name")
-        val objectStream = ObjectOutputStream(FileOutputStream(file))
-        objectStream.writeObject(Json.encodeToString(Save.serializer(), save))
-        objectStream.close()
+        // Make saves directory in internal storage if it doesn't exist
+        val savesDir = File("${filesDir}/saves")
+        if(!savesDir.exists()) {
+            savesDir.mkdirs()
+        }
+
+        val save = Save("test name", clickers)
+        val file = File(savesDir, Date().toString())
+        // Store serializable saves as JSON
+        val saveJson = Json.encodeToString(Save.serializer(), save)
+        file.writeText(saveJson)
     }
 
     private fun makeNotification() {

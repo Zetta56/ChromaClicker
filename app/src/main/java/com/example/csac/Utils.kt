@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import java.io.File
 import kotlin.math.max
 import kotlin.math.min
 
@@ -58,4 +59,18 @@ fun toDP(pixels: Int): Int {
 
 fun clamp(num: Int, lower: Int, upper: Int): Int {
     return min(max(num, lower), upper)
+}
+
+fun getUniqueFileName(path: String, fileName: String): String {
+    var duplicate = File(path, fileName)
+    return if(duplicate.exists()) {
+        var num = 1
+        do {
+            num++
+            duplicate = File("${path}/${fileName}-${num}")
+        } while(duplicate.exists())
+        "${fileName}-${num}"
+    } else {
+        fileName
+    }
 }

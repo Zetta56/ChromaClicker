@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:orientation="horizontal"
+    android:layout_margin="10dp">
+
+    <TextView
+        android:id="@+id/saveName"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:text="@string/save"
+        android:textSize="11pt"
+        android:textColor="@color/white" />
+
+    <ImageButton
+        android:id="@+id/renameButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginVertical="5dp"
+        android:src="@drawable/save"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        android:contentDescription="@string/save" />
+
+    <ImageButton
+        android:id="@+id/deleteButton"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginVertical="5dp"
+        android:src="@drawable/cross"
+        android:scaleType="fitCenter"
+        android:background="@null"
+        android:contentDescription="@string/save" />
+
+</LinearLayout>

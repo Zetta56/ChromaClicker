@@ -1,15 +1,13 @@
 package com.example.csac.overlay
 
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Build
 import android.os.IBinder
 import android.view.*
+import android.widget.EditText
 import com.example.csac.*
 import com.example.csac.autoclick.AutoClickService
 import com.example.csac.autoclick.ProjectionRequester
@@ -18,12 +16,8 @@ import com.example.csac.databinding.OverlayMenuBinding
 import com.example.csac.models.Save
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.FileOutputStream
-import java.io.ObjectOutputStream
-import java.util.*
 import kotlin.collections.ArrayList
 
-// To add another view, just add it with a new layoutParams and call windowManager.addView()
 class OverlayService : Service() {
 
     private lateinit var binding: OverlayMenuBinding
@@ -70,7 +64,7 @@ class OverlayService : Service() {
         binding.playButton.setOnClickListener { toggleAutoClicker() }
         binding.plusButton.setOnClickListener { addClicker() }
         binding.minusButton.setOnClickListener { removeClicker() }
-        binding.saveButton.setOnClickListener { saveClickers() }
+        binding.saveButton.setOnClickListener { saveClickers("test") }
     }
 
     private fun toggleAutoClicker() {
@@ -122,15 +116,37 @@ class OverlayService : Service() {
         }
     }
 
-    private fun saveClickers() {
+//    private fun showSaveDialog() {
+//        val dialog = AlertDialog.Builder(applicationContext)
+//        val editText = EditText(applicationContext)
+//        dialog.setView(editText)
+//        dialog.setTitle("Save Name")
+//        dialog.setPositiveButton("Save") { _, _ ->
+//            var name = editText.text.toString()
+//            var duplicate = File("${filesDir}/saves/${name}")
+//            var num = 1
+//            if(duplicate.exists()) {
+//                do {
+//                    num++
+//                    duplicate = File("${filesDir}/saves/${name}-${num}")
+//                } while(duplicate.exists())
+//                name += "-${num}"
+//            }
+//            saveClickers(name)
+//        }
+//        dialog.setNegativeButton("Cancel") { dialogInterface, _ -> dialogInterface.dismiss()}
+//        dialog.show()
+//    }
+
+    private fun saveClickers(name: String) {
         // Make saves directory in internal storage if it doesn't exist
         val savesDir = File("${filesDir}/saves")
         if(!savesDir.exists()) {
             savesDir.mkdirs()
         }
 
-        val save = Save("test name", clickers)
-        val file = File(savesDir, Date().toString())
+        val save = Save(name, clickers)
+        val file = File(savesDir, name)
         // Store serializable saves as JSON
         val saveJson = Json.encodeToString(Save.serializer(), save)
         file.writeText(saveJson)

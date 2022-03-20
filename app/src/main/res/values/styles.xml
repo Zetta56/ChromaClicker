@@ -9,4 +9,12 @@
         <item name="android:paddingBottom">12dp</item>
         <item name="cornerRadius">0dp</item>
     </style>
+    <style name="saveDialog">
+        <item name="colorPrimary">#FFFFFF</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:background">#454545</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:padding">3dp</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
 </resources>

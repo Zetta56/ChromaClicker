@@ -5,8 +5,8 @@ import kotlinx.serialization.Serializable
 // Saves can be stored and transmitted as serializable objects
 @Serializable
 data class Save (
-    val name: String = "",
-    val clickers: List<SerializableClicker> = listOf()
+    var name: String = "",
+    var clickers: List<SerializableClicker> = listOf()
 ) {
     // Serialize arraylist of parcelable clickers
     constructor(name: String, clickers: ArrayList<Clicker>) : this(name, clickers.map { c ->

@@ -4,11 +4,6 @@ package com.example.csac.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.csac.R
-import com.example.csac.models.Save
-import kotlinx.serialization.json.Json
-import java.io.File
-import java.io.FileOutputStream
-import java.io.ObjectOutputStream
 
 
 class MainActivity : AppCompatActivity() {

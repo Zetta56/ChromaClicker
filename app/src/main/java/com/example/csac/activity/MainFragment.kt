@@ -29,6 +29,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         mainActivity = activity as MainActivity
+        mainActivity.supportActionBar?.title = "CSAC"
         // Inflate the layout for this fragment
         binding = FragmentMainBinding.inflate(LayoutInflater.from(mainActivity))
         return binding.root

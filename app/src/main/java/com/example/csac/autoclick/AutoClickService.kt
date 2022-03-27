@@ -58,7 +58,13 @@ class AutoClickService : AccessibilityService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if(intent != null && intent.action != null) {
             when (intent.action) {
-                "toggle" -> {
+                "receive_projection" -> {
+                    val projectionResult: ActivityResult = intent.extras!!.getParcelable("projectionResult")!!
+                    val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+                    // Media projection is a token that lets this app record the screen
+                    projection = projectionManager.getMediaProjection(projectionResult.resultCode, projectionResult.data!!)
+                }
+                "toggle_clicker" -> {
                     val enabled = intent.extras!!.getBoolean("enabled")
                     if(enabled) {
                         val clickers = intent.extras!!.getParcelableArrayList<Clicker>("clickers")!!
@@ -68,12 +74,6 @@ class AutoClickService : AccessibilityService() {
                     } else {
                         stopRunners()
                     }
-                }
-                "receive_projection" -> {
-                    val projectionResult: ActivityResult = intent.extras!!.getParcelable("projectionResult")!!
-                    val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-                    // Media projection is a token that lets this app record the screen
-                    projection = projectionManager.getMediaProjection(projectionResult.resultCode, projectionResult.data!!)
                 }
                 "get_pixel_color" -> {
                     val x = intent.extras!!.getInt("x")
@@ -127,7 +127,7 @@ class AutoClickService : AccessibilityService() {
 
     private fun click(x: Float, y: Float) {
         val path = Path()
-        path.moveTo(x, y)
+        path.moveTo(x, y + statusBarHeight)
 
         val builder = GestureDescription.Builder()
         val strokeDescription = GestureDescription.StrokeDescription(path, 0, 1)

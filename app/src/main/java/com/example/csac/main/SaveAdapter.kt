@@ -31,16 +31,19 @@ class SaveAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.saveName.text = saves[position].name
+        holder.saveName.setOnClickListener { loadSave(position) }
         holder.renameButton.setOnClickListener {
-            SavePopup(context, fun(name) {
-                renameSave(position, name)
-            })
+            SavePopup(context, fun(name) { renameSave(position, name) })
         }
         holder.deleteButton.setOnClickListener { deleteSave(position) }
     }
 
     override fun getItemCount(): Int {
         return saves.size
+    }
+
+    private fun loadSave(position: Int) {
+        println(saves[position].clickers)
     }
 
     private fun renameSave(position: Int, name: String) {

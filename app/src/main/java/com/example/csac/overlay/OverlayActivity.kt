@@ -18,19 +18,18 @@ class OverlayActivity : AppCompatActivity() {
     private lateinit var overlayMenu: OverlayMenu
     private lateinit var clickers: ArrayList<Clicker>
     private var clickerViews = mutableListOf<ClickerView>()
-    private var statusBarHeight = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        val statusBarHeight = intent.extras!!.getInt("statusBarHeight")
         clickers = intent?.extras!!.getParcelableArrayList("clickers")!!
-        statusBarHeight = intent.extras!!.getInt("statusBarHeight")
+        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 
         autoClickIntent = Intent(applicationContext, AutoClickService::class.java)
+        overlayMenu = OverlayMenu(this, clickers, clickerViews, autoClickIntent, statusBarHeight)
         if(AutoClickService.instance?.projection == null) {
             requestProjection()
         }
-        overlayMenu = OverlayMenu(this, clickers, clickerViews, autoClickIntent, statusBarHeight)
     }
 
     override fun onNewIntent(intent: Intent?) {

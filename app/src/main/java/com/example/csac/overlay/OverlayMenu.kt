@@ -62,7 +62,7 @@ class OverlayMenu(
             binding.playButton.setImageResource(R.drawable.play)
         }
         autoClickIntent.putExtra("enabled", playing)
-        autoClickIntent.action = "toggle"
+        autoClickIntent.action = "toggle_clicker"
         context.startService(autoClickIntent)
     }
 
@@ -75,11 +75,11 @@ class OverlayMenu(
         val clickerView = ClickerView(context, null)
         val clicker = Clicker(
             (clickerLayout.x + clickerLayout.width / 2).toFloat(),
-            (clickerLayout.y + clickerLayout.height / 2 + statusBarHeight).toFloat(),
+            (clickerLayout.y + clickerLayout.height / 2).toFloat(),
             arrayOf()
         )
 
-        clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root, statusBarHeight)
+        clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root)
         clickers += clicker
         clickerViews += clickerView
         windowManager.addView(clickerView, clickerLayout)

@@ -1,9 +1,8 @@
-package com.example.csac.activity
+package com.example.csac.main
 
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.fragment.app.Fragment
@@ -12,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
-import com.example.csac.overlay.OverlayService
+import com.example.csac.overlay.OverlayActivity
 import com.example.csac.R
 import com.example.csac.databinding.FragmentMainBinding
 import com.example.csac.models.Clicker
@@ -39,7 +38,7 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
         // ::class.java gets OverlayService's java class
-        overlayIntent = Intent(mainActivity.applicationContext, OverlayService::class.java)
+        overlayIntent = Intent(mainActivity.applicationContext, OverlayActivity::class.java)
 
         // Set power button image
         val powerImage = if(mainActivity.overlayVisible) R.drawable.power_on else R.drawable.power_off
@@ -56,22 +55,20 @@ class MainFragment : Fragment() {
             return
         }
 
-        val windowRect = Rect()
-        mainActivity.window.decorView.getWindowVisibleDisplayFrame(windowRect)
         mainActivity.overlayVisible = !mainActivity.overlayVisible
         if (mainActivity.overlayVisible) {
             binding.powerButton.setImageResource(R.drawable.power_on)
+            overlayIntent.action = "start"
             overlayIntent.putParcelableArrayListExtra("clickers", clickers)
-            overlayIntent.putExtra("statusBarHeight", windowRect.top)
-            if (Build.VERSION.SDK_INT >= 26) {
-                mainActivity.applicationContext.startForegroundService(overlayIntent)
-            } else {
-                mainActivity.applicationContext.startService(overlayIntent)
-            }
+
+            val rect = Rect()
+            mainActivity.window.decorView.getWindowVisibleDisplayFrame(rect)
+            overlayIntent.putExtra("statusBarHeight", rect.top)
         } else {
             binding.powerButton.setImageResource(R.drawable.power_off)
-            mainActivity.applicationContext.stopService(overlayIntent)
+            overlayIntent.action = "finish"
         }
+        mainActivity.startActivity(overlayIntent)
     }
 
     private fun navigateSaves() {

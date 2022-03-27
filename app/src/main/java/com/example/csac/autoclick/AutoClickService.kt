@@ -8,10 +8,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.Path
-import android.graphics.PixelFormat
+import android.graphics.*
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
 import android.media.ImageReader
@@ -72,7 +69,7 @@ class AutoClickService : AccessibilityService() {
                         stopRunners()
                     }
                 }
-                "send_projection" -> {
+                "receive_projection" -> {
                     val projectionResult: ActivityResult = intent.extras!!.getParcelable("projectionResult")!!
                     val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
                     // Media projection is a token that lets this app record the screen
@@ -175,6 +172,7 @@ class AutoClickService : AccessibilityService() {
             // Copy read image to a new bitmap
             val image = reader.acquireLatestImage()
             val plane = image.planes[0]
+            // Account for spaces between pixels, if they exist
             val rowPadding = plane.rowStride - plane.pixelStride * displayMetrics.widthPixels
             val bitmap = Bitmap.createBitmap(displayMetrics.widthPixels + (rowPadding.toFloat() /
                 plane.pixelStride).toInt(), displayMetrics.heightPixels, Bitmap.Config.ARGB_8888)

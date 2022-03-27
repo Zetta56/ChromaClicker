@@ -17,7 +17,7 @@ import com.example.csac.R
 class DetectorAdapter(
     private val context: Context,
     private val detectorViews: MutableList<DetectorView>,
-    private val drawing: ViewGroup
+    private val container: ViewGroup
 ) : RecyclerView.Adapter<DetectorAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) :  RecyclerView.ViewHolder(view) {
@@ -84,7 +84,7 @@ class DetectorAdapter(
             }
         }
         holder.crossButton.setOnClickListener {
-            drawing.removeView(detectorView)
+            container.removeView(detectorView)
             detectorViews.removeAt(position)
             notifyItemRemoved(position)
             notifyItemRangeChanged(position, itemCount)

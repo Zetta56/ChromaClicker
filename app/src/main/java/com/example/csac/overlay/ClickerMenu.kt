@@ -6,7 +6,6 @@ import android.content.Intent
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.csac.autoclick.AutoClickService
-import com.example.csac.autoclick.ProjectionRequester
 import com.example.csac.createOverlayLayout
 import com.example.csac.databinding.ClickerMenuBinding
 import com.example.csac.models.Clicker
@@ -17,24 +16,26 @@ class ClickerMenu(
     private val context: Context,
     private val windowManager: WindowManager,
     private val clicker: Clicker,
-    private val drawing: ViewGroup,
+    private val position: List<Float>,
     private val clickerCenter: Array<Float>,
     private val clickerViews: MutableList<ClickerView>,
     private val overlayMenu: View,
 ) {
 
     private val binding = ClickerMenuBinding.inflate(LayoutInflater.from(context))
-    private val layoutParams = createOverlayLayout(295, 235, focusable=true)
+    private val layoutParams = createOverlayLayout(focusable=true)
     private val detectorViews = convertDetectors(clicker.detectors)
-    private val detectorAdapter = DetectorAdapter(context, detectorViews, drawing)
+    private val detectorAdapter = DetectorAdapter(context, detectorViews, binding.root)
     private var dipping = false
     private var visible = true
 
     init {
         windowManager.addView(binding.root, layoutParams)
-        detectorViews.forEach { view -> drawing.addView(view) }
+        detectorViews.forEach { view -> binding.root.addView(view, 0) }
         binding.detectorForms.adapter = detectorAdapter
         binding.detectorForms.layoutManager = LinearLayoutManager(context)
+        binding.clicker.x = position[0]
+        binding.clicker.y = position[1]
 
         // Add listeners
         binding.checkButton.setOnClickListener { confirm() }
@@ -42,7 +43,7 @@ class ClickerMenu(
         binding.plusButton.setOnClickListener { addDetector() }
         binding.eyeButton.setOnClickListener { toggleVisibility() }
         binding.crossButton.setOnClickListener { cancel() }
-        drawing.setOnTouchListener { _, event -> dip(event) }
+        binding.root.setOnTouchListener { _, event -> dip(event) }
     }
 
     fun hasWindowToken(): Boolean {
@@ -51,7 +52,6 @@ class ClickerMenu(
     }
 
     fun onDestroy() {
-        windowManager.removeView(drawing)
         windowManager.removeView(binding.root)
     }
 
@@ -76,11 +76,9 @@ class ClickerMenu(
     }
 
     private fun toggleDipper() {
-        if(AutoClickService.instance?.projection == null) {
-            ProjectionRequester.launch(context)
-        } else {
+        if(AutoClickService.instance?.projection != null) {
             dipping = true
-            binding.root.visibility = View.INVISIBLE
+            binding.menu.visibility = View.INVISIBLE
         }
     }
 
@@ -92,7 +90,7 @@ class ClickerMenu(
             intent.action = "get_pixel_color"
             context.startService(intent)
             dipping = false
-            binding.root.visibility = View.VISIBLE
+            binding.menu.visibility = View.VISIBLE
         }
         return dipping
     }
@@ -102,14 +100,14 @@ class ClickerMenu(
         detectorView.startX = clickerCenter[0]
         detectorView.startY = clickerCenter[1]
         detectorView.invalidate()
-        drawing.addView(detectorView)
+        binding.root.addView(detectorView, 0)
         detectorViews += detectorView
         detectorAdapter.notifyItemInserted(detectorViews.size - 1)
     }
 
     private fun toggleVisibility() {
         visible = !visible
-        layoutParams.alpha = if(visible) 1f else 0.1f
+        binding.menu.alpha = if(visible) 1f else 0.1f
         windowManager.updateViewLayout(binding.root, layoutParams)
     }
 

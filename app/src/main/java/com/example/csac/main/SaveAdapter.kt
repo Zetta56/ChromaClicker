@@ -1,20 +1,15 @@
-package com.example.csac.activity
+package com.example.csac.main
 
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.example.csac.R
-import com.example.csac.getUniqueFileName
 import com.example.csac.models.Save
+import com.example.csac.overlay.SavePopup
 import kotlinx.serialization.json.Json
 import java.io.File
 
@@ -22,6 +17,7 @@ class SaveAdapter(
     private val context: Context,
     private val saves: ArrayList<Save>
 ) : RecyclerView.Adapter<SaveAdapter.ViewHolder>() {
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val saveName: TextView = view.findViewById(R.id.saveName)
         val renameButton: ImageButton = view.findViewById(R.id.renameButton)
@@ -35,7 +31,11 @@ class SaveAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.saveName.text = saves[position].name
-        holder.renameButton.setOnClickListener { buildRenameDialog(position) }
+        holder.renameButton.setOnClickListener {
+            SavePopup(context, fun(name) {
+                renameSave(position, name)
+            })
+        }
         holder.deleteButton.setOnClickListener { deleteSave(position) }
     }
 
@@ -43,27 +43,8 @@ class SaveAdapter(
         return saves.size
     }
 
-    private fun buildRenameDialog(position: Int) {
-        val editText = EditText(context)
-        editText.setTextColor(Color.WHITE)
-        val builder = AlertDialog.Builder(context, R.style.saveDialog)
-        builder.setView(editText)
-        builder.setTitle("Rename Save")
-        builder.setPositiveButton("Save") { _, _ -> renameSave(position, editText.text.toString()) }
-        builder.setNegativeButton("Cancel") { dialogInterface, _ -> dialogInterface.dismiss()}
-        val dialog = builder.show()
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = false
-        dialog.window?.setLayout(750, 475)
-
-        editText.doAfterTextChanged { text ->
-            val hasText = text?.isNotEmpty() == true
-            dialog.getButton(DialogInterface.BUTTON_POSITIVE).isEnabled = hasText
-        }
-    }
-
-    private fun renameSave(position: Int, newName: String) {
+    private fun renameSave(position: Int, name: String) {
         val path = "${context.filesDir}/saves"
-        val name = getUniqueFileName(path, newName)
         // Delete save file
         val oldFile = File("${path}/${saves[position].name}")
         oldFile.delete()

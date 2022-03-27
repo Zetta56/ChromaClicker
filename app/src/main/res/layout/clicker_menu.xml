@@ -1,79 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#222222"
-    android:orientation="vertical"
-    android:padding="15dp">
+    android:background="@null">
+
+    <com.example.csac.overlay.ClickerView
+        android:id="@+id/clicker"
+        android:layout_width="60dp"
+        android:layout_height="60dp" />
 
     <LinearLayout
-        android:id="@+id/topSection"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@null"
-        android:orientation="horizontal">
+        android:id="@+id/menu"
+        android:layout_width="295dp"
+        android:layout_height="235dp"
+        android:layout_centerInParent="true"
+        android:background="#222222"
+        android:orientation="vertical"
+        android:padding="15dp">
 
-        <ImageButton
-            android:id="@+id/crossButton"
+        <LinearLayout
+            android:id="@+id/topSection"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/cross"
+            android:layout_height="30dp"
             android:background="@null"
-            android:contentDescription="@string/cross"
-            android:scaleType="fitCenter" />
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/dipperButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/dipper"
-            android:background="@null"
-            android:contentDescription="@string/dipper"
-            android:scaleType="fitCenter"
-            android:layout_marginStart="10dp" />
+            <ImageButton
+                android:id="@+id/crossButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:contentDescription="@string/cross"
+                android:scaleType="fitCenter"
+                android:src="@drawable/cross" />
 
-        <ImageButton
-            android:id="@+id/plusButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/plus"
-            android:background="@null"
-            android:contentDescription="@string/plus"
-            android:scaleType="fitCenter"
-            android:layout_marginStart="10dp" />
+            <ImageButton
+                android:id="@+id/dipperButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:contentDescription="@string/dipper"
+                android:scaleType="fitCenter"
+                android:src="@drawable/dipper" />
 
-        <ImageButton
-            android:id="@+id/eyeButton"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/eye"
-            android:background="@null"
-            android:contentDescription="@string/eye"
-            android:scaleType="fitCenter"
-            android:layout_marginStart="10dp" />
+            <ImageButton
+                android:id="@+id/plusButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:contentDescription="@string/plus"
+                android:scaleType="fitCenter"
+                android:src="@drawable/plus" />
 
-        <ImageButton
-            android:id="@+id/checkButton"
+            <ImageButton
+                android:id="@+id/eyeButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:contentDescription="@string/eye"
+                android:scaleType="fitCenter"
+                android:src="@drawable/eye" />
+
+            <ImageButton
+                android:id="@+id/checkButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:contentDescription="@string/check"
+                android:scaleType="fitCenter"
+                android:src="@drawable/check" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/detectorForms"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@null"
-            android:contentDescription="@string/check"
-            android:src="@drawable/check"
-            android:scaleType="fitCenter"
-            android:layout_marginStart="10dp"/>
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/detectorForms"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-
-</LinearLayout>
+</RelativeLayout>

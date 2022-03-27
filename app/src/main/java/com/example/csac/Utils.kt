@@ -11,8 +11,14 @@ import java.io.File
 import kotlin.math.max
 import kotlin.math.min
 
-fun createOverlayLayout(width: Int, height: Int, x: Int = 0, y: Int = 0, gravity: Int = Gravity.NO_GRAVITY,
-        focusable: Boolean = false): WindowManager.LayoutParams {
+fun createOverlayLayout(
+    width: Int = toDP(Resources.getSystem().displayMetrics.widthPixels),
+    height: Int = toDP(Resources.getSystem().displayMetrics.heightPixels),
+    x: Int = 0,
+    y: Int = 0,
+    gravity: Int = Gravity.NO_GRAVITY,
+    focusable: Boolean = false
+): WindowManager.LayoutParams {
     val layoutParams = WindowManager.LayoutParams()
     // Convert width and height from dp to pixels
     layoutParams.width = toPixels(width)
@@ -59,18 +65,4 @@ fun toDP(pixels: Int): Int {
 
 fun clamp(num: Int, lower: Int, upper: Int): Int {
     return min(max(num, lower), upper)
-}
-
-fun getUniqueFileName(path: String, fileName: String): String {
-    var duplicate = File(path, fileName)
-    return if(duplicate.exists()) {
-        var num = 1
-        do {
-            num++
-            duplicate = File("${path}/${fileName}-${num}")
-        } while(duplicate.exists())
-        "${fileName}-${num}"
-    } else {
-        fileName
-    }
 }

@@ -1,4 +1,4 @@
-package com.example.csac.activity
+package com.example.csac.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

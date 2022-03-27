@@ -9,11 +9,12 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.csac.R
 import com.example.csac.autoclick.AutoClickService
+import com.example.csac.overlay.OverlayService
 
 
 class MainActivity : AppCompatActivity() {
     lateinit var projectionLauncher: ActivityResultLauncher<Intent>
-    var overlayVisible: Boolean = false
+    var overlayVisible: Boolean = OverlayService.isRunning()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

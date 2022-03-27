@@ -22,10 +22,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".overlay.OverlayActivity"
-            android:theme="@style/transparentTheme"
-            android:launchMode="singleTask" />
+        <service android:name=".overlay.OverlayService" />
 
         <service
             android:name=".autoclick.AutoClickService"

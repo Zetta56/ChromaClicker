@@ -43,7 +43,6 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
     fun addListeners(windowManager: WindowManager, clicker: Clicker, layoutParams: WindowManager.LayoutParams,
                      clickerViews: MutableList<ClickerView>, overlayMenu: View) {
         setOnClickListener {
-//            val drawing = addDrawing(windowManager, layoutParams.x.toFloat(), layoutParams.y.toFloat())
             val position = listOf(layoutParams.x.toFloat(), layoutParams.y.toFloat())
             clickerMenu = ClickerMenu(context, windowManager, clicker, position, getCenter(layoutParams), clickerViews, overlayMenu)
             // Hide other views
@@ -57,26 +56,6 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
             clicker.y = center[1]
         }))
     }
-
-//    @SuppressLint("ClickableViewAccessibility")
-//    private fun addDrawing(windowManager: WindowManager, clickerX: Float, clickerY: Float): ViewGroup {
-//        val drawing = FrameLayout(context, null)
-//        val clickerView = ClickerView(context, null)
-//        drawing.addView(clickerView)
-//
-//        // Set clicker position and dimensions
-//        clickerView.x = clickerX
-//        clickerView.y = clickerY
-//        clickerView.layoutParams.width = toPixels(60)
-//        clickerView.layoutParams.height = toPixels(60)
-//
-//        // Make drawing window
-//        val displayMetrics = context.resources.displayMetrics
-//        val drawingLayout = createOverlayLayout()
-//        windowManager.addView(drawing, drawingLayout)
-//
-//        return drawing
-//    }
 
     private fun getCenter(layoutParams: WindowManager.LayoutParams): Array<Float> {
         return arrayOf(

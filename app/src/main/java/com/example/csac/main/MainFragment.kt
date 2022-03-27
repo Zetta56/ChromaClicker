@@ -33,6 +33,8 @@ class MainFragment : Fragment() {
     ): View {
         mainActivity = activity as MainActivity
         mainActivity.supportActionBar?.title = "CSAC"
+        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        setHasOptionsMenu(false)
         // Inflate the layout for this fragment
         binding = FragmentMainBinding.inflate(LayoutInflater.from(mainActivity))
         return binding.root

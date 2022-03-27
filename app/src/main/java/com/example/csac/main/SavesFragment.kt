@@ -3,6 +3,7 @@ package com.example.csac.main
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +25,10 @@ class SavesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         loadSaves()
-        (activity as AppCompatActivity).supportActionBar?.title = "Saves"
+        val actionBar = (activity as AppCompatActivity).supportActionBar
+        actionBar?.title = "Saves"
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        setHasOptionsMenu(true)
         // Inflate this fragment's layout
         binding = FragmentSavesBinding.inflate(LayoutInflater.from(context))
         return binding.root
@@ -37,6 +41,16 @@ class SavesFragment : Fragment() {
         binding.savesList.adapter = saveAdapter
         binding.savesList.layoutManager = LinearLayoutManager(context)
         binding.savesList.addItemDecoration(divider)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId) {
+            android.R.id.home -> {
+                activity?.onBackPressed()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun loadSaves() {

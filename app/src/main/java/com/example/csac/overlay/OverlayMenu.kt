@@ -35,6 +35,7 @@ class OverlayMenu(
         val y = toDP(Resources.getSystem().displayMetrics.heightPixels / 2) - 2 * width
         val layoutParams = createOverlayLayout(width, 4 * width, y=y, gravity=(Gravity.START or Gravity.TOP))
         windowManager.addView(binding.root, layoutParams)
+        clickers.forEach { clicker -> addClicker(clicker) }
 
         // Add event listeners
         val draggable = Draggable(windowManager, layoutParams, binding.root)
@@ -42,7 +43,7 @@ class OverlayMenu(
         binding.playButton.setOnClickListener { toggleAutoClicker() }
         binding.plusButton.setOnClickListener { addClicker() }
         binding.minusButton.setOnClickListener { removeClicker() }
-        binding.saveButton.setOnClickListener { SavePopup(context, this::saveClickers) }
+        binding.saveButton.setOnClickListener { SavePopup(context, "", this::saveClickers) }
     }
 
     fun onDestroy() {
@@ -85,6 +86,17 @@ class OverlayMenu(
 
         clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root)
         clickers += clicker
+        clickerViews += clickerView
+        windowManager.addView(clickerView, clickerLayout)
+    }
+
+    private fun addClicker(clicker: Clicker) {
+        val radius = 30
+        val x = toDP(clicker.x.toInt())
+        val y = toDP(clicker.y.toInt())
+        val clickerLayout = createOverlayLayout(radius * 2, radius * 2, x=x, y=y, gravity=(Gravity.TOP or Gravity.START))
+        val clickerView = ClickerView(context, null)
+        clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root)
         clickerViews += clickerView
         windowManager.addView(clickerView, clickerLayout)
     }

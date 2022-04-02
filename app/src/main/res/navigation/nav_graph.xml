@@ -21,7 +21,11 @@
         android:id="@+id/savesFragment"
         android:name="com.example.csac.main.SavesFragment"
         android:label="fragment_saves"
-        tools:layout="@layout/fragment_saves" />
+        tools:layout="@layout/fragment_saves" >
+        <action
+            android:id="@+id/action_savesFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.csac.main.SettingsFragment"

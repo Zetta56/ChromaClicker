@@ -2,6 +2,7 @@ package com.example.csac.main
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Rect
 import android.media.projection.MediaProjectionManager
 import android.net.Uri
@@ -19,13 +20,16 @@ import com.example.csac.R
 import com.example.csac.autoclick.AutoClickService
 import com.example.csac.databinding.FragmentMainBinding
 import com.example.csac.models.Clicker
+import com.example.csac.models.Save
+import kotlinx.serialization.json.Json
+import java.io.File
 
 class MainFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
     private lateinit var binding: FragmentMainBinding
     private lateinit var overlayIntent: Intent
-    private val clickers = arrayListOf<Clicker>()
+    private var selectedSave: Save? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +39,9 @@ class MainFragment : Fragment() {
         mainActivity.supportActionBar?.title = "CSAC"
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         setHasOptionsMenu(false)
+        loadSave(arguments)
+        println("creating")
+
         // Inflate the layout for this fragment
         binding = FragmentMainBinding.inflate(LayoutInflater.from(mainActivity))
         return binding.root
@@ -43,17 +50,46 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
-        // ::class.java gets OverlayService's java class
+        // :: operator gets OverlayService's metadata
         overlayIntent = Intent(mainActivity.applicationContext, OverlayService::class.java)
 
-        // Set power button image
+        // Configure UI
         val powerImage = if(mainActivity.overlayVisible) R.drawable.power_on else R.drawable.power_off
         binding.powerButton.setImageResource(powerImage)
+        if(selectedSave != null) {
+            val ellipsis = if(selectedSave!!.name.length > 12) "..." else ""
+            binding.selectedSave.text = String.format("Selected: %s%s", selectedSave!!.name.take(12), ellipsis)
+        } else {
+            binding.selectedSave.setText(R.string.default_selected_save)
+        }
 
         // Add click listeners
         binding.powerButton.setOnClickListener { toggleOverlay() }
-        binding.savesButton.setOnClickListener { navigateSaves() }
-        binding.settingsButton.setOnClickListener { navigateSettings() }
+        binding.savesButton.setOnClickListener { navController.navigate(R.id.action_mainFragment_to_savesFragment) }
+        binding.settingsButton.setOnClickListener { navController.navigate(R.id.action_mainFragment_to_settingsFragment) }
+    }
+
+    private fun loadSave(bundle: Bundle?) {
+        val preferences = mainActivity.getPreferences(Context.MODE_PRIVATE)
+        val saveName = if(bundle != null) {
+            bundle.getString("saveName")!!
+        } else {
+            preferences.getString("saveName", null)
+        }
+
+        if(saveName != null) {
+            val file = File("${context?.filesDir}/saves/${saveName}")
+            with(preferences.edit()) {
+                if(file.exists()) {
+                    selectedSave = Json.decodeFromString(Save.serializer(), file.readText())
+                    putString("saveName", saveName)
+                } else {
+                    selectedSave = null
+                    putString("saveName", null)
+                }
+                apply()
+            }
+        }
     }
 
     private fun toggleOverlay() {
@@ -61,12 +97,15 @@ class MainFragment : Fragment() {
             return
         }
 
+        // Setup intent extras
+        val clickers = selectedSave?.clickers?.map { c -> Clicker(c) } ?: arrayListOf()
         val windowRect = Rect()
         mainActivity.window.decorView.getWindowVisibleDisplayFrame(windowRect)
         mainActivity.overlayVisible = !mainActivity.overlayVisible
+
         if (mainActivity.overlayVisible) {
             binding.powerButton.setImageResource(R.drawable.power_on)
-            overlayIntent.putParcelableArrayListExtra("clickers", clickers)
+            overlayIntent.putParcelableArrayListExtra("clickers", ArrayList(clickers))
             overlayIntent.putExtra("statusBarHeight", windowRect.top)
             if (Build.VERSION.SDK_INT >= 26) {
                 mainActivity.applicationContext.startForegroundService(overlayIntent)
@@ -77,14 +116,6 @@ class MainFragment : Fragment() {
             binding.powerButton.setImageResource(R.drawable.power_off)
             mainActivity.applicationContext.stopService(overlayIntent)
         }
-    }
-
-    private fun navigateSaves() {
-        navController.navigate(R.id.action_mainFragment_to_savesFragment)
-    }
-
-    private fun navigateSettings() {
-        navController.navigate(R.id.action_mainFragment_to_settingsFragment)
     }
 
     private fun hasPermissions(): Boolean {

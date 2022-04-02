@@ -1,11 +1,13 @@
 package com.example.csac.main
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.csac.R
 import com.example.csac.models.Save
@@ -15,7 +17,8 @@ import java.io.File
 
 class SaveAdapter(
     private val context: Context,
-    private val saves: ArrayList<Save>
+    private val fileNames: ArrayList<String>,
+    private val navController: NavController
 ) : RecyclerView.Adapter<SaveAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -30,40 +33,45 @@ class SaveAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.saveName.text = saves[position].name
-        holder.saveName.setOnClickListener { loadSave(position) }
+        val file = File("${context.filesDir}/saves/${fileNames[position]}")
+        val saveName = Json.decodeFromString(Save.serializer(), file.readText()).name
+        holder.saveName.text = saveName
+        holder.saveName.setOnClickListener { selectSave(position) }
         holder.renameButton.setOnClickListener {
-            SavePopup(context, fun(name) { renameSave(position, name) })
+            SavePopup(context, saveName, fun(name) { renameSave(position, name) })
         }
         holder.deleteButton.setOnClickListener { deleteSave(position) }
     }
 
     override fun getItemCount(): Int {
-        return saves.size
+        return fileNames.size
     }
 
-    private fun loadSave(position: Int) {
-        println(saves[position].clickers)
+    private fun selectSave(position: Int) {
+        val bundle = Bundle()
+        bundle.putString("saveName", fileNames[position])
+        navController.navigate(R.id.action_savesFragment_to_mainFragment, bundle)
     }
 
     private fun renameSave(position: Int, name: String) {
-        val path = "${context.filesDir}/saves"
         // Delete save file
-        val oldFile = File("${path}/${saves[position].name}")
+        val oldFile = File("${context.filesDir}/saves/${fileNames[position]}")
+        val save = Json.decodeFromString(Save.serializer(), oldFile.readText())
+        save.name = name
         oldFile.delete()
-        // Make a new file with the updated name
-        val newFile = File("${path}/${name}")
-        saves[position].name = name
-        newFile.writeText(Json.encodeToString(Save.serializer(), saves[position]))
-        notifyItemChanged(position)
 
+        // Create new save file
+        val newFile = File("${context.filesDir}/saves/${name}")
+        newFile.writeText(Json.encodeToString(Save.serializer(), save))
+        fileNames[position] = name
+        notifyItemChanged(position)
     }
 
     private fun deleteSave(position: Int) {
-        val save = saves[position]
-        val file = File("${context.filesDir}/saves/${save.name}")
+        val name = fileNames[position]
+        val file = File("${context.filesDir}/saves/${name}")
         file.delete()
-        saves.remove(save)
+        fileNames.remove(name)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemCount)
     }

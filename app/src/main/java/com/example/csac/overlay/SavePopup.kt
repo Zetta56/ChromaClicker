@@ -11,6 +11,7 @@ import java.io.File
 
 class SavePopup(
     private val context: Context,
+    defaultName: String,
     private val callback: (name: String) -> Unit
 ) {
     init {
@@ -28,6 +29,7 @@ class SavePopup(
         savePopup.negative.setOnClickListener {
             windowManager.removeView(savePopup.root)
         }
+        savePopup.nameInput.setText(defaultName)
         savePopup.nameInput.doAfterTextChanged { text -> savePopup.positive.isEnabled = (text?.isNotEmpty() == true) }
     }
 

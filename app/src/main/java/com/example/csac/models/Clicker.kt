@@ -12,6 +12,12 @@ class Clicker(var x: Float, var y: Float, var detectors: Array<Detector>) : Parc
         detectors = parcel.createTypedArray(Detector.CREATOR) as Array<Detector>
     )
 
+    constructor(serializable: SerializableClicker) : this(
+        x = serializable.x,
+        y = serializable.y,
+        detectors = serializable.detectors.map { d -> Detector(d) }.toTypedArray()
+    )
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeFloat(x)
         parcel.writeFloat(y)

@@ -16,7 +16,7 @@
         android:id="@+id/nameInput"
         android:inputType="text"
         android:textColor="@color/white"
-        android:textColorHint="#CCCCCC"
+        android:textColorHint="#888888"
         android:backgroundTint="@color/white"
         android:autofillHints="@null"
         android:hint="@string/save_dialog_hint"

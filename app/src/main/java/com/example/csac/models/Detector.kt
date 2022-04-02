@@ -19,6 +19,12 @@ class Detector(var x: Float, var y: Float, var color: String) : Parcelable {
         color = view.color
     }
 
+    constructor(serializable: SerializableDetector) : this(
+        x = serializable.x,
+        y = serializable.y,
+        color = serializable.color
+    )
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeFloat(x)
         parcel.writeFloat(y)

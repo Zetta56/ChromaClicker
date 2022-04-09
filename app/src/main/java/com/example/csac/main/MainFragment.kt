@@ -2,7 +2,6 @@ package com.example.csac.main
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Rect
 import android.media.projection.MediaProjectionManager
 import android.net.Uri
@@ -39,8 +38,7 @@ class MainFragment : Fragment() {
         mainActivity.supportActionBar?.title = "CSAC"
         mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
         setHasOptionsMenu(false)
-        loadSave(arguments)
-        println("creating")
+        loadSave()
 
         // Inflate the layout for this fragment
         binding = FragmentMainBinding.inflate(LayoutInflater.from(mainActivity))
@@ -65,30 +63,26 @@ class MainFragment : Fragment() {
 
         // Add click listeners
         binding.powerButton.setOnClickListener { toggleOverlay() }
-        binding.savesButton.setOnClickListener { navController.navigate(R.id.action_mainFragment_to_savesFragment) }
+        binding.savesButton.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("selected", selectedSave?.name)
+            navController.navigate(R.id.action_mainFragment_to_savesFragment, bundle)
+        }
         binding.settingsButton.setOnClickListener { navController.navigate(R.id.action_mainFragment_to_settingsFragment) }
     }
 
-    private fun loadSave(bundle: Bundle?) {
+    private fun loadSave() {
         val preferences = mainActivity.getPreferences(Context.MODE_PRIVATE)
-        val saveName = if(bundle != null) {
-            bundle.getString("saveName")!!
-        } else {
-            preferences.getString("saveName", null)
-        }
-
-        if(saveName != null) {
-            val file = File("${context?.filesDir}/saves/${saveName}")
-            with(preferences.edit()) {
-                if(file.exists()) {
-                    selectedSave = Json.decodeFromString(Save.serializer(), file.readText())
-                    putString("saveName", saveName)
-                } else {
-                    selectedSave = null
-                    putString("saveName", null)
-                }
-                apply()
+        val saveName = preferences.getString("saveName", null)
+        val file = File("${context?.filesDir}/saves/${saveName}")
+        with(preferences.edit()) {
+            if(file.exists()) {
+                selectedSave = Json.decodeFromString(Save.serializer(), file.readText())
+            } else {
+                selectedSave = null
+                putString("saveName", null)
             }
+            apply()
         }
     }
 

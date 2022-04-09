@@ -1,5 +1,6 @@
 package com.example.csac.main
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ class SavesFragment : Fragment() {
     private lateinit var binding: FragmentSavesBinding
     private lateinit var saveAdapter: SaveAdapter
     private var fileNames: ArrayList<String> = arrayListOf()
+    private var selected = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,6 +29,7 @@ class SavesFragment : Fragment() {
         actionBar?.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
         fetchFileNames()
+        selected = arguments?.getString("selected") ?: ""
         // Inflate this fragment's layout
         binding = FragmentSavesBinding.inflate(LayoutInflater.from(context))
         return binding.root
@@ -34,9 +37,8 @@ class SavesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val navController = findNavController()
         val divider = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
-        saveAdapter = SaveAdapter(requireContext(), fileNames, navController)
+        saveAdapter = SaveAdapter(activity as Activity, fileNames, selected)
         binding.savesList.adapter = saveAdapter
         binding.savesList.layoutManager = LinearLayoutManager(context)
         binding.savesList.addItemDecoration(divider)

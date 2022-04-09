@@ -22,6 +22,7 @@ import com.example.csac.models.Clicker
 import com.example.csac.models.Save
 import kotlinx.serialization.json.Json
 import java.io.File
+import java.io.FileNotFoundException
 
 class MainFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
@@ -73,16 +74,13 @@ class MainFragment : Fragment() {
 
     private fun loadSave() {
         val preferences = mainActivity.getPreferences(Context.MODE_PRIVATE)
-        val saveName = preferences.getString("saveName", null)
-        val file = File("${context?.filesDir}/saves/${saveName}")
-        with(preferences.edit()) {
-            if(file.exists()) {
-                selectedSave = Json.decodeFromString(Save.serializer(), file.readText())
-            } else {
-                selectedSave = null
-                putString("saveName", null)
-            }
-            apply()
+        val saveName = preferences.getString("saveName", "")
+        try {
+            val file = File("${context?.filesDir}/saves/${saveName}")
+            selectedSave = Json.decodeFromString(Save.serializer(), file.readText())
+        } catch(e: Exception) {
+            selectedSave = null
+            preferences.edit().putString("saveName", "").apply()
         }
     }
 

@@ -73,7 +73,7 @@ class SaveAdapter(
 
     private fun deselectSave(position: Int) {
         val preferences = activity.getPreferences(Context.MODE_PRIVATE)
-        preferences.edit().putString("saveName", null).apply()
+        preferences.edit().putString("saveName", "").apply()
         selectedSave = ""
         selectedPosition = -1
         notifyItemChanged(position)

@@ -21,8 +21,7 @@ import java.io.File
 
 class OverlayMenu(
     private val context: Context,
-    private val clickers: ArrayList<Clicker>,
-    private val statusBarHeight: Int
+    private val clickers: ArrayList<Clicker>
 ) {
     private val binding = OverlayMenuBinding.inflate(LayoutInflater.from(context))
     private val autoClickIntent = Intent(context, AutoClickService::class.java)
@@ -62,7 +61,6 @@ class OverlayMenu(
             clickerViews.forEach { clickerView -> clickerView.visibility = View.INVISIBLE }
             binding.playButton.setImageResource(R.drawable.pause)
             autoClickIntent.putParcelableArrayListExtra("clickers", clickers)
-            autoClickIntent.putExtra("statusBarHeight", statusBarHeight)
         } else {
             clickerViews.forEach { clickerView -> clickerView.visibility = View.VISIBLE }
             binding.playButton.setImageResource(R.drawable.play)

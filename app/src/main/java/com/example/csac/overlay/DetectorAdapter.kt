@@ -69,6 +69,7 @@ class DetectorAdapter(
         }
         holder.inputY.doAfterTextChanged {
             val y = holder.inputY.text.toString()
+            // This starts from the top of the app (below status bar)
             if(y.isNotEmpty() && 0 <= y.toFloat() && y.toFloat() <= Resources.getSystem().displayMetrics.heightPixels) {
                 detectorView.endY = y.toFloat()
                 detectorView.invalidate()

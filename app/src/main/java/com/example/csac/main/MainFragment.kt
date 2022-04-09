@@ -22,7 +22,6 @@ import com.example.csac.models.Clicker
 import com.example.csac.models.Save
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.io.FileNotFoundException
 
 class MainFragment : Fragment() {
     private lateinit var mainActivity: MainActivity
@@ -88,17 +87,12 @@ class MainFragment : Fragment() {
         if(!hasPermissions()) {
             return
         }
-
-        // Setup intent extras
-        val clickers = selectedSave?.clickers?.map { c -> Clicker(c) } ?: arrayListOf()
-        val windowRect = Rect()
-        mainActivity.window.decorView.getWindowVisibleDisplayFrame(windowRect)
+        sendBarHeights()
         mainActivity.overlayVisible = !mainActivity.overlayVisible
-
         if (mainActivity.overlayVisible) {
             binding.powerButton.setImageResource(R.drawable.power_on)
+            val clickers = selectedSave?.clickers?.map { c -> Clicker(c) } ?: arrayListOf()
             overlayIntent.putParcelableArrayListExtra("clickers", ArrayList(clickers))
-            overlayIntent.putExtra("statusBarHeight", windowRect.top)
             if (Build.VERSION.SDK_INT >= 26) {
                 mainActivity.applicationContext.startForegroundService(overlayIntent)
             } else {
@@ -107,6 +101,21 @@ class MainFragment : Fragment() {
         } else {
             binding.powerButton.setImageResource(R.drawable.power_off)
             mainActivity.applicationContext.stopService(overlayIntent)
+        }
+    }
+
+    private fun sendBarHeights() {
+        if(AutoClickService.instance?.statusBarHeight == 0 || AutoClickService.instance?.navbarHeight == 0) {
+            val intent = Intent(context, AutoClickService::class.java)
+            val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+            val navigationBarHeight = if(resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
+            val rect = Rect()
+            mainActivity.window.decorView.getWindowVisibleDisplayFrame(rect)
+
+            intent.action = "receive_bar_heights"
+            intent.putExtra("statusBarHeight", rect.top)
+            intent.putExtra("navigationBarHeight", navigationBarHeight)
+            mainActivity.startService(intent)
         }
     }
 

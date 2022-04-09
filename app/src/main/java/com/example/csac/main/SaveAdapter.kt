@@ -48,7 +48,6 @@ class SaveAdapter(
         holder.saveName.text = saveName
 
         holder.saveName.setOnClickListener {
-            println(selectedSave)
             if(selectedSave == saveName) deselectSave(position) else selectSave(position, saveName)
         }
         holder.renameButton.setOnClickListener {

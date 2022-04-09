@@ -16,7 +16,7 @@ class ClickerMenu(
     private val context: Context,
     private val windowManager: WindowManager,
     private val clicker: Clicker,
-    private val position: List<Float>,
+    position: List<Float>,
     private val clickerCenter: Array<Float>,
     private val clickerViews: MutableList<ClickerView>,
     private val overlayMenu: View,
@@ -85,8 +85,9 @@ class ClickerMenu(
     private fun dip(event: MotionEvent): Boolean {
         if(dipping) {
             val intent = Intent(context, AutoClickService::class.java)
-            intent.putExtra("x", event.rawX.toInt())
-            intent.putExtra("y", event.rawY.toInt())
+            // This starts from top of app (below status bar)
+            intent.putExtra("x", event.x.toInt())
+            intent.putExtra("y", event.y.toInt())
             intent.action = "get_pixel_color"
             context.startService(intent)
             dipping = false

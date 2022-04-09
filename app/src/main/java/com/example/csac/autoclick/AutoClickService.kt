@@ -23,6 +23,8 @@ import com.example.csac.models.Clicker
 
 class AutoClickService : AccessibilityService() {
     var projection: MediaProjection? = null
+    var statusBarHeight = 0
+    var navbarHeight = 0
     private var handler: Handler = Handler(Looper.getMainLooper())
     private var clickerStates: BooleanArray? = null
     private var clickRunnable: Runnable? = null
@@ -31,7 +33,6 @@ class AutoClickService : AccessibilityService() {
     private var imageReader: ImageReader? = null
     private var virtualDisplay: VirtualDisplay? = null
     private var screenshotting = false
-    private var statusBarHeight = 0
 
     // Make this service accessible to other classes using a static field
     companion object {
@@ -64,11 +65,14 @@ class AutoClickService : AccessibilityService() {
                     // Media projection is a token that lets this app record the screen
                     projection = projectionManager.getMediaProjection(projectionResult.resultCode, projectionResult.data!!)
                 }
+                "receive_bar_heights" -> {
+                    statusBarHeight = intent.extras!!.getInt("statusBarHeight")
+                    navbarHeight = intent.extras!!.getInt("navigationBarHeight")
+                }
                 "toggle_clicker" -> {
                     val enabled = intent.extras!!.getBoolean("enabled")
                     if(enabled) {
                         val clickers = intent.extras!!.getParcelableArrayList<Clicker>("clickers")!!
-                        statusBarHeight = intent.extras!!.getInt("statusBarHeight")
                         clickerStates = BooleanArray(clickers.size)
                         startRunners(clickers)
                     } else {
@@ -77,7 +81,7 @@ class AutoClickService : AccessibilityService() {
                 }
                 "get_pixel_color" -> {
                     val x = intent.extras!!.getInt("x")
-                    val y = intent.extras!!.getInt("y") + statusBarHeight
+                    val y = intent.extras!!.getInt("y")
                     updateScreenBitmap {
                         val colorInt = screenBitmap!!.getPixel(x, y)
                         // Substring starts at 3rd character to ignore alpha value
@@ -127,14 +131,13 @@ class AutoClickService : AccessibilityService() {
 
     private fun click(x: Float, y: Float) {
         val path = Path()
+        // This starts from the top of the screen (above status bar)
         path.moveTo(x, y + statusBarHeight)
 
         val builder = GestureDescription.Builder()
         val strokeDescription = GestureDescription.StrokeDescription(path, 0, 1)
         builder.addStroke(strokeDescription)
         dispatchGesture(builder.build(), null, null)
-        println(x)
-        println(y)
     }
 
     private fun updateClickerStates(clickers: ArrayList<Clicker>) {
@@ -144,7 +147,7 @@ class AutoClickService : AccessibilityService() {
         for((index, clicker) in clickers.withIndex()) {
             var state = true
             for(detector in clicker.detectors) {
-                val pixelColor = screenBitmap?.getPixel(detector.x.toInt(), detector.y.toInt() + statusBarHeight)
+                val pixelColor = screenBitmap?.getPixel(detector.x.toInt(), detector.y.toInt())
                 if(pixelColor != Color.parseColor(detector.color)) {
                     state = false
                     break
@@ -161,10 +164,12 @@ class AutoClickService : AccessibilityService() {
         if(!screenshotting) {
             // Image reader receives images from a virtual display
             imageReader = ImageReader.newInstance(displayMetrics.widthPixels, displayMetrics.heightPixels, PixelFormat.RGBA_8888, 2)
-            val flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC or DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY
             // Create a display that can mirror the screen, but cannot show other virtual displays
+            val flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC or DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY
+            // This includes the app status bar and navigation bar
             virtualDisplay = projection!!.createVirtualDisplay("screen-mirror", displayMetrics.widthPixels,
-                displayMetrics.heightPixels, displayMetrics.densityDpi, flags, imageReader!!.surface, null , null)
+                displayMetrics.heightPixels + navbarHeight, displayMetrics.densityDpi, flags,
+                imageReader!!.surface, null , null)
             screenshotting = true
         }
 
@@ -172,12 +177,10 @@ class AutoClickService : AccessibilityService() {
             // Copy read image to a new bitmap
             val image = reader.acquireLatestImage()
             val plane = image.planes[0]
-            // Account for spaces between pixels, if they exist
-            val rowPadding = plane.rowStride - plane.pixelStride * displayMetrics.widthPixels
-            val bitmap = Bitmap.createBitmap(displayMetrics.widthPixels + (rowPadding.toFloat() /
-                plane.pixelStride).toInt(), displayMetrics.heightPixels, Bitmap.Config.ARGB_8888)
+            val bitmap = Bitmap.createBitmap(displayMetrics.widthPixels, displayMetrics.heightPixels, Bitmap.Config.ARGB_8888)
             bitmap.copyPixelsFromBuffer(plane.buffer)
-            screenBitmap = bitmap
+            // Crop out the top status bar
+            screenBitmap = Bitmap.createBitmap(bitmap, 0, statusBarHeight, displayMetrics.widthPixels, displayMetrics.heightPixels - statusBarHeight)
             callback()
 
 //             val fos = openFileOutput("testBitmap", MODE_PRIVATE)

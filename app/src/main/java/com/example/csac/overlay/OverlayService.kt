@@ -25,9 +25,8 @@ class OverlayService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         running = true
-        val statusBarHeight = intent?.extras!!.getInt("statusBarHeight")
-        clickers = intent.extras!!.getParcelableArrayList("clickers")!!
-        overlayMenu = OverlayMenu(applicationContext, clickers, statusBarHeight)
+        clickers = intent?.extras!!.getParcelableArrayList("clickers")!!
+        overlayMenu = OverlayMenu(applicationContext, clickers)
         makeNotification()
         return super.onStartCommand(intent, flags, startId)
     }

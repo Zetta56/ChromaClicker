@@ -2,8 +2,6 @@ package com.example.csac.main
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.csac.R
-import com.example.csac.models.Clicker
 import com.example.csac.models.Save
 import com.example.csac.overlay.OverlayService
 import com.example.csac.overlay.SavePopup
@@ -72,7 +69,15 @@ class SaveAdapter(
         notifyItemChanged(selectedPosition)
         // selectedPosition must be changed last to deselect the previous save
         selectedPosition = position
-        reloadOverlay()
+
+        // Reload overlay if it's already running
+        if(OverlayService.isRunning()) {
+            val mainActivity = activity as MainActivity
+            val file = File("${activity.filesDir}/saves/${selectedSaveName}")
+            val selectedSave = Json.decodeFromString(Save.serializer(), file.readText())
+            mainActivity.toggleOverlay(false, selectedSave)
+            mainActivity.toggleOverlay(true, selectedSave)
+        }
     }
 
     private fun deselectSave(position: Int) {
@@ -104,23 +109,5 @@ class SaveAdapter(
         fileNames.remove(name)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemCount)
-    }
-
-    private fun reloadOverlay() {
-        // OverlayService can only run if permissions have already been granted
-        if(OverlayService.isRunning()) {
-            val overlayIntent = Intent(activity, OverlayService::class.java)
-            val file = File("${activity.filesDir}/saves/${selectedSaveName}")
-            val selectedSave = Json.decodeFromString(Save.serializer(), file.readText())
-            val clickers = selectedSave.clickers.map { c -> Clicker(c) }
-            overlayIntent.putParcelableArrayListExtra("clickers", ArrayList(clickers))
-
-            activity.stopService(overlayIntent)
-            if (Build.VERSION.SDK_INT >= 26) {
-                activity.startForegroundService(overlayIntent)
-            } else {
-                activity.startService(overlayIntent)
-            }
-        }
     }
 }

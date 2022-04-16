@@ -2,11 +2,7 @@ package com.example.csac.main
 
 import android.content.Context
 import android.content.Intent
-import android.media.projection.MediaProjectionManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,9 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.csac.overlay.OverlayService
 import com.example.csac.R
-import com.example.csac.autoclick.AutoClickService
 import com.example.csac.databinding.FragmentMainBinding
-import com.example.csac.models.Clicker
 import com.example.csac.models.Save
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -83,44 +77,13 @@ class MainFragment : Fragment() {
     }
 
     private fun toggleOverlay() {
-        if(!hasPermissions()) {
-            return
-        }
-        if (!OverlayService.isRunning()) {
+        // Check if OverlayService was running before toggling
+        val isRunning = OverlayService.isRunning()
+        val successful = mainActivity.toggleOverlay(!isRunning, selectedSave)
+        if(successful && !isRunning) {
             binding.powerButton.setImageResource(R.drawable.power_on)
-            val clickers = selectedSave?.clickers?.map { c -> Clicker(c) } ?: arrayListOf()
-            overlayIntent.putParcelableArrayListExtra("clickers", ArrayList(clickers))
-            if (Build.VERSION.SDK_INT >= 26) {
-                mainActivity.startForegroundService(overlayIntent)
-            } else {
-                mainActivity.startService(overlayIntent)
-            }
         } else {
             binding.powerButton.setImageResource(R.drawable.power_off)
-            mainActivity.stopService(overlayIntent)
         }
-    }
-
-    private fun hasPermissions(): Boolean {
-        if(!Settings.canDrawOverlays(mainActivity)) {
-            // Redirect to overlay permission screen for this app
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:${mainActivity.packageName}")
-            )
-            mainActivity.applicationContext.startActivity(intent)
-            return false
-        }
-        if(Settings.Secure.getInt(mainActivity.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED) == 0) {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            mainActivity.applicationContext.startActivity(intent)
-            return false
-        }
-        if(AutoClickService.instance?.projection == null) {
-            val projectionManager = mainActivity.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-            mainActivity.projectionLauncher.launch(projectionManager.createScreenCaptureIntent())
-            return false
-        }
-        return true
     }
 }

@@ -51,7 +51,7 @@ class SaveAdapter(
             if(selectedSave == saveName) deselectSave(position) else selectSave(position, saveName)
         }
         holder.renameButton.setOnClickListener {
-            SavePopup(activity, saveName, fun(name) { renameSave(position, name) })
+            SavePopup(activity, saveName, true, fun(name) { renameSave(position, name,) })
         }
         holder.deleteButton.setOnClickListener { deleteSave(position) }
     }

@@ -42,7 +42,7 @@ class OverlayMenu(
         binding.playButton.setOnClickListener { toggleAutoClicker() }
         binding.plusButton.setOnClickListener { addClicker() }
         binding.minusButton.setOnClickListener { removeClicker() }
-        binding.saveButton.setOnClickListener { SavePopup(context, "", this::saveClickers) }
+        binding.saveButton.setOnClickListener { SavePopup(context, "", false, this::saveClickers) }
     }
 
     fun onDestroy() {

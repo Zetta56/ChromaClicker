@@ -28,6 +28,7 @@ class SavesFragment : Fragment() {
         actionBar?.title = "Saves"
         actionBar?.setDisplayHomeAsUpEnabled(true)
         setHasOptionsMenu(true)
+
         fetchFileNames()
         selected = arguments?.getString("selected") ?: ""
         // Inflate this fragment's layout

@@ -8,9 +8,15 @@
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:textSize="24sp"
-        android:text="@string/save_dialog_title" />
+        android:text="@string/save_dialog_title"
+        android:paddingHorizontal="5dp" />
+
+    <Spinner
+        android:id="@+id/destOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/nameInput"
@@ -22,6 +28,12 @@
         android:hint="@string/save_dialog_hint"
         android:layout_width="match_parent"
         android:layout_height="50dp" />
+
+    <Spinner
+        android:id="@+id/saveOptions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#1B1B1B" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -2,7 +2,6 @@ package com.example.csac.main
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Rect
 import android.media.projection.MediaProjectionManager
 import android.net.Uri
 import android.os.Build
@@ -52,7 +51,7 @@ class MainFragment : Fragment() {
         overlayIntent = Intent(mainActivity.applicationContext, OverlayService::class.java)
 
         // Configure UI
-        val powerImage = if(mainActivity.overlayVisible) R.drawable.power_on else R.drawable.power_off
+        val powerImage = if(OverlayService.isRunning()) R.drawable.power_on else R.drawable.power_off
         binding.powerButton.setImageResource(powerImage)
         if(selectedSave != null) {
             val ellipsis = if(selectedSave!!.name.length > 12) "..." else ""
@@ -87,35 +86,18 @@ class MainFragment : Fragment() {
         if(!hasPermissions()) {
             return
         }
-        sendBarHeights()
-        mainActivity.overlayVisible = !mainActivity.overlayVisible
-        if (mainActivity.overlayVisible) {
+        if (!OverlayService.isRunning()) {
             binding.powerButton.setImageResource(R.drawable.power_on)
             val clickers = selectedSave?.clickers?.map { c -> Clicker(c) } ?: arrayListOf()
             overlayIntent.putParcelableArrayListExtra("clickers", ArrayList(clickers))
             if (Build.VERSION.SDK_INT >= 26) {
-                mainActivity.applicationContext.startForegroundService(overlayIntent)
+                mainActivity.startForegroundService(overlayIntent)
             } else {
-                mainActivity.applicationContext.startService(overlayIntent)
+                mainActivity.startService(overlayIntent)
             }
         } else {
             binding.powerButton.setImageResource(R.drawable.power_off)
-            mainActivity.applicationContext.stopService(overlayIntent)
-        }
-    }
-
-    private fun sendBarHeights() {
-        if(AutoClickService.instance?.statusBarHeight == 0 || AutoClickService.instance?.navbarHeight == 0) {
-            val intent = Intent(context, AutoClickService::class.java)
-            val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
-            val navigationBarHeight = if(resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
-            val rect = Rect()
-            mainActivity.window.decorView.getWindowVisibleDisplayFrame(rect)
-
-            intent.action = "receive_bar_heights"
-            intent.putExtra("statusBarHeight", rect.top)
-            intent.putExtra("navigationBarHeight", navigationBarHeight)
-            mainActivity.startService(intent)
+            mainActivity.stopService(overlayIntent)
         }
     }
 

@@ -23,8 +23,8 @@ import com.example.csac.models.Clicker
 
 class AutoClickService : AccessibilityService() {
     var projection: MediaProjection? = null
-    var statusBarHeight = 0
-    var navbarHeight = 0
+    private var statusBarHeight = 0
+    private var navbarHeight = 0
     private var handler: Handler = Handler(Looper.getMainLooper())
     private var clickerStates: BooleanArray? = null
     private var clickRunnable: Runnable? = null
@@ -59,15 +59,15 @@ class AutoClickService : AccessibilityService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if(intent != null && intent.action != null) {
             when (intent.action) {
-                "receive_projection" -> {
+                "initialize" -> {
                     val projectionResult: ActivityResult = intent.extras!!.getParcelable("projectionResult")!!
                     val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
                     // Media projection is a token that lets this app record the screen
                     projection = projectionManager.getMediaProjection(projectionResult.resultCode, projectionResult.data!!)
-                }
-                "receive_bar_heights" -> {
+
+                    val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+                    navbarHeight = if(resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
                     statusBarHeight = intent.extras!!.getInt("statusBarHeight")
-                    navbarHeight = intent.extras!!.getInt("navigationBarHeight")
                 }
                 "toggle_clicker" -> {
                     val enabled = intent.extras!!.getBoolean("enabled")
@@ -88,8 +88,9 @@ class AutoClickService : AccessibilityService() {
                         val colorString = Integer.toHexString(colorInt).substring(2)
                         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clipData = ClipData.newPlainText(colorString, "${x},${y},#${colorString}")
+                        val toastText = "Copied to Clipboard: ${clipData.getItemAt(0).text}"
                         clipboard.setPrimaryClip(clipData)
-                        Toast.makeText(applicationContext, "Copied to Clipboard: ${clipData.getItemAt(0).text}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, toastText, Toast.LENGTH_SHORT).show()
                     }
                 }
             }

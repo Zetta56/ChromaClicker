@@ -12,15 +12,17 @@ import com.example.csac.R
 import com.example.csac.autoclick.AutoClickService
 import com.example.csac.createOverlayLayout
 import com.example.csac.databinding.OverlayMenuBinding
+import com.example.csac.models.AppSettings
 import com.example.csac.models.Clicker
 import com.example.csac.models.Save
 import com.example.csac.setRecursiveTouchListener
 import com.example.csac.toDP
-import kotlinx.serialization.json.Json
+import com.google.gson.Gson
 import java.io.File
 
 class OverlayMenu(
     private val context: Context,
+    private var settings: AppSettings,
     private val clickers: ArrayList<Clicker>
 ) {
     private val binding = OverlayMenuBinding.inflate(LayoutInflater.from(context))
@@ -50,6 +52,10 @@ class OverlayMenu(
         windowManager.removeView(binding.root)
         autoClickIntent.putExtra("enabled", false)
         context.startService(autoClickIntent)
+    }
+
+    fun updateSettings(newSettings: AppSettings) {
+        settings = newSettings
     }
 
     private fun toggleAutoClicker() {
@@ -115,9 +121,8 @@ class OverlayMenu(
         }
 
         val save = Save(name, clickers)
+        val json = Gson().toJson(save)
         val file = File(savesDir, name)
-        // Store serializable saves as JSON
-        val saveJson = Json.encodeToString(Save.serializer(), save)
-        file.writeText(saveJson)
+        file.writeText(json)
     }
 }

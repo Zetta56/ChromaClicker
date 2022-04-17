@@ -12,8 +12,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.csac.overlay.OverlayService
 import com.example.csac.R
 import com.example.csac.databinding.FragmentMainBinding
+import com.example.csac.getDefaultPreferences
 import com.example.csac.models.Save
-import kotlinx.serialization.json.Json
+import com.google.gson.Gson
 import java.io.File
 
 class MainFragment : Fragment() {
@@ -61,15 +62,17 @@ class MainFragment : Fragment() {
             bundle.putString("selected", selectedSave?.name)
             navController.navigate(R.id.action_mainFragment_to_savesFragment, bundle)
         }
-        binding.settingsButton.setOnClickListener { navController.navigate(R.id.action_mainFragment_to_settingsFragment) }
+        binding.settingsButton.setOnClickListener {
+            navController.navigate(R.id.action_mainFragment_to_settingsFragment)
+        }
     }
 
     private fun loadSave() {
-        val preferences = mainActivity.getPreferences(Context.MODE_PRIVATE)
+        val preferences = getDefaultPreferences(activity as Context)
         val saveName = preferences.getString("saveName", "")
         try {
             val file = File("${context?.filesDir}/saves/${saveName}")
-            selectedSave = Json.decodeFromString(Save.serializer(), file.readText())
+            selectedSave = Gson().fromJson(file.readText(), Save::class.java)
         } catch(e: Exception) {
             selectedSave = null
             preferences.edit().putString("saveName", "").apply()

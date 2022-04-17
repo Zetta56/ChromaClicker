@@ -15,14 +15,13 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.csac.R
 import com.example.csac.autoclick.AutoClickService
-import com.example.csac.models.Clicker
+import com.example.csac.models.AppSettings
 import com.example.csac.models.Save
 import com.example.csac.overlay.OverlayService
 
-
 class MainActivity : AppCompatActivity() {
-    lateinit var projectionLauncher: ActivityResultLauncher<Intent>
-    lateinit var overlayIntent: Intent
+    private lateinit var projectionLauncher: ActivityResultLauncher<Intent>
+    private lateinit var overlayIntent: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,8 +46,11 @@ class MainActivity : AppCompatActivity() {
         if(!hasPermissions()) {
             return false
         } else if(toggle) {
-            val clickers = selectedSave?.clickers?.map { c -> Clicker(c) } ?: arrayListOf()
+            val clickers = selectedSave?.clickers ?: arrayListOf()
+            overlayIntent.action = "enable"
             overlayIntent.putParcelableArrayListExtra("clickers", ArrayList(clickers))
+            overlayIntent.putExtra("settings", AppSettings(this))
+
             if (Build.VERSION.SDK_INT >= 26) {
                 startForegroundService(overlayIntent)
             } else {

@@ -15,7 +15,7 @@ import java.io.File
 
 class SavePopup(
     private val context: Context,
-    private val defaultName: String,
+    defaultName: String,
     private val onlyNewSaves: Boolean = false,
     private val callback: (name: String) -> Unit
 ) {
@@ -85,7 +85,6 @@ class SavePopup(
         }
         callback(name)
         windowManager.removeView(binding.root)
-
     }
 
     private fun getUniqueFileName(path: String, fileName: String): String {

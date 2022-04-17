@@ -8,10 +8,12 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import com.example.csac.R
+import com.example.csac.models.AppSettings
 import com.example.csac.models.Clicker
 import kotlin.collections.ArrayList
 
 class OverlayService : Service() {
+
     companion object {
         private var running = false
 
@@ -20,14 +22,24 @@ class OverlayService : Service() {
         }
     }
 
-    private lateinit var overlayMenu: OverlayMenu
     private lateinit var clickers: ArrayList<Clicker>
+    private var overlayMenu: OverlayMenu? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        running = true
-        clickers = intent?.extras!!.getParcelableArrayList("clickers")!!
-        overlayMenu = OverlayMenu(applicationContext, clickers)
-        makeNotification()
+        when(intent?.action) {
+            "enable" -> {
+                val settings = intent.extras!!.getParcelable<AppSettings>("settings")!!
+                clickers = intent.extras!!.getParcelableArrayList("clickers")!!
+                overlayMenu = OverlayMenu(applicationContext, settings, clickers)
+                makeNotification()
+                running = true
+            }
+            "update_settings" -> {
+                val settings = intent.extras!!.getParcelable<AppSettings>("settings")!!
+                overlayMenu?.updateSettings(settings)
+            }
+        }
+
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -38,7 +50,7 @@ class OverlayService : Service() {
 
     override fun onDestroy() {
         running = false
-        overlayMenu.onDestroy()
+        overlayMenu?.onDestroy()
         super.onDestroy()
     }
 

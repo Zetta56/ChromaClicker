@@ -139,6 +139,8 @@ class AutoClickService : AccessibilityService() {
         val strokeDescription = GestureDescription.StrokeDescription(path, 0, 1)
         builder.addStroke(strokeDescription)
         dispatchGesture(builder.build(), null, null)
+        println(x)
+        println(y + statusBarHeight)
     }
 
     private fun updateClickerStates(clickers: ArrayList<Clicker>) {

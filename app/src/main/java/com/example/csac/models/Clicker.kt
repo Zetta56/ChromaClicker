@@ -1,40 +1,7 @@
 package com.example.csac.models
 
-import android.os.Parcel
 import android.os.Parcelable
-import android.view.WindowManager
+import kotlinx.parcelize.Parcelize
 
-class Clicker(var x: Float, var y: Float, var detectors: Array<Detector>) : Parcelable {
-
-    constructor(parcel: Parcel) : this(
-        x = parcel.readFloat(),
-        y = parcel.readFloat(),
-        detectors = parcel.createTypedArray(Detector.CREATOR) as Array<Detector>
-    )
-
-    constructor(serializable: SerializableClicker) : this(
-        x = serializable.x,
-        y = serializable.y,
-        detectors = serializable.detectors.map { d -> Detector(d) }.toTypedArray()
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeFloat(x)
-        parcel.writeFloat(y)
-        parcel.writeTypedArray(detectors, 0)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Clicker> {
-        override fun createFromParcel(parcel: Parcel): Clicker {
-            return Clicker(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Clicker?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+@Parcelize
+class Clicker(var x: Float, var y: Float, var detectors: Array<Detector>) : Parcelable

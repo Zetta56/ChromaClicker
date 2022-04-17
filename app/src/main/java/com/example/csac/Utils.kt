@@ -1,5 +1,7 @@
 package com.example.csac
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.PixelFormat
 import android.os.Build
@@ -7,7 +9,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import java.io.File
 import kotlin.math.max
 import kotlin.math.min
 
@@ -53,6 +54,10 @@ fun setRecursiveTouchListener(viewGroup: ViewGroup, listener: View.OnTouchListen
             child.setOnTouchListener(listener)
         }
     }
+}
+
+fun getDefaultPreferences(context: Context): SharedPreferences {
+    return context.getSharedPreferences(context.getString(R.string.preference_key), Context.MODE_PRIVATE)
 }
 
 fun toPixels(dp: Int): Int {

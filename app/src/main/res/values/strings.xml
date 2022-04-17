@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CSAC</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="preference_key">csac_preferences</string>
     <string name="saves">Saves</string>
     <string name="settings">Settings</string>
     <string name="power">Toggle On/Off</string>
@@ -28,4 +29,6 @@
     <string name="save_dialog_negative">Cancel</string>
     <string name="save_dialog_positive">Save</string>
     <string name="default_selected_save">Selected: None</string>
+    <string name="randomized">Randomized</string>
+    <string name="apply_settings">Apply</string>
 </resources>

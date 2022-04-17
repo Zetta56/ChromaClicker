@@ -1,7 +1,6 @@
 package com.example.csac.main
 
 import android.app.Activity
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +9,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.csac.R
+import com.example.csac.getDefaultPreferences
 import com.example.csac.models.Save
 import com.example.csac.overlay.OverlayService
 import com.example.csac.overlay.SavePopup
-import kotlinx.serialization.json.Json
+import com.google.gson.Gson
 import java.io.File
 
 class SaveAdapter(
@@ -39,20 +39,20 @@ class SaveAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val file = File("${activity.filesDir}/saves/${fileNames[position]}")
-        val saveName = Json.decodeFromString(Save.serializer(), file.readText()).name
-        if(selectedSaveName == saveName) {
+        val save = Gson().fromJson(file.readText(), Save::class.java)
+        if(selectedSaveName == save.name) {
             holder.check.visibility = View.VISIBLE
             selectedPosition = holder.adapterPosition
         } else {
             holder.check.visibility = View.GONE
         }
-        holder.saveName.text = saveName
+        holder.saveName.text = save.name
 
         holder.saveName.setOnClickListener {
-            if(selectedSaveName == saveName) deselectSave(position) else selectSave(position, saveName)
+            if(selectedSaveName == save.name) deselectSave(position) else selectSave(position, save)
         }
         holder.renameButton.setOnClickListener {
-            SavePopup(activity, saveName, true, fun(name) { renameSave(position, name) })
+            SavePopup(activity, save.name, true, fun(name) { renameSave(position, save, name) })
         }
         holder.deleteButton.setOnClickListener { deleteSave(position) }
     }
@@ -61,10 +61,10 @@ class SaveAdapter(
         return fileNames.size
     }
 
-    private fun selectSave(position: Int, saveName: String) {
-        val preferences = activity.getPreferences(Context.MODE_PRIVATE)
-        preferences.edit().putString("saveName", saveName).apply()
-        selectedSaveName = saveName
+    private fun selectSave(position: Int, save: Save) {
+        val preferences = getDefaultPreferences(activity)
+        preferences.edit().putString("saveName", save.name).apply()
+        selectedSaveName = save.name
         notifyItemChanged(position)
         notifyItemChanged(selectedPosition)
         // selectedPosition must be changed last to deselect the previous save
@@ -73,31 +73,28 @@ class SaveAdapter(
         // Reload overlay if it's already running
         if(OverlayService.isRunning()) {
             val mainActivity = activity as MainActivity
-            val file = File("${activity.filesDir}/saves/${selectedSaveName}")
-            val selectedSave = Json.decodeFromString(Save.serializer(), file.readText())
-            mainActivity.toggleOverlay(false, selectedSave)
-            mainActivity.toggleOverlay(true, selectedSave)
+            mainActivity.toggleOverlay(false, save)
+            mainActivity.toggleOverlay(true, save)
         }
     }
 
     private fun deselectSave(position: Int) {
-        val preferences = activity.getPreferences(Context.MODE_PRIVATE)
+        val preferences = getDefaultPreferences(activity)
         preferences.edit().putString("saveName", "").apply()
         selectedSaveName = ""
         selectedPosition = -1
         notifyItemChanged(position)
     }
 
-    private fun renameSave(position: Int, name: String) {
+    private fun renameSave(position: Int, save: Save, name: String) {
         // Delete save file
         val oldFile = File("${activity.filesDir}/saves/${fileNames[position]}")
-        val save = Json.decodeFromString(Save.serializer(), oldFile.readText())
-        save.name = name
         oldFile.delete()
 
         // Create new save file
         val newFile = File("${activity.filesDir}/saves/${name}")
-        newFile.writeText(Json.encodeToString(Save.serializer(), save))
+        save.name = name
+        newFile.writeText(Gson().toJson(save))
         fileNames[position] = name
         notifyItemChanged(position)
     }

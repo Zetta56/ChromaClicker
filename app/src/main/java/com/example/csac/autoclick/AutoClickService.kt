@@ -19,13 +19,21 @@ import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
+import com.example.csac.models.AppSettings
 import com.example.csac.models.Clicker
+import com.example.csac.toDP
+import java.lang.Long.max
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.random.Random
 
 class AutoClickService : AccessibilityService() {
     var projection: MediaProjection? = null
     private var statusBarHeight = 0
     private var navbarHeight = 0
     private var handler: Handler = Handler(Looper.getMainLooper())
+    private var settings: AppSettings? = null
     private var clickerStates: BooleanArray? = null
     private var clickRunnable: Runnable? = null
     private var detectRunnable: Runnable? = null
@@ -59,75 +67,83 @@ class AutoClickService : AccessibilityService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if(intent != null && intent.action != null) {
             when (intent.action) {
-                "initialize" -> {
-                    val projectionResult: ActivityResult = intent.extras!!.getParcelable("projectionResult")!!
-                    val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-                    // Media projection is a token that lets this app record the screen
-                    projection = projectionManager.getMediaProjection(projectionResult.resultCode, projectionResult.data!!)
-
-                    val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
-                    navbarHeight = if(resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
-                    statusBarHeight = intent.extras!!.getInt("statusBarHeight")
-                }
-                "toggle_clicker" -> {
-                    val enabled = intent.extras!!.getBoolean("enabled")
-                    if(enabled) {
-                        val clickers = intent.extras!!.getParcelableArrayList<Clicker>("clickers")!!
-                        clickerStates = BooleanArray(clickers.size)
-                        startRunners(clickers)
-                    } else {
-                        stopRunners()
-                    }
-                }
-                "get_pixel_color" -> {
-                    val x = intent.extras!!.getInt("x")
-                    val y = intent.extras!!.getInt("y")
-                    updateScreenBitmap {
-                        val colorInt = screenBitmap!!.getPixel(x, y)
-                        // Substring starts at 3rd character to ignore alpha value
-                        val colorString = Integer.toHexString(colorInt).substring(2)
-                        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clipData = ClipData.newPlainText(colorString, "${x},${y},#${colorString}")
-                        val toastText = "Copied to Clipboard: ${clipData.getItemAt(0).text}"
-                        clipboard.setPrimaryClip(clipData)
-                        Toast.makeText(applicationContext, toastText, Toast.LENGTH_SHORT).show()
-                    }
-                }
+                "initialize" -> initialize(intent)
+                "toggle_clicker" -> toggleClickers(intent)
+                "get_pixel_color" -> getPixelColor(intent)
             }
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
+    private fun initialize(intent: Intent) {
+        val projectionResult: ActivityResult = intent.extras!!.getParcelable("projectionResult")!!
+        val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+        // Media projection is a token that lets this app record the screen
+        projection = projectionManager.getMediaProjection(projectionResult.resultCode, projectionResult.data!!)
+
+        // Get bar heights
+        val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        navbarHeight = if(resourceId > 0) resources.getDimensionPixelSize(resourceId) else 0
+        statusBarHeight = intent.extras!!.getInt("statusBarHeight")
+    }
+
+    private fun toggleClickers(intent: Intent) {
+        val enabled = intent.extras!!.getBoolean("enabled")
+        if(enabled) {
+            val clickers = intent.extras!!.getParcelableArrayList<Clicker>("clickers")!!
+            settings = intent.extras!!.getParcelable("settings")!!
+            clickerStates = BooleanArray(clickers.size)
+            startRunners(clickers)
+        } else {
+            clickRunnable?.let { runnable -> handler.removeCallbacks(runnable) }
+            detectRunnable?.let { runnable -> handler.removeCallbacks(runnable) }
+        }
+    }
+
+    private fun getPixelColor(intent: Intent) {
+        val x = intent.extras!!.getInt("x")
+        val y = intent.extras!!.getInt("y")
+        updateScreenBitmap {
+            val colorInt = screenBitmap!!.getPixel(x, y)
+            // Substring starts at 3rd character to ignore alpha value
+            val colorString = Integer.toHexString(colorInt).substring(2)
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clipData = ClipData.newPlainText(colorString, "${x},${y},#${colorString}")
+            val toastText = "Copied to Clipboard: ${clipData.getItemAt(0).text}"
+            clipboard.setPrimaryClip(clipData)
+            Toast.makeText(applicationContext, toastText, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun startRunners(clickers: ArrayList<Clicker>) {
         clickRunnable = object : Runnable {
             override fun run() {
-                for((index, clicker) in clickers.withIndex()) {
-                    if(clickerStates != null && clickerStates!![index]) {
-                        click(clicker.x, clicker.y)
+                settings?.let { s ->
+                    for((index, clicker) in clickers.withIndex()) {
+                        if(clickerStates != null && clickerStates!![index]) {
+                            if(s.random) {
+                                val theta = Random.nextFloat() * 2 * PI.toFloat()
+                                val radius = Random.nextFloat() * toDP(30)
+                                click(clicker.x + radius * cos(theta), clicker.y + radius * sin(theta))
+                            } else {
+                                click(clicker.x, clicker.y)
+                            }
+                        }
                     }
+                    val delay = if(s.random) Random.nextLong(-750, 750) else 0
+                    handler.postDelayed(this, max(s.clickInterval + delay, 1))
                 }
-                handler.postDelayed(this, 1000)
             }
         }
         detectRunnable = object : Runnable {
             override fun run() {
-                updateScreenBitmap {
-                    updateClickerStates(clickers)
-                }
-                handler.postDelayed(this, 5000)
+                updateScreenBitmap { updateClickerStates(clickers) }
+                val interval = settings?.detectInterval ?: 5000
+                handler.postDelayed(this, interval.toLong())
             }
         }
         handler.post(clickRunnable!!)
         handler.post(detectRunnable!!)
-    }
-
-    private fun stopRunners() {
-        if(clickRunnable != null) {
-            handler.removeCallbacks(clickRunnable!!)
-        }
-        if(detectRunnable != null) {
-            handler.removeCallbacks(detectRunnable!!)
-        }
     }
 
     private fun click(x: Float, y: Float) {
@@ -139,8 +155,6 @@ class AutoClickService : AccessibilityService() {
         val strokeDescription = GestureDescription.StrokeDescription(path, 0, 1)
         builder.addStroke(strokeDescription)
         dispatchGesture(builder.build(), null, null)
-        println(x)
-        println(y + statusBarHeight)
     }
 
     private fun updateClickerStates(clickers: ArrayList<Clicker>) {

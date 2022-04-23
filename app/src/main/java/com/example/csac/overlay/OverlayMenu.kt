@@ -56,6 +56,10 @@ class OverlayMenu(
 
     fun updateSettings(newSettings: AppSettings) {
         settings = newSettings
+        if(playing) {
+            toggleAutoClicker()
+            toggleAutoClicker()
+        }
     }
 
     private fun toggleAutoClicker() {
@@ -66,6 +70,7 @@ class OverlayMenu(
         if(playing) {
             clickerViews.forEach { clickerView -> clickerView.visibility = View.INVISIBLE }
             binding.playButton.setImageResource(R.drawable.pause)
+            autoClickIntent.putExtra("settings", settings)
             autoClickIntent.putParcelableArrayListExtra("clickers", clickers)
         } else {
             clickerViews.forEach { clickerView -> clickerView.visibility = View.VISIBLE }

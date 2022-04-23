@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="20dp">
 
@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:rowCount="1"
+        android:rowCount="4"
         android:columnCount="2"
         tools:context=".main.SettingsFragment">
 
@@ -25,7 +25,72 @@
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/randomSwitch"
+            android:layout_gravity="center_horizontal"
             android:layout_columnWeight="1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/click_interval"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:layout_columnWeight="1" />
+
+        <EditText
+            android:id="@+id/clickInterval"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textColorHint="#777777"
+            android:backgroundTint="#777777"
+            android:text="@string/default_click_interval"
+            android:hint="@string/default_click_interval"
+            android:layout_columnWeight="1"
+            android:inputType="number"
+            android:importantForAutofill="no" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detection_interval"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:layout_columnWeight="1"/>
+
+        <EditText
+            android:id="@+id/detectInterval"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textColorHint="#777777"
+            android:backgroundTint="#777777"
+            android:text="@string/default_detection_interval"
+            android:hint="@string/default_detection_interval"
+            android:layout_columnWeight="1"
+            android:inputType="number"
+            android:importantForAutofill="no" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/circle_radius"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:layout_columnSpan="2" />
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/radiusSlider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:value="30"
+            android:valueFrom="10"
+            android:valueTo="60"
+            android:stepSize="5"
+            app:thumbColor="@color/white"
+            app:trackColor="#777777" />
 
     </GridLayout>
 

@@ -16,6 +16,7 @@ import com.example.csac.databinding.FragmentSettingsBinding
 import com.example.csac.getDefaultPreferences
 import com.example.csac.models.AppSettings
 import com.example.csac.overlay.OverlayService
+import com.google.android.material.slider.Slider
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
@@ -41,6 +42,7 @@ class SettingsFragment : Fragment() {
         binding.randomSwitch.isChecked = settings.random
         binding.clickInterval.setText(settings.clickInterval.toString())
         binding.detectInterval.setText(settings.detectInterval.toString())
+        binding.radiusSlider.value = settings.circleRadius.toFloat()
 
         // Set listeners
         binding.randomSwitch.setOnCheckedChangeListener { _, _ -> toggleApplyButton(true) }
@@ -51,6 +53,10 @@ class SettingsFragment : Fragment() {
         binding.detectInterval.setOnFocusChangeListener { v, hasFocus ->
             if(!hasFocus) { validateInterval(v as EditText, 5000, 2000) }
         }
+        binding.radiusSlider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
+            override fun onStartTrackingTouch(slider: Slider) {}
+            override fun onStopTrackingTouch(slider: Slider) { toggleApplyButton(true) }
+        })
         toggleApplyButton(false)
     }
 
@@ -66,7 +72,6 @@ class SettingsFragment : Fragment() {
 
     private fun validateInterval(editText: EditText, default: Int, min: Int) {
         val text = editText.text.toString()
-        println(text)
         val validated = when {
             text.isEmpty() -> default.toString()
             Integer.parseInt(text) < min -> min.toString()
@@ -92,6 +97,7 @@ class SettingsFragment : Fragment() {
             editor.putBoolean("setting_random", binding.randomSwitch.isChecked)
             editor.putInt("setting_click_interval", Integer.parseInt(binding.clickInterval.text.toString()))
             editor.putInt("setting_detect_interval", Integer.parseInt(binding.detectInterval.text.toString()))
+            editor.putInt("setting_circle_radius", binding.radiusSlider.value.toInt())
             editor.apply()
 
             if(OverlayService.isRunning()) {

@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_columnSpan="2"
             android:value="30"
-            android:valueFrom="10"
+            android:valueFrom="15"
             android:valueTo="60"
             android:stepSize="5"
             app:thumbColor="@color/white"

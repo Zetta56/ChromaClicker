@@ -123,15 +123,16 @@ class AutoClickService : AccessibilityService() {
                         if(clickerStates != null && clickerStates!![index]) {
                             if(s.random) {
                                 val theta = Random.nextFloat() * 2 * PI.toFloat()
-                                val radius = Random.nextFloat() * toDP(30)
+                                val radius = Random.nextFloat() * (settings?.circleRadius ?: 30)
                                 click(clicker.x + radius * cos(theta), clicker.y + radius * sin(theta))
                             } else {
                                 click(clicker.x, clicker.y)
                             }
                         }
                     }
+                    // If intervals are randomized, clicks can come out between 750ms faster to 750ms slower
                     val delay = if(s.random) Random.nextLong(-750, 750) else 0
-                    handler.postDelayed(this, max(s.clickInterval + delay, 1))
+                    handler.postDelayed(this, max(s.clickInterval + delay, 75))
                 }
             }
         }

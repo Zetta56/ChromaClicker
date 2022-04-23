@@ -8,15 +8,12 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
-import com.example.csac.R
+import com.example.csac.*
 import com.example.csac.autoclick.AutoClickService
-import com.example.csac.createOverlayLayout
 import com.example.csac.databinding.OverlayMenuBinding
 import com.example.csac.models.AppSettings
 import com.example.csac.models.Clicker
 import com.example.csac.models.Save
-import com.example.csac.setRecursiveTouchListener
-import com.example.csac.toDP
 import com.google.gson.Gson
 import java.io.File
 
@@ -60,6 +57,12 @@ class OverlayMenu(
             toggleAutoClicker()
             toggleAutoClicker()
         }
+        for(clickerView in clickerViews) {
+            val layoutParams = clickerView.layoutParams
+            layoutParams.width = 2 * toPixels(settings.circleRadius)
+            layoutParams.height = 2 * toPixels(settings.circleRadius)
+            windowManager.updateViewLayout(clickerView, layoutParams)
+        }
     }
 
     private fun toggleAutoClicker() {
@@ -82,7 +85,7 @@ class OverlayMenu(
     }
 
     private fun addClicker() {
-        val radius = 30
+        val radius = settings.circleRadius
         val x = toDP(Resources.getSystem().displayMetrics.widthPixels / 2) - radius
         val y = toDP(Resources.getSystem().displayMetrics.heightPixels / 2) - radius
         val clickerLayout = createOverlayLayout(radius * 2, radius * 2, x=x, y=y, gravity=(Gravity.TOP or Gravity.START))
@@ -100,7 +103,7 @@ class OverlayMenu(
     }
 
     private fun addClicker(clicker: Clicker) {
-        val radius = 30
+        val radius = settings.circleRadius
         val x = toDP(clicker.x.toInt())
         val y = toDP(clicker.y.toInt())
         val clickerLayout = createOverlayLayout(radius * 2, radius * 2, x=x, y=y, gravity=(Gravity.TOP or Gravity.START))

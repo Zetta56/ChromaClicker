@@ -10,7 +10,6 @@
     <string name="play">Pause/Play</string>
     <string name="plus">Plus</string>
     <string name="move">Move</string>
-    <string name="accessibility_description">This is used to dispatch clicks onto your screen</string>
     <string name="check">Check</string>
     <string name="minus">Minus</string>
     <string name="cross">Cross</string>
@@ -36,4 +35,11 @@
     <string name="circle_radius">Circle Radius (dp)</string>
     <string name="default_click_interval">1000</string>
     <string name="default_detection_interval">5000</string>
+    <string name="permission_state">permission state</string>
+    <string name="overlay_permission">Can Draw Overlays</string>
+    <string name="overlay_description">This lets you manage this auto-clicker through menus overlaid on top of other apps</string>
+    <string name="accessibility_permission">Accessibility</string>
+    <string name="accessibility_description">This app uses the accessibility service to perform clicks on your screen</string>
+    <string name="projection_permission">Media Projection</string>
+    <string name="projection_description">This app uses the Media Projection API to detect colors on your screen</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.csac.main
 
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -22,6 +23,14 @@ import com.example.csac.overlay.OverlayService
 class MainActivity : AppCompatActivity() {
     private lateinit var projectionLauncher: ActivityResultLauncher<Intent>
     private lateinit var overlayIntent: Intent
+    private val permissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        permissions.entries.forEach { pair ->
+            println(pair.key)
+            println(pair.value)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +52,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     internal fun toggleOverlay(toggle: Boolean, selectedSave: Save?): Boolean {
-        if(!hasPermissions()) {
+        if(!PermissionsDialog.hasPermissions(this)) {
+            PermissionsDialog().show(supportFragmentManager, "permissions")
             return false
         } else if(toggle) {
             val clickers = selectedSave?.clickers ?: arrayListOf()
@@ -62,26 +72,35 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    private fun hasPermissions(): Boolean {
-        if(!Settings.canDrawOverlays(this)) {
-            // Redirect to overlay permission screen for this app
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:${packageName}")
-            )
-            applicationContext.startActivity(intent)
-            return false
-        }
-        if(Settings.Secure.getInt(contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED) == 0) {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            applicationContext.startActivity(intent)
-            return false
-        }
-        if(AutoClickService.instance?.projection == null) {
-            val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-            projectionLauncher.launch(projectionManager.createScreenCaptureIntent())
-            return false
-        }
-        return true
-    }
+//    private fun hasPermissions(): Boolean {
+//        if(
+//            !Settings.canDrawOverlays(this) ||
+//            Settings.Secure.getInt(contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED) == 0 ||
+//            AutoClickService.instance?.projection == null
+//        ) {
+//            PermissionsDialog().show(supportFragmentManager, "permissions")
+//            return false
+//        }
+//        return true
+//        if(!Settings.canDrawOverlays(this)) {
+//            // Redirect to overlay permission screen for this app
+//            val intent = Intent(
+//                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+//                Uri.parse("package:${packageName}")
+//            )
+//            applicationContext.startActivity(intent)
+//            return false
+//        }
+//        if(Settings.Secure.getInt(contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED) == 0) {
+//            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+//            applicationContext.startActivity(intent)
+//            return false
+//        }
+//        if(AutoClickService.instance?.projection == null) {
+//            val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+//            projectionLauncher.launch(projectionManager.createScreenCaptureIntent())
+//            return false
+//        }
+//        return true
+//    }
 }

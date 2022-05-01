@@ -21,7 +21,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import com.example.csac.models.AppSettings
 import com.example.csac.models.Clicker
-import com.example.csac.toDP
 import java.lang.Long.max
 import kotlin.math.PI
 import kotlin.math.cos

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/permissionsDialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:rowCount="3"
+    android:columnCount="2"
+    android:padding="24dp"
+    android:useDefaultMargins="true">
+
+    <LinearLayout
+        android:layout_columnWeight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="@string/overlay_permission" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="@string/overlay_description" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/overlay_button"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/cross"
+        android:contentDescription="@string/permission_state" />
+
+    <LinearLayout
+        android:layout_columnWeight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="@string/accessibility_permission" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="@string/accessibility_description" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/accessibility_button"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/cross"
+        android:contentDescription="@string/permission_state" />
+
+    <LinearLayout
+        android:layout_columnWeight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="@string/projection_permission" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:text="@string/projection_description" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/projection_button"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        android:src="@drawable/cross"
+        android:contentDescription="@string/permission_state" />
+
+</GridLayout>

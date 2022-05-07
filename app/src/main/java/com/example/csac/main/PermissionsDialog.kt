@@ -23,7 +23,6 @@ import com.example.csac.autoclick.AutoClickService
 import com.example.csac.databinding.PermissionsDialogBinding
 
 class PermissionsDialog : DialogFragment() {
-
     companion object {
         fun hasPermissions(activity: Activity): Boolean {
             return (

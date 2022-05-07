@@ -53,6 +53,7 @@
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:text="@string/save_dialog_positive"
+            android:textColor="@color/submit_button_color"
             android:enabled="false"
             style="?android:attr/buttonBarButtonStyle" />
 

@@ -24,6 +24,8 @@ class SavePopup(
 
     init {
         val layoutParams = createOverlayLayout(300, 200, focusable=true)
+        // Add fade-in and fade-out animations
+        layoutParams.windowAnimations = android.R.style.Animation_Toast
         windowManager.addView(binding.root, layoutParams)
 
         if(!onlyNewSaves) {

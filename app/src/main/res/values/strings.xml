@@ -23,7 +23,7 @@
     <string name="default_color">#000000</string>
     <string name="paste">Paste</string>
     <string name="save">Save</string>
-    <string name="save_dialog_title">Save</string>
+    <string name="save_dialog_title">Name Your Save</string>
     <string name="save_dialog_hint">Name</string>
     <string name="save_dialog_negative">Cancel</string>
     <string name="save_dialog_positive">Save</string>

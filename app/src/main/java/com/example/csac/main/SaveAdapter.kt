@@ -1,6 +1,7 @@
 package com.example.csac.main
 
 import android.app.Activity
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,7 @@ class SaveAdapter(
         val file = File("${activity.filesDir}/saves/${fileNames[position]}")
         val save = Gson().fromJson(file.readText(), Save::class.java)
         if(selectedSaveName == save.name) {
+            holder.check.setColorFilter(Color.WHITE)
             holder.check.visibility = View.VISIBLE
             selectedPosition = holder.adapterPosition
         } else {
@@ -54,7 +56,9 @@ class SaveAdapter(
         holder.renameButton.setOnClickListener {
             SavePopup(activity, save.name, true, fun(name) { renameSave(position, save, name) })
         }
-        holder.deleteButton.setOnClickListener { deleteSave(position) }
+        holder.deleteButton.setOnClickListener {
+            deleteSave(position)
+        }
     }
 
     override fun getItemCount(): Int {

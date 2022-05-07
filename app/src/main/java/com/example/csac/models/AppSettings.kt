@@ -10,7 +10,7 @@ class AppSettings(
     var random: Boolean = false,
     var clickInterval: Int = 1000,
     var detectInterval: Int = 5000,
-    var circleRadius: Int = 30
+    var circleRadius: Int = 30 // This is in DP
 ) : Parcelable {
 
     constructor(context: Context) : this() {

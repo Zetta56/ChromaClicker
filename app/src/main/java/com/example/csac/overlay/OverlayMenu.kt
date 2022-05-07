@@ -29,6 +29,7 @@ class OverlayMenu(
     private var playing = false
 
     init {
+        // Dimensions for this menu, not clickers
         val width = 55
         val y = toDP(Resources.getSystem().displayMetrics.heightPixels / 2) - 2 * width
         val layoutParams = createOverlayLayout(width, 4 * width, y=y, gravity=(Gravity.START or Gravity.TOP))
@@ -104,8 +105,9 @@ class OverlayMenu(
 
     private fun addClicker(clicker: Clicker) {
         val radius = settings.circleRadius
-        val x = toDP(clicker.x.toInt())
-        val y = toDP(clicker.y.toInt())
+        // Move top-left corner to clicker's center minus the radius
+        val x = toDP(clicker.x.toInt()) - settings.circleRadius
+        val y = toDP(clicker.y.toInt()) - settings.circleRadius
         val clickerLayout = createOverlayLayout(radius * 2, radius * 2, x=x, y=y, gravity=(Gravity.TOP or Gravity.START))
         val clickerView = ClickerView(context, null)
         clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root)

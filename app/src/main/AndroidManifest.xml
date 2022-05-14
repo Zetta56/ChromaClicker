@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.csac" >
+    package="com.example.chromaclicker" >
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
@@ -11,10 +11,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CSAC">
+        android:theme="@style/Theme.ChromaClicker">
 
         <activity
-            android:name=".main.MainActivity"
+            android:name="com.example.chromaclicker.main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,12 +22,12 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".tutorial.TutorialActivity" />
+        <activity android:name="com.example.chromaclicker.tutorial.TutorialActivity" />
 
-        <service android:name=".overlay.OverlayService" />
+        <service android:name="com.example.chromaclicker.overlay.OverlayService" />
 
         <service
-            android:name=".autoclick.AutoClickService"
+            android:name="com.example.chromaclicker.autoclick.AutoClickService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="false">
             <intent-filter>

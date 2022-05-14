@@ -1,12 +1,13 @@
 <resources>
-    <string name="app_name">CSAC</string>
+    <string name="app_name">Chroma Clicker</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="preference_key">csac_preferences</string>
+    <string name="preference_key">chroma_clicker_preferences</string>
+    <string name="channel_id">chroma_clicker_overlay</string>
     <string name="saves">Saves</string>
     <string name="settings">Settings</string>
     <string name="power">Toggle On/Off</string>
-    <string name="overlay_notification">CSAC overlay is now on</string>
-    <string name="overlay_notification_title">CSAC</string>
+    <string name="overlay_notification">Chroma Clicker overlay is now on</string>
+    <string name="overlay_notification_title">Chroma Clicker</string>
     <string name="play">Pause/Play</string>
     <string name="plus">Plus</string>
     <string name="move">Move</string>
@@ -39,9 +40,9 @@
     <string name="overlay_permission">Can Draw Overlays</string>
     <string name="overlay_description">This lets you manage this auto-clicker through menus overlaid on top of other apps</string>
     <string name="accessibility_permission">Accessibility</string>
-    <string name="accessibility_description">This app uses the accessibility service to perform clicks on your screen</string>
+    <string name="accessibility_description">This uses the accessibility service to perform clicks</string>
     <string name="projection_permission">Media Projection</string>
-    <string name="projection_description">This app uses the Media Projection API to detect colors on your screen</string>
+    <string name="projection_description">This uses the Media Projection API to detect pixel colors on your screen</string>
     <string name="action_tutorial">Tutorial</string>
     <string name="tutorial_image">tutorial</string>
     <string name="tutorial_one">

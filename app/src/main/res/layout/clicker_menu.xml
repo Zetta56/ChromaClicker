@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@null">
 
-    <com.example.csac.overlay.ClickerView
+    <com.example.chromaclicker.overlay.ClickerView
         android:id="@+id/clicker"
         android:layout_width="60dp"
         android:layout_height="60dp" />

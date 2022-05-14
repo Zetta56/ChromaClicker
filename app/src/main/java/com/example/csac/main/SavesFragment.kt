@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.csac.databinding.FragmentSavesBinding
 import java.io.File
 
-class SavesFragment : Fragment() {
+class SavesFragment : ActionBarFragment("Saves", true) {
     private lateinit var binding: FragmentSavesBinding
     private lateinit var saveAdapter: SaveAdapter
     private var fileNames: ArrayList<String> = arrayListOf()
@@ -23,11 +23,6 @@ class SavesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val actionBar = (activity as AppCompatActivity).supportActionBar
-        actionBar?.title = "Saves"
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-        setHasOptionsMenu(true)
-
         fetchFileNames()
         selected = arguments?.getString("selected") ?: ""
         // Inflate this fragment's layout
@@ -42,16 +37,6 @@ class SavesFragment : Fragment() {
         binding.savesList.adapter = saveAdapter
         binding.savesList.layoutManager = LinearLayoutManager(context)
         binding.savesList.addItemDecoration(divider)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            android.R.id.home -> {
-                activity?.onBackPressed()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun fetchFileNames() {

@@ -2,8 +2,8 @@ package com.example.csac.main
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +17,7 @@ import com.example.csac.models.Save
 import com.google.gson.Gson
 import java.io.File
 
-class MainFragment : Fragment() {
+class MainFragment : ActionBarFragment("CSAC", false) {
     private lateinit var mainActivity: MainActivity
     private lateinit var navController: NavController
     private lateinit var binding: FragmentMainBinding
@@ -29,11 +29,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         mainActivity = activity as MainActivity
-        mainActivity.supportActionBar?.title = "CSAC"
-        mainActivity.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        setHasOptionsMenu(false)
         loadSave()
-
         // Inflate the layout for this fragment
         binding = FragmentMainBinding.inflate(LayoutInflater.from(mainActivity))
         return binding.root
@@ -46,8 +42,9 @@ class MainFragment : Fragment() {
         overlayIntent = Intent(mainActivity.applicationContext, OverlayService::class.java)
 
         // Configure UI
-        val powerImage = if(OverlayService.isRunning()) R.drawable.power_on else R.drawable.power_off
-        binding.powerButton.setImageResource(powerImage)
+        if(OverlayService.isRunning()) {
+            binding.powerButton.setColorFilter(Color.parseColor("#2DADF4"))
+        }
         if(selectedSave != null) {
             val ellipsis = if(selectedSave!!.name.length > 12) "..." else ""
             binding.selectedSave.text = String.format("Selected: %s%s", selectedSave!!.name.take(12), ellipsis)
@@ -80,13 +77,13 @@ class MainFragment : Fragment() {
     }
 
     private fun toggleOverlay() {
-        // Check if OverlayService was running before toggling
+        // Check if OverlayService is running at the beginning of this function
         val isRunning = OverlayService.isRunning()
         val successful = mainActivity.toggleOverlay(!isRunning, selectedSave)
         if(successful && !isRunning) {
-            binding.powerButton.setImageResource(R.drawable.power_on)
+            binding.powerButton.setColorFilter(Color.parseColor("#2DADF4"))
         } else {
-            binding.powerButton.setImageResource(R.drawable.power_off)
+            binding.powerButton.colorFilter = null
         }
     }
 }

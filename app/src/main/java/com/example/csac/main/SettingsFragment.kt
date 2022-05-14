@@ -18,18 +18,13 @@ import com.example.csac.models.AppSettings
 import com.example.csac.overlay.OverlayService
 import com.google.android.material.slider.Slider
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : ActionBarFragment("Settings", true) {
     private lateinit var binding: FragmentSettingsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val actionBar = (activity as AppCompatActivity).supportActionBar
-        actionBar?.title = "Settings"
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-        setHasOptionsMenu(true)
-
         // Inflate the layout for this fragment
         binding = FragmentSettingsBinding.inflate(LayoutInflater.from(activity))
         return binding.root
@@ -58,16 +53,6 @@ class SettingsFragment : Fragment() {
             override fun onStopTrackingTouch(slider: Slider) { toggleApplyButton(true) }
         })
         toggleApplyButton(false)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
-            android.R.id.home -> {
-                activity?.onBackPressed()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun validateInterval(editText: EditText, default: Int, min: Int) {

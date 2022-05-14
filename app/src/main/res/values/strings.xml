@@ -42,4 +42,5 @@
     <string name="accessibility_description">This app uses the accessibility service to perform clicks on your screen</string>
     <string name="projection_permission">Media Projection</string>
     <string name="projection_description">This app uses the Media Projection API to detect colors on your screen</string>
+    <string name="action_tutorial">Tutorial</string>
 </resources>

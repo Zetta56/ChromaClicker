@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:src="@drawable/power_off"
+        android:src="@drawable/power"
         android:contentDescription="@string/power"
         app:layout_constraintBottom_toTopOf="@+id/savesButton"
         app:layout_constraintEnd_toEndOf="parent"

@@ -41,4 +41,8 @@
         <item name="android:textColor">#222222</item>
     </style>
 
+    <style name="tutorial">
+        <item name="android:background">#2C2C2C</item>
+    </style>
+
 </resources>

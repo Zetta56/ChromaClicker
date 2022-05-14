@@ -44,5 +44,28 @@
     <string name="projection_description">This app uses the Media Projection API to detect colors on your screen</string>
     <string name="action_tutorial">Tutorial</string>
     <string name="tutorial_image">tutorial</string>
-    <string name="tutorial_title">Tutorial</string>
+    <string name="tutorial_one">
+        Welcome! Let\'s get familiar with the home screen, shall we?\n
+        1: Displays the overlay menu, along with its many features\n
+        2: Lets you manage your saved clicker layouts\n
+        3: Configures this app\'s general settings
+    </string>
+    <string name="tutorial_two">
+        Once you click the power button, you\'ll see this overlay menu\n
+        1: Pauses and plays this app\'s auto-clicker\n
+        2: Adds a new clicker you can freely move around\n
+        3: Removes the newest clicker you added\n
+        4: Saves the positions of your clickers and color detectors
+    </string>
+    <string name="tutorial_three">
+        If you tap on a clicker, you\'ll find this menu\n
+        1: Exit this menu\n
+        2: Toggle the "pixel dipper". Tapping again will copy the tapped pixel\'s information to your clipboard\n
+        3: Add a color detector\n
+        4: Hide and show this menu (useful for viewing color detector lines)\n
+        5: Confirm your changes\n
+        6: Paste pixel information (preferably from pixel dipper)\n
+        7: Color detector settings\n
+        8: Remove color detector
+    </string>
 </resources>

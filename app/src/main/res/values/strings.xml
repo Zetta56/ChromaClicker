@@ -43,4 +43,6 @@
     <string name="projection_permission">Media Projection</string>
     <string name="projection_description">This app uses the Media Projection API to detect colors on your screen</string>
     <string name="action_tutorial">Tutorial</string>
+    <string name="tutorial_image">tutorial</string>
+    <string name="tutorial_title">Tutorial</string>
 </resources>

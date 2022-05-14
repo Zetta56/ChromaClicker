@@ -1,10 +1,12 @@
 package com.example.csac.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.csac.R
+import com.example.csac.tutorial.TutorialActivity
 
 open class ActionBarFragment(
     private val title: String,
@@ -31,9 +33,12 @@ open class ActionBarFragment(
                 activity?.onBackPressed()
                 return true
             }
-//            R.id.questionMark -> {
-//                println("tutorial")
-//            }
+            R.id.questionMark -> {
+                activity?.let {
+                    val intent = Intent(it.applicationContext, TutorialActivity::class.java)
+                    it.startActivity(intent)
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }

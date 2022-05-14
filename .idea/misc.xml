@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/drawable/default_dot.xml" value="0.18385416666666668" />
+        <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/drawable/selected_dot.xml" value="0.18385416666666668" />
+        <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/drawable/tab_selector.xml" value="0.18385416666666668" />
         <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/activity_main.xml" value="0.20520833333333333" />
         <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/activity_overlay.xml" value="0.16770833333333332" />
+        <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/activity_tutorial.xml" value="0.1" />
         <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/circle_form.xml" value="0.33" />
         <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/circle_menu.xml" value="0.33" />
         <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/clicker_menu.xml" value="0.17831813576494426" />
@@ -21,6 +25,8 @@
         <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/save_item.xml" value="0.29981884057971014" />
         <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/save_popup.xml" value="0.25" />
         <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/spinner_item.xml" value="0.2980072463768116" />
+        <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/tutorial.xml" value="0.18931159420289856" />
+        <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/layout/tutorial_item.xml" value="0.16770833333333332" />
         <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/menu/action_bar.xml" value="0.1828125" />
         <entry key="..\:/Coding/Projects/CSAC/app/src/main/res/xml/accessibilityservice.xml" value="0.16041666666666668" />
       </map>

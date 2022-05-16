@@ -58,7 +58,7 @@ class PermissionsDialog : DialogFragment() {
         binding = PermissionsDialogBinding.inflate(LayoutInflater.from(activity))
         setClickListeners()
 
-        val builder = AlertDialog.Builder(activity, R.style.permissionsDialog)
+        val builder = AlertDialog.Builder(activity, R.style.PermissionsDialog)
         builder.setTitle("Permissions")
         builder.setView(binding.root)
         return builder.create()

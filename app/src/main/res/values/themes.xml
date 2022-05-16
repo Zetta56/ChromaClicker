@@ -1,8 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style
-        name="Theme.ChromaClicker"
-        parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.ChromaClicker" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">#444444</item>
         <item name="colorPrimaryVariant">#333333</item>
@@ -17,18 +15,7 @@
         <item name="android:background">#333333</item>
     </style>
 
-    <style name="transparentTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:background">#00000000</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation</item>
-        <item name="android:navigationBarColor" tools:ignore="NewApi">#00000000</item>
-        <item name="android:statusBarColor" tools:ignore="NewApi">#00000000</item>
-    </style>
-
-    <style name="savePopup">
+    <style name="SavePopup">
         <item name="colorPrimary">@color/white</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">#272727</item>
@@ -36,12 +23,12 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
-    <style name="permissionsDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="PermissionsDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:background">#EEEEEE</item>
         <item name="android:textColor">#222222</item>
     </style>
 
-    <style name="tutorial">
+    <style name="TutorialPage">
         <item name="android:background">#2C2C2C</item>
     </style>
 

@@ -3,6 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/emptyMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="20dp"
+        android:text="@string/empty_saves"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textColor="#BBBBBB" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/savesList"
         android:layout_width="match_parent"

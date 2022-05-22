@@ -34,9 +34,9 @@ open class ActionBarFragment(
                 return true
             }
             R.id.questionMark -> {
-                activity?.let {
-                    val intent = Intent(it.applicationContext, TutorialActivity::class.java)
-                    it.startActivity(intent)
+                activity?.let { activity ->
+                    val intent = Intent(activity.applicationContext, TutorialActivity::class.java)
+                    activity.startActivity(intent)
                 }
             }
         }

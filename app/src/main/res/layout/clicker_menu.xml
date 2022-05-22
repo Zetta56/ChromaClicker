@@ -37,17 +37,6 @@
                 android:src="@drawable/cross" />
 
             <ImageButton
-                android:id="@+id/dipperButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:contentDescription="@string/dipper"
-                android:scaleType="fitCenter"
-                android:src="@drawable/dipper" />
-
-            <ImageButton
                 android:id="@+id/plusButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -57,17 +46,6 @@
                 android:contentDescription="@string/plus"
                 android:scaleType="fitCenter"
                 android:src="@drawable/plus" />
-
-            <ImageButton
-                android:id="@+id/eyeButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:contentDescription="@string/eye"
-                android:scaleType="fitCenter"
-                android:src="@drawable/eye" />
 
             <ImageButton
                 android:id="@+id/checkButton"

@@ -3,7 +3,6 @@ package com.example.chromaclicker.overlay
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.res.Resources
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +30,7 @@ class OverlayMenu(
     init {
         // Dimensions for this menu, not clickers
         val width = 55
-        val y = toDP(Resources.getSystem().displayMetrics.heightPixels / 2) - 2 * width
+        val y = getScreenHeight("dp") / 2 - 2 * width
         val layoutParams = createOverlayLayout(width, 4 * width, y=y, gravity=(Gravity.START or Gravity.TOP))
         windowManager.addView(binding.root, layoutParams)
         clickers.forEach { clicker -> addClicker(clicker) }
@@ -87,8 +86,8 @@ class OverlayMenu(
 
     private fun addClicker() {
         val radius = settings.circleRadius
-        val x = toDP(Resources.getSystem().displayMetrics.widthPixels / 2) - radius
-        val y = toDP(Resources.getSystem().displayMetrics.heightPixels / 2) - radius
+        val x = getScreenWidth("dp") / 2 - radius
+        val y = getScreenHeight("dp") / 2 - radius
         val clickerLayout = createOverlayLayout(radius * 2, radius * 2, x=x, y=y, gravity=(Gravity.TOP or Gravity.START))
         val clickerView = ClickerView(context, null)
         val clicker = Clicker(

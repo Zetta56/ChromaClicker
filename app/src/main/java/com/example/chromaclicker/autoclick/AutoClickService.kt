@@ -3,8 +3,6 @@ package com.example.chromaclicker.autoclick
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -17,8 +15,10 @@ import android.media.projection.MediaProjectionManager
 import android.os.Handler
 import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.chromaclicker.getScreenHeight
+import com.example.chromaclicker.getScreenWidth
 import com.example.chromaclicker.models.AppSettings
 import com.example.chromaclicker.models.Clicker
 import java.lang.Long.max
@@ -106,23 +106,21 @@ class AutoClickService : AccessibilityService() {
             val colorInt = screenBitmap!!.getPixel(x, y)
             // Substring starts at 3rd character to ignore alpha value
             val colorString = Integer.toHexString(colorInt).substring(2)
-            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            val clipData = ClipData.newPlainText(colorString, "${x},${y},#${colorString}")
-            val toastText = "Copied to Clipboard: ${clipData.getItemAt(0).text}"
-            clipboard.setPrimaryClip(clipData)
-            Toast.makeText(applicationContext, toastText, Toast.LENGTH_SHORT).show()
+            val broadcast = Intent("receive_pixel_color")
+            broadcast.putExtra("color", "#$colorString")
+            LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(broadcast)
         }
     }
 
     private fun startRunners(clickers: ArrayList<Clicker>) {
         clickRunnable = object : Runnable {
             override fun run() {
-                settings?.let { s ->
+                settings?.let { settings ->
                     for((index, clicker) in clickers.withIndex()) {
                         if(clickerStates != null && clickerStates!![index]) {
-                            if(s.random) {
+                            if(settings.random) {
                                 val theta = Random.nextFloat() * 2 * PI.toFloat()
-                                val radius = Random.nextFloat() * (settings?.circleRadius ?: 30)
+                                val radius = Random.nextFloat() * (settings.circleRadius)
                                 click(clicker.x + radius * cos(theta), clicker.y + radius * sin(theta))
                             } else {
                                 click(clicker.x, clicker.y)
@@ -130,8 +128,8 @@ class AutoClickService : AccessibilityService() {
                         }
                     }
                     // If intervals are randomized, clicks can come out between 750ms faster to 750ms slower
-                    val delay = if(s.random) Random.nextLong(-750, 750) else 0
-                    handler.postDelayed(this, max(s.clickInterval + delay, 75))
+                    val delay = if(settings.random) Random.nextLong(-750, 750) else 0
+                    handler.postDelayed(this, max(settings.clickInterval + delay, 75))
                 }
             }
         }
@@ -164,8 +162,9 @@ class AutoClickService : AccessibilityService() {
         for((index, clicker) in clickers.withIndex()) {
             var state = true
             for(detector in clicker.detectors) {
-                val pixelColor = screenBitmap?.getPixel(detector.x.toInt(), detector.y.toInt())
-                if(pixelColor != Color.parseColor(detector.color)) {
+                val pixelColor = screenBitmap!!.getPixel(detector.x.toInt(), detector.y.toInt())
+                val pixelHexString = "#" + Integer.toHexString(pixelColor).substring(2)
+                if(pixelHexString != detector.color) {
                     state = false
                     break
                 }
@@ -176,17 +175,19 @@ class AutoClickService : AccessibilityService() {
 
     @SuppressLint("WrongConstant")
     private fun updateScreenBitmap(callback: () -> Unit = {}) {
-        val displayMetrics = Resources.getSystem().displayMetrics
+        val screenWidth = getScreenWidth()
+        val screenHeight = getScreenHeight()
+        val densityDpi = Resources.getSystem().displayMetrics.densityDpi
+
         // ImageReader and VirtualDisplay are stored as properties to avoid garbage-collection/early-destruction
         if(!screenshotting) {
             // Image reader receives images from a virtual display
-            imageReader = ImageReader.newInstance(displayMetrics.widthPixels, displayMetrics.heightPixels, PixelFormat.RGBA_8888, 2)
+            imageReader = ImageReader.newInstance(screenWidth, screenHeight, PixelFormat.RGBA_8888, 2)
             // Create a display that can mirror the screen, but cannot show other virtual displays
             val flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC or DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY
             // This includes the app status bar and navigation bar
-            virtualDisplay = projection!!.createVirtualDisplay("screen-mirror", displayMetrics.widthPixels,
-                displayMetrics.heightPixels + navbarHeight, displayMetrics.densityDpi, flags,
-                imageReader!!.surface, null , null)
+            virtualDisplay = projection!!.createVirtualDisplay("screen-mirror", screenWidth,
+                screenHeight + navbarHeight, densityDpi, flags, imageReader!!.surface, null , null)
             screenshotting = true
         }
 
@@ -194,10 +195,10 @@ class AutoClickService : AccessibilityService() {
             // Copy read image to a new bitmap
             val image = reader.acquireLatestImage()
             val plane = image.planes[0]
-            val bitmap = Bitmap.createBitmap(displayMetrics.widthPixels, displayMetrics.heightPixels, Bitmap.Config.ARGB_8888)
+            val bitmap = Bitmap.createBitmap(screenWidth, screenHeight, Bitmap.Config.ARGB_8888)
             bitmap.copyPixelsFromBuffer(plane.buffer)
             // Crop out the top status bar
-            screenBitmap = Bitmap.createBitmap(bitmap, 0, statusBarHeight, displayMetrics.widthPixels, displayMetrics.heightPixels - statusBarHeight)
+            screenBitmap = Bitmap.createBitmap(bitmap, 0, statusBarHeight, screenWidth, screenHeight - statusBarHeight)
             callback()
             // Cleanup
             image.close()

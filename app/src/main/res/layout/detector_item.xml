@@ -4,11 +4,11 @@
     android:layout_height="40dp">
 
     <ImageButton
-        android:id="@+id/pasteButton"
+        android:id="@+id/dipperButton"
         android:layout_width="15dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/paste"
+        android:src="@drawable/dipper"
         android:background="@null"
         android:contentDescription="@string/paste"
         android:scaleType="fitCenter"

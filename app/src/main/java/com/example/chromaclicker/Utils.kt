@@ -9,13 +9,10 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import com.example.chromaclicker.R
-import kotlin.math.max
-import kotlin.math.min
 
 fun createOverlayLayout(
-    width: Int = toDP(Resources.getSystem().displayMetrics.widthPixels),
-    height: Int = toDP(Resources.getSystem().displayMetrics.heightPixels),
+    width: Int = getScreenWidth("dp"),
+    height: Int = getScreenHeight("dp"),
     x: Int = 0,
     y: Int = 0,
     gravity: Int = Gravity.NO_GRAVITY,
@@ -47,7 +44,7 @@ fun createOverlayLayout(
 
 fun setRecursiveTouchListener(viewGroup: ViewGroup, listener: View.OnTouchListener) {
     viewGroup.setOnTouchListener(listener)
-    for(i in 0 until viewGroup.childCount - 1) {
+    for(i in 0 until viewGroup.childCount) {
         val child = viewGroup.getChildAt(i)
         if(child is ViewGroup) {
             setRecursiveTouchListener(child, listener)
@@ -69,6 +66,16 @@ fun toDP(pixels: Int): Int {
     return (pixels / Resources.getSystem().displayMetrics.density).toInt()
 }
 
-fun clamp(num: Int, lower: Int, upper: Int): Int {
-    return min(max(num, lower), upper)
+fun getScreenWidth(unit: String = "px"): Int {
+    return when(unit) {
+        "dp" -> toDP(Resources.getSystem().displayMetrics.widthPixels)
+        else -> Resources.getSystem().displayMetrics.widthPixels
+    }
+}
+
+fun getScreenHeight(unit: String = "px"): Int {
+    return when(unit) {
+        "dp" -> toDP(Resources.getSystem().displayMetrics.heightPixels)
+        else -> Resources.getSystem().displayMetrics.heightPixels
+    }
 }

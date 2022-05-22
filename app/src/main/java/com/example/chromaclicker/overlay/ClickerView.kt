@@ -50,7 +50,7 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
             overlayMenu.visibility = INVISIBLE
         }
 
-        setOnTouchListener(Draggable(windowManager, layoutParams, this, onActionUp={
+        setOnTouchListener(Draggable(windowManager, layoutParams, this, onActionUpListener={
             val center = getCenter(layoutParams)
             clicker.x = center[0]
             clicker.y = center[1]

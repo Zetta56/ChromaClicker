@@ -10,6 +10,7 @@ import com.example.chromaclicker.createOverlayLayout
 import com.example.chromaclicker.databinding.ClickerMenuBinding
 import com.example.chromaclicker.models.Clicker
 import com.example.chromaclicker.models.Detector
+import com.example.chromaclicker.setRecursiveTouchListener
 
 @SuppressLint("ClickableViewAccessibility")
 class ClickerMenu(
@@ -22,12 +23,11 @@ class ClickerMenu(
     private val overlayMenu: View,
 ) {
 
+    private var menuVisible = true
     private val binding = ClickerMenuBinding.inflate(LayoutInflater.from(context))
     private val layoutParams = createOverlayLayout(focusable=true)
     private val detectorViews = convertDetectors(clicker.detectors)
     private val detectorAdapter = DetectorAdapter(context, detectorViews, binding.root)
-    private var dipping = false
-    private var visible = true
 
     init {
         windowManager.addView(binding.root, layoutParams)
@@ -39,11 +39,10 @@ class ClickerMenu(
 
         // Add listeners
         binding.checkButton.setOnClickListener { confirm() }
-        binding.dipperButton.setOnClickListener { toggleDipper() }
         binding.plusButton.setOnClickListener { addDetector() }
-        binding.eyeButton.setOnClickListener { toggleVisibility() }
         binding.crossButton.setOnClickListener { cancel() }
-        binding.root.setOnTouchListener { _, event -> dip(event) }
+        binding.root.setOnClickListener { toggleVisibility(false) }
+        setRecursiveTouchListener(binding.menu) { _, _ -> if (!menuVisible) toggleVisibility(true) else false }
     }
 
     fun hasWindowToken(): Boolean {
@@ -75,27 +74,6 @@ class ClickerMenu(
         cancel()
     }
 
-    private fun toggleDipper() {
-        if(AutoClickService.instance?.projection != null) {
-            dipping = true
-            binding.menu.visibility = View.INVISIBLE
-        }
-    }
-
-    private fun dip(event: MotionEvent): Boolean {
-        if(dipping) {
-            val intent = Intent(context, AutoClickService::class.java)
-            // This starts from top of app (below status bar)
-            intent.putExtra("x", event.x.toInt())
-            intent.putExtra("y", event.y.toInt())
-            intent.action = "get_pixel_color"
-            context.startService(intent)
-            dipping = false
-            binding.menu.visibility = View.VISIBLE
-        }
-        return dipping
-    }
-
     private fun addDetector() {
         val detectorView = DetectorView(context, null)
         detectorView.startX = clickerCenter[0]
@@ -106,15 +84,16 @@ class ClickerMenu(
         detectorAdapter.notifyItemInserted(detectorViews.size - 1)
     }
 
-    private fun toggleVisibility() {
-        visible = !visible
-        binding.menu.alpha = if(visible) 1f else 0.1f
-        windowManager.updateViewLayout(binding.root, layoutParams)
-    }
-
     private fun cancel() {
         clickerViews.forEach { clickerView -> clickerView.visibility = View.VISIBLE }
         overlayMenu.visibility = View.VISIBLE
         onDestroy()
+    }
+
+    private fun toggleVisibility(toggle: Boolean): Boolean {
+        menuVisible = toggle
+        binding.menu.alpha = if(menuVisible) 1f else 0.1f
+        windowManager.updateViewLayout(binding.root, layoutParams)
+        return true
     }
 }

@@ -15,7 +15,7 @@
         android:layout_width="295dp"
         android:layout_height="295dp"
         android:layout_centerInParent="true"
-        android:background="#222222"
+        android:background="#272727"
         android:orientation="vertical"
         android:padding="15dp">
 
@@ -24,8 +24,12 @@
             android:layout_height="40dp"
             android:text="@string/clicker_menu_title"
             android:textColor="@color/white"
-            android:textAlignment="center"
-            android:textSize="26sp" />
+            android:textSize="24sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#999999"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/detectorForms"

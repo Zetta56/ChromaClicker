@@ -10,16 +10,16 @@ import android.widget.ArrayAdapter
 import androidx.core.widget.doAfterTextChanged
 import com.example.chromaclicker.R
 import com.example.chromaclicker.createOverlayLayout
-import com.example.chromaclicker.databinding.SavePopupBinding
+import com.example.chromaclicker.databinding.DialogSaveBinding
 import java.io.File
 
-class SavePopup(
+class SaveDialog(
     private val context: Context,
     defaultName: String,
     private val onlyNewSaves: Boolean = false,
     private val callback: (name: String) -> Unit
 ) {
-    private val binding = SavePopupBinding.inflate(LayoutInflater.from(context))
+    private val binding = DialogSaveBinding.inflate(LayoutInflater.from(context))
     private val windowManager = context.getSystemService(Service.WINDOW_SERVICE) as WindowManager
 
     init {
@@ -44,7 +44,7 @@ class SavePopup(
 
     private fun initializeDestOptions() {
         val types = arrayListOf("New Save", "Existing Save")
-        binding.destOptions.adapter = ArrayAdapter(context, R.layout.spinner_item, types)
+        binding.destOptions.adapter = ArrayAdapter(context, R.layout.item_spinner, types)
         binding.destOptions.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapter: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 when(binding.destOptions.selectedItem) {
@@ -76,7 +76,7 @@ class SavePopup(
         // Sort names alphabetically
         saveFiles.sort()
         saveFiles.add(0, "None")
-        return ArrayAdapter(context, R.layout.spinner_item, saveFiles)
+        return ArrayAdapter(context, R.layout.item_spinner, saveFiles)
     }
 
     private fun onSaveClick() {

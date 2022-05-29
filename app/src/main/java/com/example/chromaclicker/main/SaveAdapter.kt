@@ -13,7 +13,7 @@ import com.example.chromaclicker.R
 import com.example.chromaclicker.getDefaultPreferences
 import com.example.chromaclicker.models.Save
 import com.example.chromaclicker.overlay.OverlayService
-import com.example.chromaclicker.overlay.SavePopup
+import com.example.chromaclicker.overlay.SaveDialog
 import com.google.gson.Gson
 import java.io.File
 
@@ -34,7 +34,7 @@ class SaveAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.save_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_save, parent, false)
         return ViewHolder(view)
     }
 
@@ -54,7 +54,7 @@ class SaveAdapter(
             if(selectedSaveName == save.name) deselectSave(position) else selectSave(position, save)
         }
         holder.renameButton.setOnClickListener {
-            SavePopup(activity, save.name, true, fun(name) { renameSave(position, save, name) })
+            SaveDialog(activity, save.name, true, fun(name) { renameSave(position, save, name) })
         }
         holder.deleteButton.setOnClickListener {
             deleteSave(position)

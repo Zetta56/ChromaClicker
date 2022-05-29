@@ -5,7 +5,7 @@ import android.content.Context
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chromaclicker.createOverlayLayout
-import com.example.chromaclicker.databinding.ClickerMenuBinding
+import com.example.chromaclicker.databinding.MenuClickerBinding
 import com.example.chromaclicker.models.Clicker
 import com.example.chromaclicker.models.Detector
 import com.example.chromaclicker.setRecursiveTouchListener
@@ -22,12 +22,13 @@ class ClickerMenu(
 ) {
 
     private var menuVisible = true
-    private val binding = ClickerMenuBinding.inflate(LayoutInflater.from(context))
+    private val binding = MenuClickerBinding.inflate(LayoutInflater.from(context))
     private val layoutParams = createOverlayLayout(focusable=true)
     private val lines = convertDetectors(clicker.detectors)
-    private val detectorAdapter = DetectorAdapter(context, lines, binding.root)
+    private val detectorAdapter = DetectorAdapter(context, lines, binding.root, clickerCenter)
 
     init {
+        layoutParams.windowAnimations = android.R.style.Animation_Toast
         windowManager.addView(binding.root, layoutParams)
         lines.forEach { line -> binding.root.addView(line, 0) }
         binding.detectorForms.adapter = detectorAdapter
@@ -36,10 +37,11 @@ class ClickerMenu(
         binding.clicker.y = position[1]
 
         // Add listeners
-        binding.checkButton.setOnClickListener { confirm() }
-        binding.plusButton.setOnClickListener { addDetector() }
-        binding.crossButton.setOnClickListener { cancel() }
+        binding.confirmButton.setOnClickListener { confirm() }
+        binding.cancelButton.setOnClickListener { cancel() }
         binding.root.setOnClickListener { toggleVisibility(false) }
+        // Making menu clickable stops click events from propagating up to the root view
+        binding.menu.isClickable = true
         setRecursiveTouchListener(binding.menu) { _, _ -> if (!menuVisible) toggleVisibility(true) else false }
     }
 
@@ -70,16 +72,6 @@ class ClickerMenu(
         val detectorList = lines.map { line -> Detector(line) }
         clicker.detectors = detectorList.toTypedArray()
         cancel()
-    }
-
-    private fun addDetector() {
-        val line = Line(context, null)
-        line.startX = clickerCenter[0]
-        line.startY = clickerCenter[1]
-        line.invalidate()
-        binding.root.addView(line, 0)
-        lines += line
-        detectorAdapter.notifyItemInserted(lines.size - 1)
     }
 
     private fun cancel() {

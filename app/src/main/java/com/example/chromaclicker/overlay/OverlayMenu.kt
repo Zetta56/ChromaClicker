@@ -9,7 +9,7 @@ import android.view.View
 import android.view.WindowManager
 import com.example.chromaclicker.*
 import com.example.chromaclicker.autoclick.AutoClickService
-import com.example.chromaclicker.databinding.OverlayMenuBinding
+import com.example.chromaclicker.databinding.MenuOverlayBinding
 import com.example.chromaclicker.models.AppSettings
 import com.example.chromaclicker.models.Clicker
 import com.example.chromaclicker.models.Save
@@ -21,7 +21,7 @@ class OverlayMenu(
     private var settings: AppSettings,
     private val clickers: ArrayList<Clicker>
 ) {
-    private val binding = OverlayMenuBinding.inflate(LayoutInflater.from(context))
+    private val binding = MenuOverlayBinding.inflate(LayoutInflater.from(context))
     private val autoClickIntent = Intent(context, AutoClickService::class.java)
     private val windowManager = context.getSystemService(Service.WINDOW_SERVICE) as WindowManager
     private var circles = mutableListOf<Circle>()
@@ -41,7 +41,7 @@ class OverlayMenu(
         binding.playButton.setOnClickListener { toggleAutoClicker() }
         binding.plusButton.setOnClickListener { addClicker() }
         binding.minusButton.setOnClickListener { removeClicker() }
-        binding.saveButton.setOnClickListener { SavePopup(context, "", false, this::saveClickers) }
+        binding.saveButton.setOnClickListener { SaveDialog(context, "", false, this::saveClickers) }
     }
 
     fun onDestroy() {

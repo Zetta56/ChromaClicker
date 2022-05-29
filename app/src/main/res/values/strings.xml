@@ -70,4 +70,8 @@
         8: Remove color detector
     </string>
     <string name="empty_saves">You have no saved layouts</string>
+    <string name="add_detector">Add Detector +</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="clicker_menu_title">Color Detectors</string>
 </resources>

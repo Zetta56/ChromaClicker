@@ -20,7 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import com.example.chromaclicker.R
 import com.example.chromaclicker.autoclick.AutoClickService
-import com.example.chromaclicker.databinding.PermissionsDialogBinding
+import com.example.chromaclicker.databinding.DialogPermissionsBinding
 
 class PermissionsDialog : DialogFragment() {
     companion object {
@@ -33,7 +33,7 @@ class PermissionsDialog : DialogFragment() {
         }
     }
 
-    private lateinit var binding: PermissionsDialogBinding
+    private lateinit var binding: DialogPermissionsBinding
     private lateinit var projectionLauncher: ActivityResultLauncher<Intent>
     private lateinit var activity: Activity
 
@@ -55,7 +55,7 @@ class PermissionsDialog : DialogFragment() {
                 }, 500)
             }
         }
-        binding = PermissionsDialogBinding.inflate(LayoutInflater.from(activity))
+        binding = DialogPermissionsBinding.inflate(LayoutInflater.from(activity))
         setClickListeners()
 
         val builder = AlertDialog.Builder(activity, R.style.PermissionsDialog)

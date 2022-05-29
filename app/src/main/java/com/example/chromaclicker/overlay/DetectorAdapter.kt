@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.LinearLayout
@@ -20,22 +21,24 @@ import com.example.chromaclicker.getScreenWidth
 class DetectorAdapter(
     private val context: Context,
     private val lines: MutableList<Line>,
-    private val container: ViewGroup
+    private val container: ViewGroup,
+    private val clickerCenter: Array<Float>
 ) : RecyclerView.Adapter<DetectorAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) :  RecyclerView.ViewHolder(view) {
-        val dipperButton: ImageButton = view.findViewById(R.id.dipperButton)
-        val inputX: EditText = view.findViewById(R.id.inputX)
-        val inputY: EditText = view.findViewById(R.id.inputY)
-        val inputColor: EditText = view.findViewById(R.id.inputColor)
-        val crossButton: ImageButton = view.findViewById(R.id.crossButton)
+        val dipperButton: ImageButton? = view.findViewById(R.id.dipperButton)
+        val inputX: EditText? = view.findViewById(R.id.inputX)
+        val inputY: EditText? = view.findViewById(R.id.inputY)
+        val inputColor: EditText? = view.findViewById(R.id.inputColor)
+        val crossButton: ImageButton? = view.findViewById(R.id.crossButton)
+        val addButton: Button? = view.findViewById(R.id.addButton)
     }
 
     class DipperReceiver(private val holder: ViewHolder, private val event: MotionEvent) : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            holder.inputX.setText(event.x.toInt().toString())
-            holder.inputY.setText(event.y.toInt().toString())
-            holder.inputColor.setText(intent.getStringExtra("color"))
+            holder.inputX!!.setText(event.x.toInt().toString())
+            holder.inputY!!.setText(event.y.toInt().toString())
+            holder.inputColor!!.setText(intent.getStringExtra("color"))
             LocalBroadcastManager.getInstance(context).unregisterReceiver(this)
         }
     }
@@ -43,26 +46,44 @@ class DetectorAdapter(
     private val menu = container.findViewById<LinearLayout>(R.id.menu)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.detector_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val line = lines[position]
-        holder.dipperButton.setOnClickListener { toggleDipper(holder) }
-        holder.inputX.doAfterTextChanged { redrawX(line, holder.inputX) }
-        holder.inputY.doAfterTextChanged { redrawY(line, holder.inputY) }
-        holder.inputColor.doAfterTextChanged { redrawColor(line, holder.inputColor.text.toString()) }
-        holder.crossButton.setOnClickListener { removeDetector(line, position) }
+        if(position == lines.size) {
+            holder.addButton!!.setOnClickListener { addDetector() }
+        } else {
+            val line = lines[position]
+            holder.dipperButton!!.setOnClickListener { toggleDipper(holder) }
+            holder.inputX!!.doAfterTextChanged { redrawX(line, holder.inputX) }
+            holder.inputY!!.doAfterTextChanged { redrawY(line, holder.inputY) }
+            holder.inputColor!!.doAfterTextChanged { redrawColor(line, holder.inputColor.text.toString()) }
+            holder.crossButton!!.setOnClickListener { removeDetector(line, position) }
 
-        // Set default values
-        holder.inputX.setText(line.endX.toInt().toString())
-        holder.inputY.setText(line.endY.toInt().toString())
-        holder.inputColor.setText(line.color)
+            // Set default values
+            holder.inputX.setText(line.endX.toInt().toString())
+            holder.inputY.setText(line.endY.toInt().toString())
+            holder.inputColor.setText(line.color)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == lines.size) R.layout.button_add_detector else R.layout.item_detector
     }
 
     override fun getItemCount(): Int {
-        return lines.size
+        return lines.size + 1
+    }
+
+    private fun addDetector() {
+        val line = Line(context, null)
+        line.startX = clickerCenter[0]
+        line.startY = clickerCenter[1]
+        line.invalidate()
+        container.addView(line, 0)
+        lines += line
+        notifyItemInserted(lines.size - 1)
     }
 
     private fun redrawX(line: Line, input: EditText) {

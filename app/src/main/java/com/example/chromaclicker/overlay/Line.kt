@@ -8,7 +8,7 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
 
-class DetectorView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
+class Line(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private val paint = Paint()
     private val path = Path()
     var startX = 0f

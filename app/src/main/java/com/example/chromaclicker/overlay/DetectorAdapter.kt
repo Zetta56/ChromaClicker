@@ -19,7 +19,7 @@ import com.example.chromaclicker.getScreenWidth
 
 class DetectorAdapter(
     private val context: Context,
-    private val detectorViews: MutableList<DetectorView>,
+    private val lines: MutableList<Line>,
     private val container: ViewGroup
 ) : RecyclerView.Adapter<DetectorAdapter.ViewHolder>() {
 
@@ -48,50 +48,50 @@ class DetectorAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val detectorView = detectorViews[position]
+        val line = lines[position]
         holder.dipperButton.setOnClickListener { toggleDipper(holder) }
-        holder.inputX.doAfterTextChanged { redrawX(detectorView, holder.inputX) }
-        holder.inputY.doAfterTextChanged { redrawY(detectorView, holder.inputY) }
-        holder.inputColor.doAfterTextChanged { redrawColor(detectorView, holder.inputColor.text.toString()) }
-        holder.crossButton.setOnClickListener { removeDetector(detectorView, position) }
+        holder.inputX.doAfterTextChanged { redrawX(line, holder.inputX) }
+        holder.inputY.doAfterTextChanged { redrawY(line, holder.inputY) }
+        holder.inputColor.doAfterTextChanged { redrawColor(line, holder.inputColor.text.toString()) }
+        holder.crossButton.setOnClickListener { removeDetector(line, position) }
 
         // Set default values
-        holder.inputX.setText(detectorView.endX.toInt().toString())
-        holder.inputY.setText(detectorView.endY.toInt().toString())
-        holder.inputColor.setText(detectorView.color)
+        holder.inputX.setText(line.endX.toInt().toString())
+        holder.inputY.setText(line.endY.toInt().toString())
+        holder.inputColor.setText(line.color)
     }
 
     override fun getItemCount(): Int {
-        return detectorViews.size
+        return lines.size
     }
 
-    private fun redrawX(detectorView: DetectorView, input: EditText) {
+    private fun redrawX(line: Line, input: EditText) {
         val text = input.text.toString()
         if(text.isNotEmpty() && 0 <= text.toFloat() && text.toFloat() <= getScreenWidth()) {
-            detectorView.endX = text.toFloat()
-            detectorView.invalidate()
+            line.endX = text.toFloat()
+            line.invalidate()
         }
     }
 
-    private fun redrawY(detectorView: DetectorView, input: EditText) {
+    private fun redrawY(line: Line, input: EditText) {
         val text = input.text.toString()
         if(text.isNotEmpty() && 0 <= text.toFloat() && text.toFloat() <= getScreenHeight()) {
-            detectorView.endY = text.toFloat()
-            detectorView.invalidate()
+            line.endY = text.toFloat()
+            line.invalidate()
         }
     }
 
-    private fun redrawColor(detectorView: DetectorView, color: String) {
+    private fun redrawColor(line: Line, color: String) {
         val hexRegex = Regex("^#[0-9A-Fa-f]{6}\$")
         if(color.matches(hexRegex)) {
-            detectorView.color = color
-            detectorView.invalidate()
+            line.color = color
+            line.invalidate()
         }
     }
 
-    private fun removeDetector(detectorView: DetectorView, position: Int) {
-        container.removeView(detectorView)
-        detectorViews.removeAt(position)
+    private fun removeDetector(line: Line, position: Int) {
+        container.removeView(line)
+        lines.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemCount)
     }

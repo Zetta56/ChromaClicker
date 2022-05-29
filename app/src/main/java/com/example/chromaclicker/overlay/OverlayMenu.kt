@@ -24,7 +24,7 @@ class OverlayMenu(
     private val binding = OverlayMenuBinding.inflate(LayoutInflater.from(context))
     private val autoClickIntent = Intent(context, AutoClickService::class.java)
     private val windowManager = context.getSystemService(Service.WINDOW_SERVICE) as WindowManager
-    private var clickerViews = mutableListOf<ClickerView>()
+    private var circles = mutableListOf<Circle>()
     private var playing = false
 
     init {
@@ -45,7 +45,7 @@ class OverlayMenu(
     }
 
     fun onDestroy() {
-        clickerViews.forEach { clickerView -> clickerView.onDestroy(windowManager) }
+        circles.forEach { circle -> circle.onDestroy(windowManager) }
         windowManager.removeView(binding.root)
         autoClickIntent.putExtra("enabled", false)
         context.startService(autoClickIntent)
@@ -57,11 +57,11 @@ class OverlayMenu(
             toggleAutoClicker()
             toggleAutoClicker()
         }
-        for(clickerView in clickerViews) {
-            val layoutParams = clickerView.layoutParams
+        for(circle in circles) {
+            val layoutParams = circle.layoutParams
             layoutParams.width = 2 * toPixels(settings.circleRadius)
             layoutParams.height = 2 * toPixels(settings.circleRadius)
-            windowManager.updateViewLayout(clickerView, layoutParams)
+            windowManager.updateViewLayout(circle, layoutParams)
         }
     }
 
@@ -71,12 +71,12 @@ class OverlayMenu(
         }
         playing = !playing
         if(playing) {
-            clickerViews.forEach { clickerView -> clickerView.visibility = View.INVISIBLE }
+            circles.forEach { circle -> circle.visibility = View.INVISIBLE }
             binding.playButton.setImageResource(R.drawable.pause)
             autoClickIntent.putExtra("settings", settings)
             autoClickIntent.putParcelableArrayListExtra("clickers", clickers)
         } else {
-            clickerViews.forEach { clickerView -> clickerView.visibility = View.VISIBLE }
+            circles.forEach { circle -> circle.visibility = View.VISIBLE }
             binding.playButton.setImageResource(R.drawable.play)
         }
         autoClickIntent.putExtra("enabled", playing)
@@ -89,17 +89,17 @@ class OverlayMenu(
         val x = getScreenWidth("dp") / 2 - radius
         val y = getScreenHeight("dp") / 2 - radius
         val clickerLayout = createOverlayLayout(radius * 2, radius * 2, x=x, y=y, gravity=(Gravity.TOP or Gravity.START))
-        val clickerView = ClickerView(context, null)
+        val circle = Circle(context, null)
         val clicker = Clicker(
             (clickerLayout.x + clickerLayout.width / 2).toFloat(),
             (clickerLayout.y + clickerLayout.height / 2).toFloat(),
             arrayOf()
         )
 
-        clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root)
+        circle.addListeners(windowManager, clicker, clickerLayout, circles, binding.root)
         clickers += clicker
-        clickerViews += clickerView
-        windowManager.addView(clickerView, clickerLayout)
+        circles += circle
+        windowManager.addView(circle, clickerLayout)
     }
 
     private fun addClicker(clicker: Clicker) {
@@ -108,17 +108,17 @@ class OverlayMenu(
         val x = toDP(clicker.x.toInt()) - settings.circleRadius
         val y = toDP(clicker.y.toInt()) - settings.circleRadius
         val clickerLayout = createOverlayLayout(radius * 2, radius * 2, x=x, y=y, gravity=(Gravity.TOP or Gravity.START))
-        val clickerView = ClickerView(context, null)
-        clickerView.addListeners(windowManager, clicker, clickerLayout, clickerViews, binding.root)
-        clickerViews += clickerView
-        windowManager.addView(clickerView, clickerLayout)
+        val circle = Circle(context, null)
+        circle.addListeners(windowManager, clicker, clickerLayout, circles, binding.root)
+        circles += circle
+        windowManager.addView(circle, clickerLayout)
     }
 
     private fun removeClicker() {
-        if(clickerViews.size > 0) {
-            windowManager.removeView(clickerViews[clickerViews.lastIndex])
-            clickers.removeAt(clickerViews.lastIndex)
-            clickerViews.removeAt(clickerViews.lastIndex)
+        if(circles.size > 0) {
+            windowManager.removeView(circles[circles.lastIndex])
+            clickers.removeAt(clickers.lastIndex)
+            circles.removeAt(circles.lastIndex)
         }
     }
 

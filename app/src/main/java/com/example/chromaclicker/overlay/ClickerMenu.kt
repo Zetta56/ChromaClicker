@@ -2,10 +2,8 @@ package com.example.chromaclicker.overlay
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.chromaclicker.autoclick.AutoClickService
 import com.example.chromaclicker.createOverlayLayout
 import com.example.chromaclicker.databinding.ClickerMenuBinding
 import com.example.chromaclicker.models.Clicker
@@ -19,19 +17,19 @@ class ClickerMenu(
     private val clicker: Clicker,
     position: List<Float>,
     private val clickerCenter: Array<Float>,
-    private val clickerViews: MutableList<ClickerView>,
+    private val circles: MutableList<Circle>,
     private val overlayMenu: View,
 ) {
 
     private var menuVisible = true
     private val binding = ClickerMenuBinding.inflate(LayoutInflater.from(context))
     private val layoutParams = createOverlayLayout(focusable=true)
-    private val detectorViews = convertDetectors(clicker.detectors)
-    private val detectorAdapter = DetectorAdapter(context, detectorViews, binding.root)
+    private val lines = convertDetectors(clicker.detectors)
+    private val detectorAdapter = DetectorAdapter(context, lines, binding.root)
 
     init {
         windowManager.addView(binding.root, layoutParams)
-        detectorViews.forEach { view -> binding.root.addView(view, 0) }
+        lines.forEach { line -> binding.root.addView(line, 0) }
         binding.detectorForms.adapter = detectorAdapter
         binding.detectorForms.layoutManager = LinearLayoutManager(context)
         binding.clicker.x = position[0]
@@ -54,38 +52,38 @@ class ClickerMenu(
         windowManager.removeView(binding.root)
     }
 
-    private fun convertDetectors(detectors: Array<Detector>): MutableList<DetectorView> {
-        val viewList = detectors.map { detector ->
-            val view = DetectorView(context, null)
-            view.startX = clickerCenter[0]
-            view.startY = clickerCenter[1]
-            view.endX = detector.x
-            view.endY = detector.y
-            view.color = detector.color
-            view.invalidate()
-            return@map view
+    private fun convertDetectors(detectors: Array<Detector>): MutableList<Line> {
+        val lines = detectors.map { detector ->
+            val line = Line(context, null)
+            line.startX = clickerCenter[0]
+            line.startY = clickerCenter[1]
+            line.endX = detector.x
+            line.endY = detector.y
+            line.color = detector.color
+            line.invalidate()
+            return@map line
         }
-        return viewList.toMutableList()
+        return lines.toMutableList()
     }
 
     private fun confirm() {
-        val detectorList = detectorViews.map { detectorView -> Detector(detectorView) }
+        val detectorList = lines.map { line -> Detector(line) }
         clicker.detectors = detectorList.toTypedArray()
         cancel()
     }
 
     private fun addDetector() {
-        val detectorView = DetectorView(context, null)
-        detectorView.startX = clickerCenter[0]
-        detectorView.startY = clickerCenter[1]
-        detectorView.invalidate()
-        binding.root.addView(detectorView, 0)
-        detectorViews += detectorView
-        detectorAdapter.notifyItemInserted(detectorViews.size - 1)
+        val line = Line(context, null)
+        line.startX = clickerCenter[0]
+        line.startY = clickerCenter[1]
+        line.invalidate()
+        binding.root.addView(line, 0)
+        lines += line
+        detectorAdapter.notifyItemInserted(lines.size - 1)
     }
 
     private fun cancel() {
-        clickerViews.forEach { clickerView -> clickerView.visibility = View.VISIBLE }
+        circles.forEach { circle -> circle.visibility = View.VISIBLE }
         overlayMenu.visibility = View.VISIBLE
         onDestroy()
     }

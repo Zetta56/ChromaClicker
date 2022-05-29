@@ -10,7 +10,7 @@ import android.view.View
 import android.view.WindowManager
 import com.example.chromaclicker.models.Clicker
 
-class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
+class Circle(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private lateinit var clickerMenu: ClickerMenu
     private val borderPaint = Paint()
     private val centerPaint = Paint()
@@ -41,12 +41,12 @@ class ClickerView(context: Context?, attrs: AttributeSet?) : View(context, attrs
 
     @SuppressLint("ClickableViewAccessibility")
     fun addListeners(windowManager: WindowManager, clicker: Clicker, layoutParams: WindowManager.LayoutParams,
-                     clickerViews: MutableList<ClickerView>, overlayMenu: View) {
+                     circles: MutableList<Circle>, overlayMenu: View) {
         setOnClickListener {
             val position = listOf(layoutParams.x.toFloat(), layoutParams.y.toFloat())
-            clickerMenu = ClickerMenu(context, windowManager, clicker, position, getCenter(layoutParams), clickerViews, overlayMenu)
+            clickerMenu = ClickerMenu(context, windowManager, clicker, position, getCenter(layoutParams), circles, overlayMenu)
             // Hide other views
-            clickerViews.forEach { clickerView -> clickerView.visibility = INVISIBLE }
+            circles.forEach { circle -> circle.visibility = INVISIBLE }
             overlayMenu.visibility = INVISIBLE
         }
 

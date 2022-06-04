@@ -5,6 +5,10 @@ import android.os.Parcelable
 import com.example.chromaclicker.getDefaultPreferences
 import kotlinx.parcelize.Parcelize
 
+/**
+ * A parcelable object storing app settings. You can either pass in each individual setting
+ * or a context object. The latter option will populate this using your shared preferences.
+ */
 @Parcelize
 class AppSettings(
     var random: Boolean = false,

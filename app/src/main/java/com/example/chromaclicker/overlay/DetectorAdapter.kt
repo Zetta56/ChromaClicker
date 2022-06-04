@@ -34,11 +34,12 @@ class DetectorAdapter(
         val addButton: Button? = view.findViewById(R.id.addButton)
     }
 
-    class DipperReceiver(private val holder: ViewHolder, private val event: MotionEvent) : BroadcastReceiver() {
+    inner class DipperReceiver(private val holder: ViewHolder, private val event: MotionEvent) : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             holder.inputX!!.setText(event.x.toInt().toString())
             holder.inputY!!.setText(event.y.toInt().toString())
             holder.inputColor!!.setText(intent.getStringExtra("color"))
+            menu.visibility = View.VISIBLE
             LocalBroadcastManager.getInstance(context).unregisterReceiver(this)
         }
     }
@@ -124,7 +125,6 @@ class DetectorAdapter(
             container.setOnTouchListener { _, event ->
                 if(event.action == MotionEvent.ACTION_UP) {
                     dip(holder, event)
-                    menu.visibility = View.VISIBLE
                     container.setOnTouchListener(null)
                     true
                 } else {
@@ -143,7 +143,7 @@ class DetectorAdapter(
         // This starts from top of app (below status bar)
         intent.putExtra("x", event.x.toInt())
         intent.putExtra("y", event.y.toInt())
-        intent.action = "get_pixel_color"
+        intent.action = "send_pixel_color"
         context.startService(intent)
     }
 }

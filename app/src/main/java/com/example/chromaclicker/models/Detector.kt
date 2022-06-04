@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.example.chromaclicker.overlay.Line
 import kotlinx.parcelize.Parcelize
 
+/** A parcelable object storing detector data */
 @Parcelize
 class Detector(var x: Float, var y: Float, var color: String) : Parcelable {
     constructor(view: Line) : this(

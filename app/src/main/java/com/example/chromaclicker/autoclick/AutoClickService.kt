@@ -105,8 +105,8 @@ class AutoClickService : AccessibilityService() {
     }
 
     /**
-     * Parses the passed intent and either creates or removes this service's runnables, depending
-     * on the intent's extras. This also initializes [settings].
+     * Parses the passed intent and either creates or removes this service's runnables from the
+     * main thread, depending on the intent's extras. This also initializes [settings].
      */
     private fun toggleRunners(intent: Intent) {
         val enabled = intent.extras!!.getBoolean("enabled")
@@ -189,8 +189,8 @@ class AutoClickService : AccessibilityService() {
     }
 
     /**
-     * Posts the color detection runnable to the app's main thread. This updates the service's
-     * [screenshot] and then records whether each clicker in [clickers] should be clicking. This
+     * Posts the color detection runnable to the app's main thread, which updates the service's
+     * [screenshot] and then records whether each of the provided clickers should be clicking. This
      * process repeats every x seconds (specified in this class's [settings])
      */
     private fun startDetecting(clickers: ArrayList<Clicker>) {
@@ -222,8 +222,8 @@ class AutoClickService : AccessibilityService() {
 
     /**
      * Creates a [VirtualDisplay] and [ImageReader] used to capture the screen. After this
-     * image finishes rendering, this will update the current [screenshot] and run the provided
-     * [callback] function.
+     * image finishes rendering, this will update the current [screenshot], clean up, and run
+     * the provided [callback] function.
      */
     private fun captureScreen(callback: () -> Unit = {}) {
         // Don't re-create reader and virtual display if the previous image is still rendering
@@ -242,14 +242,14 @@ class AutoClickService : AccessibilityService() {
         // Runs after virtual display finishes rendering to image reader
         imageReader!!.setOnImageAvailableListener({ reader ->
             updateScreenshot(reader)
+            virtualDisplay?.release()
+            reader.close()
+            screenshotting = false
             callback()
         }, null)
     }
 
-    /**
-     * This sets the [screenshot] to a formatted version of the [image reader's][reader] image and
-     * then cleans up.
-     */
+    /** This formats the [image reader's][reader] image and sets the [screenshot] to it. */
     private fun updateScreenshot(reader: ImageReader) {
         // Copy image to a new bitmap
         val image = reader.acquireLatestImage()
@@ -259,11 +259,7 @@ class AutoClickService : AccessibilityService() {
         // Crop out the top status bar
         screenshot = Bitmap.createBitmap(bitmap, 0, statusBarHeight, imageReader!!.width,
             imageReader!!.height - statusBarHeight)
-        // Cleanup
         image.close()
-        virtualDisplay?.release()
-        reader.close()
-        screenshotting = false
     }
 }
 

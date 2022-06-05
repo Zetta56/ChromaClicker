@@ -9,7 +9,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.chromaclicker.databinding.FragmentTutorialPageBinding
 
-class PageFragment(private val image: Int, private val description: Int) : Fragment() {
+/** Renders a page in the tutorial populated with an [image] and [description] */
+class PageFragment(
+    private val image: Int,
+    private val description: Int
+) : Fragment() {
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -19,13 +24,15 @@ class PageFragment(private val image: Int, private val description: Int) : Fragm
         val binding = FragmentTutorialPageBinding.inflate(LayoutInflater.from(context))
         binding.image.setImageResource(image)
         binding.description.setText(description)
+        // Stop view-pager from handling touch event on the description, allowing you to scroll
+        // through a long description
         binding.description.setOnTouchListener { _, _ ->
-            // Stop view-pager from handling touch event on description
             binding.root.parent.requestDisallowInterceptTouchEvent(true)
             false
         }
-        // Reset description's movement method instead of following view-pager
+        // Reset description's movement method instead of following the view-pager
         binding.description.movementMethod = ScrollingMovementMethod()
         return binding.root
     }
+
 }

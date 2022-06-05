@@ -8,16 +8,20 @@ import androidx.fragment.app.Fragment
 import com.example.chromaclicker.R
 import com.example.chromaclicker.tutorial.TutorialActivity
 
+/**
+ * Fragments can inherit from this class to display an action bar. You can decide its [title] and
+ * whether to [show a back button][hasBackButton].
+ */
 open class ActionBarFragment(
     private val title: String,
-    private val hasOptionsMenu: Boolean
+    private val hasBackButton: Boolean
 ) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val actionBar = (activity as AppCompatActivity).supportActionBar
         actionBar?.title = title
         // Show back button
-        actionBar?.setDisplayHomeAsUpEnabled(hasOptionsMenu)
+        actionBar?.setDisplayHomeAsUpEnabled(hasBackButton)
         // Populate options menu
         setHasOptionsMenu(true)
         super.onViewCreated(view, savedInstanceState)
@@ -29,10 +33,12 @@ open class ActionBarFragment(
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
+            // Go back when pressing the back button
             android.R.id.home -> {
                 activity?.onBackPressed()
                 return true
             }
+            // Show the tutorial when pressing the question mark button
             R.id.questionMark -> {
                 activity?.let { activity ->
                     val intent = Intent(activity.applicationContext, TutorialActivity::class.java)

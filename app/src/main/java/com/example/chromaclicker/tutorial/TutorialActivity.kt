@@ -10,15 +10,19 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.chromaclicker.R
 import com.example.chromaclicker.databinding.ActivityTutorialBinding
 
+/** This activity populates and displays the tutorial. */
 class TutorialActivity : AppCompatActivity() {
 
+    /** Manages the tutorial layout's ViewPager2 */
     private class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+        // Initialize images and descriptions for each tutorial page
         val images = listOf(R.drawable.tutorial_one, R.drawable.tutorial_two, R.drawable.tutorial_three)
         val descriptions = listOf(R.string.tutorial_one, R.string.tutorial_two, R.string.tutorial_three)
 
         override fun getItemCount(): Int {
             return images.size
         }
+
         override fun createFragment(position: Int): Fragment {
             return PageFragment(images[position], descriptions[position])
         }
@@ -27,6 +31,7 @@ class TutorialActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.title = "Tutorial"
+        // Show back button
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val binding = ActivityTutorialBinding.inflate(LayoutInflater.from(this))
@@ -35,6 +40,7 @@ class TutorialActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Go back when pressing the back button
         if(item.itemId == android.R.id.home) {
             onBackPressed()
             return true

@@ -17,8 +17,8 @@ import com.google.gson.Gson
 import java.io.File
 
 /**
- * Manages a save adapter. This displays a list of [save names][fileNames] and a check mark next to
- * the currently selected save's [name][selected].
+ * Manages a list of save views. This displays a list of [save names][fileNames] and a check mark
+ * next to the currently selected save's [name][selected].
  */
 class SaveAdapter(
     private val activity: MainActivity,
@@ -82,9 +82,9 @@ class SaveAdapter(
         val preferences = getDefaultPreferences(activity)
         preferences.edit().putString("saveName", save.name).apply()
         selectedSaveName = save.name
+        // selectedPosition must be changed after notifying the adapter to reload both save items
         notifyItemChanged(position)
         notifyItemChanged(selectedPosition)
-        // selectedPosition must be changed after notifying the adapter to deselect the previous save
         selectedPosition = position
 
         // Reload overlay if it's already running
@@ -129,7 +129,7 @@ class SaveAdapter(
         val file = File("${activity.filesDir}/saves/${name}")
         file.delete()
         fileNames.remove(name)
-        // Reload parts of the adapter
+        // Reload adapter item and item count
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, itemCount)
     }

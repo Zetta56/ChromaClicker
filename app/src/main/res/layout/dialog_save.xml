@@ -14,7 +14,7 @@
         android:paddingHorizontal="5dp" />
 
     <Spinner
-        android:id="@+id/destOptions"
+        android:id="@+id/destDropdown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -30,7 +30,7 @@
         android:layout_height="50dp" />
 
     <Spinner
-        android:id="@+id/saveOptions"
+        android:id="@+id/saveDropdown"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#1B1B1B" />

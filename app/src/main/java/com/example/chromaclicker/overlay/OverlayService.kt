@@ -12,11 +12,18 @@ import com.example.chromaclicker.models.AppSettings
 import com.example.chromaclicker.models.Clicker
 import kotlin.collections.ArrayList
 
+/** This service displays overlay windows.
+ *  You can launch intents to this service that have following actions:
+ *  - enable: Displays the overlay menu and creates a notification. Extras: settings (AppSettings),
+ *  clickers (ArrayList<Clicker>)
+ *  - update_settings: Reloads the overlay menu with updated settings. Extras: settings (AppSettings)
+ */
 class OverlayService : Service() {
 
     companion object {
         private var running = false
 
+        /** Returns whether an instance of this service is running */
         fun isRunning(): Boolean {
             return running
         }
@@ -27,6 +34,7 @@ class OverlayService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when(intent?.action) {
+            // Pass intent data to the overlay menu and make a notification
             "enable" -> {
                 val settings = intent.extras!!.getParcelable<AppSettings>("settings")!!
                 clickers = intent.extras!!.getParcelableArrayList("clickers")!!
@@ -34,12 +42,12 @@ class OverlayService : Service() {
                 makeNotification()
                 running = true
             }
+            // Pass updated settings to the overlay menu
             "update_settings" -> {
                 val settings = intent.extras!!.getParcelable<AppSettings>("settings")!!
                 overlayMenu?.updateSettings(settings)
             }
         }
-
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -54,9 +62,13 @@ class OverlayService : Service() {
         super.onDestroy()
     }
 
+    /**
+     * Sends a notification to the user. This must be called for this service to be ran as a
+     * foreground service in API 26+
+     */
     private fun makeNotification() {
         if(Build.VERSION.SDK_INT >= 26) {
-            // Create notification channel for foreground service
+            // Create notification channel for this foreground service
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             val channel = NotificationChannel(
                 getString(R.string.channel_id),

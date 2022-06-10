@@ -6,7 +6,7 @@
     android:background="@null">
 
     <com.example.chromaclicker.overlay.Circle
-        android:id="@+id/clicker"
+        android:id="@+id/circle"
         android:layout_width="60dp"
         android:layout_height="60dp" />
 

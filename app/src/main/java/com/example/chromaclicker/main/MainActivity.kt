@@ -9,7 +9,7 @@ import com.example.chromaclicker.models.AppSettings
 import com.example.chromaclicker.models.Save
 import com.example.chromaclicker.overlay.OverlayService
 
-/** This is the main activity. It contains methods shared by multiple of its fragments. */
+/** This is the main activity. It contains methods shared by multiple fragments. */
 class MainActivity : AppCompatActivity() {
     private lateinit var overlayIntent: Intent
 

@@ -33,13 +33,13 @@ class SaveDialog(
                 // Only show the name input
                 "New Save" -> {
                     binding.nameInput.visibility = View.VISIBLE
-                    binding.destDropdown.visibility = View.GONE
+                    binding.saveDropdown.visibility = View.GONE
                     binding.positive.isEnabled = binding.nameInput.text.isNotEmpty()
                 }
                 // Only show the saves dropdown
                 "Existing Save" -> {
                     binding.nameInput.visibility = View.GONE
-                    binding.destDropdown.visibility = View.VISIBLE
+                    binding.saveDropdown.visibility = View.VISIBLE
                     binding.positive.isEnabled = true
                 }
             }
@@ -52,12 +52,11 @@ class SaveDialog(
     private val windowManager = context.getSystemService(Service.WINDOW_SERVICE) as WindowManager
 
     init {
-        val layoutParams = createOverlayLayout(300, 200, focusable=true)
+        val layoutParams = createOverlayLayout(focusable=true)
         // Add fade-in and fade-out animations
         layoutParams.windowAnimations = android.R.style.Animation_Toast
         windowManager.addView(binding.root, layoutParams)
 
-        // Make destination dropdown if onlyNewSaves is false and hide it otherwise
         initializeDestDropdown()
         binding.positive.isEnabled = false
         binding.positive.setOnClickListener { onSubmit() }
@@ -75,7 +74,7 @@ class SaveDialog(
     /**
      * Initializes the destination dropdown used to either save to a new file or an existing file.
      *
-     * If onlyNewSaves is true, this will hide the destination dropdown.
+     * If onlyNewSaves is true, this will instead hide the destination dropdown.
      */
     private fun initializeDestDropdown() {
         if(!onlyNewSaves) {

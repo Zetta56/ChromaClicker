@@ -1,6 +1,7 @@
 package com.example.chromaclicker.overlay
 
 import android.content.Context
+import android.graphics.Color
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chromaclicker.createOverlayLayout
@@ -35,7 +36,10 @@ class ClickerMenu(
         // Add an animation to this menu
         layoutParams.windowAnimations = android.R.style.Animation_Toast
         windowManager.addView(binding.root, layoutParams)
+        // Add detector lines to container
         lines.forEach { line -> binding.root.addView(line, 0) }
+        // Add dimming effect
+        binding.root.setBackgroundColor(Color.parseColor("#55111111"))
         // Initialize the RecyclerView for detectors
         binding.detectorForms.adapter = detectorAdapter
         binding.detectorForms.layoutManager = LinearLayoutManager(context)

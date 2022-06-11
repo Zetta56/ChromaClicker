@@ -2,6 +2,7 @@ package com.example.chromaclicker.overlay
 
 import android.annotation.SuppressLint
 import android.content.*
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -44,7 +45,7 @@ class DetectorAdapter(
     /**
      * This receives the color sent by the [AutoClickService]. Then, this will paste the color and
      * the [event]'s coordinates into the [holder]'s inputs. This also cleans up by unregistering
-     * itself and showing the menu (possibly hidden by [toggleDipper]).
+     * itself, re-dimming the screen, and showing the menu (previously hidden by [toggleDipper]).
      */
     inner class DipperReceiver(
         private val holder: ViewHolder,
@@ -55,6 +56,7 @@ class DetectorAdapter(
             holder.inputY!!.setText(event.y.toInt().toString())
             holder.inputColor!!.setText(intent.getStringExtra("color"))
             menu.visibility = View.VISIBLE
+            container.setBackgroundColor(Color.parseColor("#55111111"))
             LocalBroadcastManager.getInstance(context).unregisterReceiver(this)
         }
     }
@@ -157,8 +159,9 @@ class DetectorAdapter(
     private fun toggleDipper(holder: ViewHolder) {
         // Check if the auto-clicker was initialized with a projection
         if(AutoClickService.instance?.projection != null) {
-            // Hide the menu
+            // Hide the menu and dimming effect
             menu.visibility = View.INVISIBLE
+            container.setBackgroundColor(Color.TRANSPARENT)
             // On click (cursor up), dip the selected pixel and remove this listener
             container.setOnTouchListener { _, event ->
                 // Returns whether the touch event was handled

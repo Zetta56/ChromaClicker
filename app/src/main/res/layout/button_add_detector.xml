@@ -10,7 +10,7 @@
         android:layout_gravity="center_horizontal"
         android:text="@string/add_detector"
         android:textSize="16sp"
-        android:textColor="#2DADF4"
+        android:textColor="@color/blue"
         android:background="@null" />
 
 </FrameLayout>

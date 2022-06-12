@@ -2,13 +2,13 @@ package com.example.chromaclicker.main
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
+import com.example.chromaclicker.R
 import com.example.chromaclicker.databinding.FragmentSettingsBinding
 import com.example.chromaclicker.getDefaultPreferences
 import com.example.chromaclicker.models.AppSettings
@@ -80,8 +80,8 @@ class SettingsFragment : ActionBarFragment("Settings", true) {
 
     /** Toggles the apply button's interactivity and color. */
     private fun toggleApplyButton(toggle: Boolean) {
-        val textColor = if(toggle) "#2DADF4" else "#555555"
-        binding.applyButton.setTextColor(Color.parseColor(textColor))
+        val color = if(toggle) R.color.blue else R.color.dark_gray
+        binding.applyButton.setTextColor(context!!.getColor(color))
         binding.applyButton.isEnabled = toggle
     }
 

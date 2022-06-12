@@ -3,12 +3,13 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#55111111">
+    android:background="@color/dim">
 
     <LinearLayout
         android:layout_width="300dp"
         android:layout_height="200dp"
         android:layout_gravity="center"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="20dp"
         android:theme="@style/SavePopup">
@@ -40,7 +41,7 @@
             android:id="@+id/saveDropdown"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#1B1B1B" />
+            android:background="#1D1D1D" />
 
         <LinearLayout
             android:layout_width="match_parent"

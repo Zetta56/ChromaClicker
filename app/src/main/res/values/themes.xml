@@ -2,33 +2,29 @@
     <!-- Base application theme. -->
     <style name="Theme.ChromaClicker" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">#444444</item>
-        <item name="colorPrimaryVariant">#333333</item>
-        <item name="colorOnPrimary">#DDDDDD</item>
+        <item name="colorPrimary">@color/light_charcoal</item>
+        <item name="colorPrimaryVariant">@color/charcoal</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">#EEEEEE</item>
-        <item name="colorSecondaryVariant">#CCCCCC</item>
-        <item name="colorOnSecondary">#3A3A3A</item>
+        <item name="colorSecondary">@color/snow</item>
+        <item name="colorOnSecondary">@color/charcoal</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
-        <item name="android:background">#333333</item>
+        <item name="android:background">@color/charcoal</item>
     </style>
 
     <style name="SavePopup">
         <item name="colorPrimary">@color/white</item>
         <item name="android:textColor">@color/white</item>
-        <item name="android:background">#252525</item>
-        <item name="android:layout_gravity">center</item>
+        <item name="android:background">@color/dark_charcoal</item>
     </style>
 
     <style name="PermissionsDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">#EEEEEE</item>
-        <item name="android:textColor">#222222</item>
+        <item name="android:background">@color/snow</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="TutorialPage">
-        <item name="android:background">#2C2C2C</item>
+        <item name="android:background">@color/dark_charcoal</item>
     </style>
 
 </resources>

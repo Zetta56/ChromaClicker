@@ -1,7 +1,6 @@
 package com.example.chromaclicker.main
 
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +39,7 @@ class MainFragment : ActionBarFragment("Chroma Clicker", false) {
         addClickListeners()
         // Initialize power button color
         if(OverlayService.isRunning()) {
-            binding.powerButton.setColorFilter(Color.parseColor("#2DADF4"))
+            binding.powerButton.setColorFilter(context!!.getColor(R.color.blue))
         }
     }
 
@@ -53,7 +52,7 @@ class MainFragment : ActionBarFragment("Chroma Clicker", false) {
             val successful = mainActivity.toggleOverlay(!isRunning, selectedSave)
             // Make power button light blue if overlay is on and gray if off
             if(successful && !isRunning) {
-                binding.powerButton.setColorFilter(Color.parseColor("#2DADF4"))
+                binding.powerButton.setColorFilter(context!!.getColor(R.color.blue))
             } else {
                 binding.powerButton.colorFilter = null
             }

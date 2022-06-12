@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_selected_save"
         android:textSize="18sp"
-        android:textColor="#BBBBBB"
+        android:textColor="@color/light_gray"
         android:background="@null"
         android:elevation="5dp"
         app:layout_constraintBottom_toBottomOf="@+id/savesButton"

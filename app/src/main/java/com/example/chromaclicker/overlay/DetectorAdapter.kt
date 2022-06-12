@@ -56,7 +56,7 @@ class DetectorAdapter(
             holder.inputY!!.setText(event.y.toInt().toString())
             holder.inputColor!!.setText(intent.getStringExtra("color"))
             menu.visibility = View.VISIBLE
-            container.setBackgroundColor(Color.parseColor("#55111111"))
+            container.setBackgroundColor(context.getColor(R.color.dim))
             LocalBroadcastManager.getInstance(context).unregisterReceiver(this)
         }
     }

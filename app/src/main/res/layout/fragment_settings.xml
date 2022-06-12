@@ -42,8 +42,8 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textColorHint="#777777"
-            android:backgroundTint="#777777"
+            android:textColorHint="@color/gray"
+            android:backgroundTint="@color/gray"
             android:text="@string/default_click_interval"
             android:hint="@string/default_click_interval"
             android:layout_columnWeight="1"
@@ -64,8 +64,8 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textColorHint="#777777"
-            android:backgroundTint="#777777"
+            android:textColorHint="@color/gray"
+            android:backgroundTint="@color/gray"
             android:text="@string/default_detection_interval"
             android:hint="@string/default_detection_interval"
             android:layout_columnWeight="1"
@@ -90,7 +90,7 @@
             android:valueTo="60"
             android:stepSize="5"
             app:thumbColor="@color/white"
-            app:trackColor="#777777" />
+            app:trackColor="@color/gray" />
 
     </GridLayout>
 
@@ -100,7 +100,7 @@
         android:layout_height="50dp"
         android:layout_gravity="end"
         android:background="@android:color/transparent"
-        android:textColor="#2DADF4"
+        android:textColor="@color/blue"
         android:textSize="18sp"
         android:text="@string/apply_settings"/>
 

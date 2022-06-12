@@ -15,7 +15,7 @@
         android:layout_width="295dp"
         android:layout_height="295dp"
         android:layout_centerInParent="true"
-        android:background="#252525"
+        android:background="@color/dark_charcoal"
         android:orientation="vertical"
         android:padding="15dp">
 
@@ -29,7 +29,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#999999"/>
+            android:background="@color/gray"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/detectorForms"

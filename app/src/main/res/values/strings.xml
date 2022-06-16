@@ -52,14 +52,15 @@
         3: Configures this app\'s general settings
     </string>
     <string name="tutorial_two">
-        Once you click the power button, you\'ll see this overlay menu:\n
+        Once you click the power button, you\'ll see this overlay menu. Make sure to keep your phone
+        in the same orientation while both setting up your clickers and playing the auto-clicker.\n
         1: Pauses and plays this app\'s auto-clicker\n
         2: Adds a new clicker you can freely move around\n
         3: Removes the newest clicker you added\n
         4: Saves the positions of your clickers and color detectors
     </string>
     <string name="tutorial_three">
-        If you tap on a clicker, you\'ll find this menu:\n
+        If you tap on a clicker, you\'ll find this menu.\n
         1: Toggle the "pixel dipper". Tapping again will paste the tapped pixel\'s data in the fields to the right\n
         2: Color detector settings, including pixel coordinates and target color\n
         3: Remove a color detector\n

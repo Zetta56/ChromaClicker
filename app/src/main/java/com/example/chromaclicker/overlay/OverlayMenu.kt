@@ -3,10 +3,9 @@ package com.example.chromaclicker.overlay
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.WindowManager
+import android.content.res.Configuration
+import android.hardware.SensorManager
+import android.view.*
 import com.example.chromaclicker.*
 import com.example.chromaclicker.autoclick.AutoClickService
 import com.example.chromaclicker.databinding.MenuOverlayBinding

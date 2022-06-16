@@ -10,10 +10,12 @@
     <ImageButton
         android:id="@+id/powerButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="@null"
         android:src="@drawable/power"
         android:contentDescription="@string/power"
+        android:scaleType="fitCenter"
+        android:paddingVertical="10dp"
         app:layout_constraintBottom_toTopOf="@+id/savesButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

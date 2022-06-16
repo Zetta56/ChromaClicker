@@ -20,7 +20,7 @@
 
     <style name="PermissionsDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:background">@color/snow</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/raisin_black</item>
     </style>
 
     <style name="TutorialPage">

@@ -7,92 +7,98 @@
     android:orientation="vertical"
     android:padding="20dp">
 
-    <GridLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:rowCount="4"
-        android:columnCount="2"
-        tools:context=".main.SettingsFragment">
+        android:layout_weight="1">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <GridLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/randomized"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:layout_columnWeight="1" />
+            android:rowCount="4"
+            android:columnCount="2"
+            tools:context=".main.SettingsFragment">
 
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/randomSwitch"
-            android:layout_gravity="center_horizontal"
-            android:layout_columnWeight="1" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/randomized"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:layout_columnWeight="1" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/click_interval"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:layout_columnWeight="1" />
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/randomSwitch"
+                android:layout_gravity="center_horizontal"
+                android:layout_columnWeight="1" />
 
-        <EditText
-            android:id="@+id/clickInterval"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textColorHint="@color/gray"
-            android:backgroundTint="@color/gray"
-            android:text="@string/default_click_interval"
-            android:hint="@string/default_click_interval"
-            android:layout_columnWeight="1"
-            android:inputType="number"
-            android:importantForAutofill="no" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/click_interval"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:layout_columnWeight="1" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/detection_interval"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:layout_columnWeight="1"/>
+            <EditText
+                android:id="@+id/clickInterval"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textColorHint="@color/gray"
+                android:backgroundTint="@color/gray"
+                android:text="@string/default_click_interval"
+                android:hint="@string/default_click_interval"
+                android:layout_columnWeight="1"
+                android:inputType="number"
+                android:importantForAutofill="no" />
 
-        <EditText
-            android:id="@+id/detectInterval"
-            android:layout_width="70dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textColorHint="@color/gray"
-            android:backgroundTint="@color/gray"
-            android:text="@string/default_detection_interval"
-            android:hint="@string/default_detection_interval"
-            android:layout_columnWeight="1"
-            android:inputType="number"
-            android:importantForAutofill="no" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/detection_interval"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:layout_columnWeight="1"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/circle_radius"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:layout_columnSpan="2" />
+            <EditText
+                android:id="@+id/detectInterval"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textColorHint="@color/gray"
+                android:backgroundTint="@color/gray"
+                android:text="@string/default_detection_interval"
+                android:hint="@string/default_detection_interval"
+                android:layout_columnWeight="1"
+                android:inputType="number"
+                android:importantForAutofill="no" />
 
-        <com.google.android.material.slider.Slider
-            android:id="@+id/radiusSlider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_columnSpan="2"
-            android:value="30"
-            android:valueFrom="15"
-            android:valueTo="60"
-            android:stepSize="5"
-            app:thumbColor="@color/white"
-            app:trackColor="@color/gray" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/circle_radius"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:layout_columnSpan="2" />
 
-    </GridLayout>
+            <com.google.android.material.slider.Slider
+                android:id="@+id/radiusSlider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_columnSpan="2"
+                android:value="30"
+                android:valueFrom="15"
+                android:valueTo="60"
+                android:stepSize="5"
+                app:thumbColor="@color/white"
+                app:trackColor="@color/gray" />
+
+        </GridLayout>
+
+    </ScrollView>
 
     <Button
         android:id="@+id/applyButton"

@@ -46,6 +46,10 @@ class Draggable(
     /** When pressing down, initialize flags, cursor offsets, and initial cursor positions */
     private fun onActionDown(event: MotionEvent): Boolean {
         dragging = false
+        // Move view within screen bounds, in case its original position was offscreen (due to a screen rotation)
+        layoutParams.x = clampCoordinate(layoutParams.x, getScreenWidth() - layoutParams.width)
+        layoutParams.y = clampCoordinate(layoutParams.y, getScreenHeight() - layoutParams.height)
+        windowManager.updateViewLayout(target, layoutParams)
         // Offsets represent the distance from the top-left corner of its layout to the cursor
         offsetX = (event.rawX - layoutParams.x).toInt()
         offsetY = (event.rawY - layoutParams.y).toInt()

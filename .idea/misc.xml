@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Coding/Projects/ChromaClicker/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1265625" />
         <entry key="..\:/Coding/Projects/ChromaClicker/app/src/main/res/layout-land/fragment_tutorial_page.xml" value="0.17372134038800705" />
         <entry key="..\:/Coding/Projects/ChromaClicker/app/src/main/res/layout/activity_main.xml" value="0.15625" />
         <entry key="..\:/Coding/Projects/ChromaClicker/app/src/main/res/layout/activity_tutorial.xml" value="0.26268115942028986" />

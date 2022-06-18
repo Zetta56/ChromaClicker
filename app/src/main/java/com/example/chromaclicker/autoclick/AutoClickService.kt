@@ -23,6 +23,8 @@ import com.example.chromaclicker.getScreenWidth
 import com.example.chromaclicker.models.AppSettings
 import com.example.chromaclicker.models.Clicker
 import java.lang.Long.max
+import java.lang.Integer.max
+import java.lang.Integer.min
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -211,7 +213,10 @@ class AutoClickService : AccessibilityService() {
     /** Returns whether the on-screen pixel colors match the passed [clicker]'s detector colors. */
     private fun hasMatchingDetectors(clicker: Clicker): Boolean {
         for (detector in clicker.detectors) {
-            val pixelColor = screenshot!!.getPixel(detector.x.toInt(), detector.y.toInt())
+            // Clamp the detector coordinates within the screenshot, preventing out-of-bounds errors
+            val x = min(max(detector.x.toInt(), 0), screenshot!!.width - 1)
+            val y = min(max(detector.y.toInt(), 0), screenshot!!.height - 1)
+            val pixelColor = screenshot!!.getPixel(x, y)
             val pixelHexString = "#" + Integer.toHexString(pixelColor).substring(2)
             if (pixelHexString != detector.color) {
                 return false

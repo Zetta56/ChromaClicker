@@ -47,9 +47,7 @@ class Draggable(
     private fun onActionDown(event: MotionEvent): Boolean {
         dragging = false
         // Move view within screen bounds, in case its original position was offscreen (due to a screen rotation)
-        layoutParams.x = clampCoordinate(layoutParams.x, getScreenWidth() - layoutParams.width)
-        layoutParams.y = clampCoordinate(layoutParams.y, getScreenHeight() - layoutParams.height)
-        windowManager.updateViewLayout(target, layoutParams)
+        updatePosition(layoutParams.x, layoutParams.y)
         // Offsets represent the distance from the top-left corner of its layout to the cursor
         offsetX = (event.rawX - layoutParams.x).toInt()
         offsetY = (event.rawY - layoutParams.y).toInt()
@@ -66,10 +64,7 @@ class Draggable(
         if(!dragging && hasMoved) {
             dragging = true
         }
-        // Set layout position to cursor position, bounded within the screen
-        layoutParams.x = clampCoordinate(event.rawX.toInt() - offsetX, getScreenWidth() - layoutParams.width)
-        layoutParams.y = clampCoordinate(event.rawY.toInt() - offsetY, getScreenHeight() - layoutParams.height)
-        windowManager.updateViewLayout(target, layoutParams)
+        updatePosition(event.rawX.toInt() - offsetX, event.rawY.toInt() - offsetY)
         return true
     }
 
@@ -86,8 +81,13 @@ class Draggable(
         return true
     }
 
-    /** Clamps the desired [coordinate] between 0 and the chosen [max] */
-    private fun clampCoordinate(coordinate: Int, max: Int): Int {
-        return min(max(coordinate, 0), max)
+    /**
+     * Update the [layoutParams] position to the desired [x] and [y] coordinates, bounded
+     * within the screen.
+     */
+    private fun updatePosition(x: Int, y: Int) {
+        layoutParams.x = min(max(x, 0), getScreenWidth() - layoutParams.width)
+        layoutParams.y = min(max(y, 0), getScreenHeight() - layoutParams.height)
+        windowManager.updateViewLayout(target, layoutParams)
     }
 }

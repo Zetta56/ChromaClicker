@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="30dp"
+    android:layout_height="40dp"
     android:orientation="horizontal"
     android:layout_margin="10dp">
 
     <ImageView
         android:id="@+id/check"
-        android:layout_width="0dp"
+        android:layout_width="30dp"
         android:layout_height="match_parent"
+        android:layout_margin="5dp"
         android:src="@drawable/check"
-        android:layout_weight="1"
         android:contentDescription="@string/check" />
 
     <TextView
         android:id="@+id/saveName"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="6"
+        android:layout_weight="1"
         android:layout_marginHorizontal="5dp"
         android:text="@string/save"
         android:textSize="11pt"
@@ -25,10 +25,9 @@
 
     <ImageButton
         android:id="@+id/renameButton"
-        android:layout_width="0dp"
+        android:layout_width="30dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginVertical="5dp"
+        android:layout_margin="5dp"
         android:src="@drawable/pencil"
         android:scaleType="fitCenter"
         android:background="@null"
@@ -36,10 +35,9 @@
 
     <ImageButton
         android:id="@+id/deleteButton"
-        android:layout_width="0dp"
+        android:layout_width="30dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:layout_marginVertical="5dp"
+        android:layout_margin="5dp"
         android:src="@drawable/cross"
         android:scaleType="fitCenter"
         android:background="@null"

@@ -63,7 +63,7 @@
     <string name="tutorial_three">
         If you tap on a clicker, you\'ll find this menu.\n
         1: Toggle the "pixel dipper". Tapping again will paste the tapped pixel\'s position and color in the fields to the right\n
-        2: Adjust your color detector's settings, such as its pixel coordinates and target color\n
+        2: Adjust your color detector\'s settings, such as its pixel coordinates and target color\n
         3: Remove the selected color detector\n
         4: Add a new color detector
     </string>

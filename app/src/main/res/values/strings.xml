@@ -47,23 +47,24 @@
     <string name="tutorial_image">tutorial</string>
     <string name="tutorial_one">
         Welcome! Let\'s get familiar with the home screen.\n
-        1: Displays the overlay menu, along with its many features\n
+        1: Displays the overlay menu, allowing you to edit and run your auto-clicker\n
         2: Lets you manage your saved clicker layouts\n
         3: Configures this app\'s general settings
     </string>
     <string name="tutorial_two">
         Once you click the power button, you\'ll see this overlay menu. Make sure to keep your phone
-        in the same orientation while both setting up your clickers and playing the auto-clicker.\n
+        in the same orientation while editing up your clickers and playing the auto-clicker, as
+        this will keep your clicker positions aligned with the screen.\n
         1: Pauses and plays this app\'s auto-clicker\n
-        2: Adds a new clicker you can freely move around\n
-        3: Removes the newest clicker you added\n
-        4: Saves the positions of your clickers and color detectors
+        2: Adds a new clicker you can freely drag around\n
+        3: Removes the latest clicker\n
+        4: Saves your clicker positions and their color detectors
     </string>
     <string name="tutorial_three">
         If you tap on a clicker, you\'ll find this menu.\n
-        1: Toggle the "pixel dipper". Tapping again will paste the tapped pixel\'s data in the fields to the right\n
-        2: Color detector settings, including pixel coordinates and target color\n
-        3: Remove a color detector\n
+        1: Toggle the "pixel dipper". Tapping again will paste the tapped pixel\'s position and color in the fields to the right\n
+        2: Adjust your color detector's settings, such as its pixel coordinates and target color\n
+        3: Remove the selected color detector\n
         4: Add a new color detector
     </string>
     <string name="empty_saves">You have no saved layouts</string>

@@ -1,13 +1,12 @@
 package com.chromaclicker.app.overlay
 
 import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import com.chromaclicker.app.R
+import com.chromaclicker.app.createChannel
 import com.chromaclicker.app.models.AppSettings
 import com.chromaclicker.app.models.Clicker
 import kotlin.collections.ArrayList
@@ -34,16 +33,9 @@ class OverlayService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when(intent?.action) {
-            // Pass intent data to the overlay menu and make a notification
-            "enable" -> {
-                val settings = intent.extras!!.getParcelable<AppSettings>("settings")!!
-                clickers = intent.extras!!.getParcelableArrayList("clickers")!!
-                overlayMenu = OverlayMenu(applicationContext, settings, clickers)
-                makeNotification()
-                running = true
-            }
-            // Pass updated settings to the overlay menu
+            "enable" -> onEnable(intent)
             "update_settings" -> {
+                // Pass updated settings to the overlay menu
                 val settings = intent.extras!!.getParcelable<AppSettings>("settings")!!
                 overlayMenu?.updateSettings(settings)
             }
@@ -63,24 +55,21 @@ class OverlayService : Service() {
     }
 
     /**
-     * Sends a notification to the user. This must be called for this service to be ran as a
-     * foreground service in API 26+
+     * Sets up the overlay menu with the passed [intent]'s extras. This also creates a notification
+     * for this service on SDK 26+
      */
-    private fun makeNotification() {
+    private fun onEnable(intent: Intent) {
+        val settings = intent.extras!!.getParcelable<AppSettings>("settings")!!
+        clickers = intent.extras!!.getParcelableArrayList("clickers")!!
+        overlayMenu = OverlayMenu(applicationContext, settings, clickers)
+        // Run this as a foreground service on SDK 26+
         if(Build.VERSION.SDK_INT >= 26) {
-            // Create notification channel for this foreground service
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            val channel = NotificationChannel(
-                getString(R.string.channel_id),
-                getString(R.string.overlay_notification),
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            channel.setSound(null, null)
-            notificationManager.createNotificationChannel(channel)
-
-            // Send notification
+            createChannel(applicationContext)
             val builder = Notification.Builder(applicationContext, getString(R.string.channel_id))
+                .setContentTitle("Overlay is now running")
+                .setSmallIcon(R.mipmap.ic_launcher)
             startForeground(1, builder.build())
         }
+        running = true
     }
 }

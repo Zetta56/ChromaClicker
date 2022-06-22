@@ -1,7 +1,12 @@
 package com.chromaclicker.app
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.ServiceInfo
 import android.content.res.Resources
 import android.graphics.PixelFormat
 import android.os.Build
@@ -44,6 +49,20 @@ fun createOverlayLayout(
     // Position layout using gravity
     layoutParams.gravity = gravity
     return layoutParams
+}
+
+/** Creates a basic notification channel on SDK 26+ */
+fun createChannel(context: Context) {
+    if(Build.VERSION.SDK_INT >= 26) {
+        val notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
+        val channel = NotificationChannel(
+            context.getString(R.string.channel_id),
+            context.getString(R.string.channel_name),
+            NotificationManager.IMPORTANCE_DEFAULT
+        )
+        channel.setSound(null, null)
+        notificationManager.createNotificationChannel(channel)
+    }
 }
 
 /** Adds the desired onTouchListener to the specified view group and all its children */

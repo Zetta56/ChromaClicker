@@ -3,9 +3,11 @@ package com.chromaclicker.app.autoclick
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.GestureDescription
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.content.res.Resources
 import android.graphics.*
 import android.hardware.display.DisplayManager
@@ -13,11 +15,14 @@ import android.hardware.display.VirtualDisplay
 import android.media.ImageReader
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
 import androidx.activity.result.ActivityResult
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.chromaclicker.app.R
+import com.chromaclicker.app.createChannel
 import com.chromaclicker.app.getScreenHeight
 import com.chromaclicker.app.getScreenWidth
 import com.chromaclicker.app.models.AppSettings
@@ -95,9 +100,18 @@ class AutoClickService : AccessibilityService() {
      * and [projection] attributes
      */
     private fun initialize(intent: Intent) {
+        // Run this as a foreground service if SDK 29+
+        if(Build.VERSION.SDK_INT >= 29) {
+            createChannel(applicationContext)
+            val builder = Notification.Builder(applicationContext, getString(R.string.channel_id))
+                .setContentTitle("Auto-clicker is now ready to be used")
+                .setSmallIcon(R.mipmap.ic_launcher)
+            startForeground(2, builder.build(), ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION)
+        }
+
+        // Get media projection (token letting this app record the screen)
         val projectionResult: ActivityResult = intent.extras!!.getParcelable("projectionResult")!!
         val projectionManager = getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-        // Media projection is a token that lets this app record the screen
         projection = projectionManager.getMediaProjection(projectionResult.resultCode, projectionResult.data!!)
 
         // Get bar heights
@@ -233,14 +247,21 @@ class AutoClickService : AccessibilityService() {
     private fun captureScreen(callback: () -> Unit = {}) {
         // Don't re-create reader and virtual display if the previous image is still rendering
         if(!screenshotting) {
+            // Account for screen decorations in the virtual display by increasing image reader height
+            // Note: The virtual display seems to separate the status bar from the app screen in SDK 29+
+            val height = if(Build.VERSION.SDK_INT >= 29) {
+                getScreenHeight() + navbarHeight + statusBarHeight
+            } else {
+                getScreenHeight() + navbarHeight
+            }
             @SuppressLint("WrongConstant")
             // Create an image reader used to obtain images
-            imageReader = ImageReader.newInstance(getScreenWidth(), getScreenHeight(), PixelFormat.RGBA_8888, 2)
+            imageReader = ImageReader.newInstance(getScreenWidth(), height, PixelFormat.RGBA_8888, 2)
             // Create a public display that cannot show other virtual displays
             val flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC or DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY
             // Mirror the screen into a virtual display and render it onto an image reader
             virtualDisplay = projection!!.createVirtualDisplay("screen-mirror", imageReader!!.width,
-                imageReader!!.height + navbarHeight, Resources.getSystem().displayMetrics.densityDpi,
+                imageReader!!.height, Resources.getSystem().displayMetrics.densityDpi,
                 flags, imageReader!!.surface, null , null)
             screenshotting = true
         }
@@ -261,9 +282,15 @@ class AutoClickService : AccessibilityService() {
         val plane = image.planes[0]
         val bitmap = Bitmap.createBitmap(imageReader!!.width, imageReader!!.height, Bitmap.Config.ARGB_8888)
         bitmap.copyPixelsFromBuffer(plane.buffer)
+
         // Crop out the top status bar
         screenshot = Bitmap.createBitmap(bitmap, 0, statusBarHeight, imageReader!!.width,
-            imageReader!!.height - statusBarHeight)
+            imageReader!!.height - statusBarHeight - navbarHeight)
+
+//        val fos = openFileOutput("testBitmap", MODE_PRIVATE)
+//        bitmap!!.compress(Bitmap.CompressFormat.PNG, 90, fos)
+//        fos.close()
+
         image.close()
     }
 }

@@ -2,12 +2,11 @@
     <string name="app_name">Chroma Clicker</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="preference_key">chroma_clicker_preferences</string>
-    <string name="channel_id">chroma_clicker_overlay</string>
+    <string name="channel_id">chroma_clicker_channel</string>
+    <string name="channel_name">Chroma Clicker</string>
     <string name="saves">Saves</string>
     <string name="settings">Settings</string>
     <string name="power">Toggle On/Off</string>
-    <string name="overlay_notification">Chroma Clicker overlay is now on</string>
-    <string name="overlay_notification_title">Chroma Clicker</string>
     <string name="play">Pause/Play</string>
     <string name="plus">Plus</string>
     <string name="move">Move</string>

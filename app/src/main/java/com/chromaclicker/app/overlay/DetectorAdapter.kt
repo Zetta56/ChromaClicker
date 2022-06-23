@@ -47,7 +47,7 @@ class DetectorAdapter(
      * the [event]'s coordinates into the [holder]'s inputs. This also cleans up by unregistering
      * itself, re-dimming the screen, and showing the menu (previously hidden by [toggleDipper]).
      */
-    inner class DipperReceiver(
+    inner class ColorReceiver(
         private val holder: ViewHolder,
         private val event: MotionEvent
     ) : BroadcastReceiver() {
@@ -182,9 +182,9 @@ class DetectorAdapter(
      * This also sets up a receiver to accept and handle the broadcasted color.
      * */
     private fun dip(holder: ViewHolder, event: MotionEvent) {
-        // Make a DipperReceiver to handle the color broadcasted by the AutoCLickService
+        // Make a ColorReceiver to handle the color broadcasted by the AutoCLickService
         LocalBroadcastManager.getInstance(context).registerReceiver(
-            DipperReceiver(holder, event),
+            ColorReceiver(holder, event),
             IntentFilter("receive_pixel_color")
         )
         val intent = Intent(context, AutoClickService::class.java)

@@ -25,6 +25,11 @@
 
         <activity android:name="com.chromaclicker.app.tutorial.TutorialActivity" />
 
+        <activity
+            android:name=".overlay.SaveDialog"
+            android:theme="@style/SaveDialog"
+            android:excludeFromRecents="true" />
+
         <service android:name="com.chromaclicker.app.overlay.OverlayService" />
 
         <service

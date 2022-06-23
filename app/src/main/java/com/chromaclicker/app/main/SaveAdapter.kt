@@ -1,5 +1,9 @@
 package com.chromaclicker.app.main
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chromaclicker.app.R
 import com.chromaclicker.app.getDefaultPreferences
@@ -37,6 +42,30 @@ class SaveAdapter(
         val deleteButton: ImageButton = view.findViewById(R.id.deleteButton)
     }
 
+    /**
+     * This receives the name sent by [SaveDialog] and checks whether this name was successfully
+     * submitted. Then, this will replace the desired [save] at the specified [position] in the
+     * adapter with a new save file containing the received name.
+     */
+    inner class NameReceiver(private val position: Int, private val save: Save) : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if(intent.extras!!.getBoolean("success")) {
+                val name = intent.extras!!.getString("name")!!
+                // Delete the save file
+                val oldFile = File("${activity.filesDir}/saves/${fileNames[position]}")
+                oldFile.delete()
+                // Create a new save file with the new name
+                val newFile = File("${activity.filesDir}/saves/${name}")
+                save.name = name
+                newFile.writeText(Gson().toJson(save))
+                fileNames[position] = name
+                notifyItemChanged(position)
+            }
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(this)
+        }
+
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_save, parent, false)
         return ViewHolder(view)
@@ -64,7 +93,11 @@ class SaveAdapter(
         }
         // Open a renaming dialog whenever the rename button is clicked
         holder.renameButton.setOnClickListener {
-            SaveDialog(activity, save.name, true, fun(name) { renameSave(position, save, name) })
+            LocalBroadcastManager.getInstance(activity).registerReceiver(
+                NameReceiver(position, save),
+                IntentFilter("receive_save_name")
+            )
+            SaveDialog.launch(activity, save.name, true)
         }
         // Delete the save whenever the delete button is clicked
         holder.deleteButton.setOnClickListener { deleteSave(position) }
@@ -100,23 +133,6 @@ class SaveAdapter(
         preferences.edit().putString("saveName", "").apply()
         selectedSaveName = ""
         selectedPosition = -1
-        notifyItemChanged(position)
-    }
-
-    /**
-     *  Renames the [save] and its displayed name at the provided [position] in the adapter with
-     *  the new [name]
-     */
-    private fun renameSave(position: Int, save: Save, name: String) {
-        // Delete the save file
-        val oldFile = File("${activity.filesDir}/saves/${fileNames[position]}")
-        oldFile.delete()
-
-        // Create a new save file with the new name
-        val newFile = File("${activity.filesDir}/saves/${name}")
-        save.name = name
-        newFile.writeText(Gson().toJson(save))
-        fileNames[position] = name
         notifyItemChanged(position)
     }
 

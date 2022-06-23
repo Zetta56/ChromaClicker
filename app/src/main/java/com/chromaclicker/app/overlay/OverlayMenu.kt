@@ -1,9 +1,12 @@
 package com.chromaclicker.app.overlay
 
 import android.app.Service
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.view.*
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.chromaclicker.app.*
 import com.chromaclicker.app.autoclick.AutoClickService
 import com.chromaclicker.app.databinding.MenuOverlayBinding
@@ -23,6 +26,33 @@ class OverlayMenu(
     private var settings: AppSettings,
     private val clickers: ArrayList<Clicker>
 ) {
+
+    /**
+     * This receives the name sent by [SaveDialog] and checks whether this name was successfully
+     * submitted. Then, this will save [clickers] to an internal storage file with the received name.
+     */
+    inner class NameReceiver : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if(intent.extras!!.getBoolean("success")) {
+                val name = intent.extras!!.getString("name")!!
+                // Make saves directory in internal storage if it doesn't exist
+                val savesDir = File("${context.filesDir}/saves")
+                if(!savesDir.exists()) {
+                    savesDir.mkdirs()
+                }
+                // Save clickers as a json file
+                val save = Save(name, clickers)
+                val json = Gson().toJson(save)
+                val file = File(savesDir, name)
+                file.writeText(json)
+            }
+            // Cleanup
+            binding.root.visibility = View.VISIBLE
+            circles.forEach { circle -> circle.visibility = View.VISIBLE }
+            LocalBroadcastManager.getInstance(context).unregisterReceiver(this)
+        }
+    }
+
     private val binding = MenuOverlayBinding.inflate(LayoutInflater.from(context))
     private val autoClickIntent = Intent(context, AutoClickService::class.java)
     private val windowManager = context.getSystemService(Service.WINDOW_SERVICE) as WindowManager
@@ -45,7 +75,17 @@ class OverlayMenu(
         binding.playButton.setOnClickListener { toggleAutoClicker() }
         binding.plusButton.setOnClickListener { addCircle() }
         binding.minusButton.setOnClickListener { removeCircle() }
-        binding.saveButton.setOnClickListener { SaveDialog(context, "", false, this::saveClickers) }
+        binding.saveButton.setOnClickListener {
+            // Hide overlays
+            binding.root.visibility = View.GONE
+            circles.forEach { circle -> circle.visibility = View.GONE }
+            LocalBroadcastManager.getInstance(context).registerReceiver(
+                NameReceiver(),
+                IntentFilter("receive_save_name")
+            )
+            SaveDialog.launch(context, "", false)
+
+        }
     }
 
     /** Destroys this menu's views and disables its associated services. */
@@ -149,19 +189,5 @@ class OverlayMenu(
             clickers.removeAt(clickers.lastIndex)
             circles.removeAt(circles.lastIndex)
         }
-    }
-
-    /** Saves your current [clickers] into a JSON file with a desired [name]. */
-    private fun saveClickers(name: String) {
-        // Make saves directory in internal storage if it doesn't exist
-        val savesDir = File("${context.filesDir}/saves")
-        if(!savesDir.exists()) {
-            savesDir.mkdirs()
-        }
-        // Save clickers as a json file
-        val save = Save(name, clickers)
-        val json = Gson().toJson(save)
-        val file = File(savesDir, name)
-        file.writeText(json)
     }
 }

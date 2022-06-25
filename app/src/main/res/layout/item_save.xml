@@ -7,7 +7,7 @@
 
     <ImageView
         android:id="@+id/check"
-        android:layout_width="30dp"
+        android:layout_width="36dp"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
         android:src="@drawable/check"
@@ -20,7 +20,7 @@
         android:layout_weight="1"
         android:layout_marginHorizontal="5dp"
         android:text="@string/save"
-        android:textSize="11pt"
+        android:textSize="28sp"
         android:textColor="@color/white" />
 
     <ImageButton
@@ -31,7 +31,7 @@
         android:src="@drawable/pencil"
         android:scaleType="fitCenter"
         android:background="@null"
-        android:contentDescription="@string/save" />
+        android:contentDescription="@string/rename_label" />
 
     <ImageButton
         android:id="@+id/deleteButton"
@@ -41,6 +41,6 @@
         android:src="@drawable/cross"
         android:scaleType="fitCenter"
         android:background="@null"
-        android:contentDescription="@string/save" />
+        android:contentDescription="@string/delete_label" />
 
 </LinearLayout>

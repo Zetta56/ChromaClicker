@@ -3,14 +3,12 @@ package com.chromaclicker.app.main
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
-import android.app.Notification
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.media.projection.MediaProjectionManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -23,7 +21,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import com.chromaclicker.app.R
 import com.chromaclicker.app.autoclick.AutoClickService
-import com.chromaclicker.app.createChannel
 import com.chromaclicker.app.databinding.DialogPermissionsBinding
 
 /** This dialog checks app permissions and requests missing permissions. */

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="40dp">
+    android:layout_height="48dp">
 
     <ImageButton
         android:id="@+id/dipperButton"
@@ -17,7 +18,7 @@
     <TextView
         android:layout_width="15dp"
         android:layout_height="match_parent"
-        android:text="@string/x"
+        android:text="@string/x_input"
         android:textColor="@color/white"
         android:gravity="center_vertical"
         android:labelFor="@id/inputX" />
@@ -26,19 +27,20 @@
         android:id="@+id/inputX"
         android:layout_width="40dp"
         android:layout_height="match_parent"
+        android:layout_marginEnd="5dp"
+        android:backgroundTint="@color/white"
+        android:importantForAutofill="no"
         android:inputType="number"
         android:maxLength="4"
-        android:importantForAutofill="no"
         android:text="@string/default_x"
         android:textColor="@color/white"
         android:textSize="14sp"
-        android:backgroundTint="@color/white"
-        android:layout_marginEnd="5dp" />
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
     <TextView
         android:layout_width="15dp"
         android:layout_height="match_parent"
-        android:text="@string/y"
+        android:text="@string/y_input"
         android:textColor="@color/white"
         android:gravity="center_vertical"
         android:labelFor="@id/inputY" />
@@ -47,19 +49,20 @@
         android:id="@+id/inputY"
         android:layout_width="40dp"
         android:layout_height="match_parent"
+        android:layout_marginEnd="5dp"
+        android:backgroundTint="@color/white"
+        android:importantForAutofill="no"
         android:inputType="number"
         android:maxLength="4"
-        android:importantForAutofill="no"
         android:text="@string/default_y"
         android:textColor="@color/white"
         android:textSize="14sp"
-        android:backgroundTint="@color/white"
-        android:layout_marginEnd="5dp" />
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
     <TextView
         android:layout_width="40dp"
         android:layout_height="match_parent"
-        android:text="@string/color"
+        android:text="@string/color_input"
         android:textColor="@color/white"
         android:gravity="center_vertical"
         android:labelFor="@id/inputColor" />
@@ -68,14 +71,15 @@
         android:id="@+id/inputColor"
         android:layout_width="65dp"
         android:layout_height="match_parent"
+        android:layout_marginEnd="5dp"
+        android:backgroundTint="@color/white"
+        android:importantForAutofill="no"
         android:inputType="text"
         android:maxLength="7"
-        android:importantForAutofill="no"
         android:text="@string/default_color"
         android:textColor="@color/white"
         android:textSize="14sp"
-        android:backgroundTint="@color/white"
-        android:layout_marginEnd="5dp" />
+        tools:ignore="DuplicateSpeakableTextCheck" />
 
     <ImageButton
         android:id="@+id/crossButton"

@@ -14,9 +14,9 @@
     <string name="minus">Minus</string>
     <string name="cross">Cross</string>
     <string name="dipper">Color Dipper</string>
-    <string name="x">X:</string>
-    <string name="y">Y:</string>
-    <string name="color">Color:</string>
+    <string name="x_input">X:</string>
+    <string name="y_input">Y:</string>
+    <string name="color_input">Color:</string>
     <string name="eye">Toggle Visibility</string>
     <string name="default_y">0</string>
     <string name="default_x">0</string>
@@ -33,9 +33,12 @@
     <string name="click_interval">Click Interval (ms)</string>
     <string name="detection_interval">Detection Interval (ms)</string>
     <string name="circle_radius">Circle Radius (dp)</string>
+    <string name="circle_radius_slider">Circle Radius</string>
     <string name="default_click_interval">1000</string>
     <string name="default_detection_interval">5000</string>
-    <string name="permission_state">permission state</string>
+    <string name="overlay_permission_state">overlay permission state</string>
+    <string name="accessibility_permission_state">accessibility permission state</string>
+    <string name="projection_permission_state">projection_permission state</string>
     <string name="overlay_permission">Can Draw Overlays</string>
     <string name="overlay_description">This lets you manage this auto-clicker through menus overlaid on top of other apps</string>
     <string name="accessibility_permission">Accessibility</string>
@@ -71,4 +74,7 @@
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
     <string name="clicker_menu_title">Color Detectors</string>
+    <string name="action_label">action</string>
+    <string name="rename_label">rename</string>
+    <string name="delete_label">Delete</string>
 </resources>

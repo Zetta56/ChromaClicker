@@ -74,7 +74,7 @@ class SaveDialog : AppCompatActivity() {
         // Stop user from exiting this dialog by clicking outside it
         setFinishOnTouchOutside(false)
         // Set dialog dimensions
-        window.setLayout(toPixels(300), toPixels(240))
+        window.setLayout(toPixels(300), toPixels(265))
 
         isRenaming = intent.extras!!.getBoolean("isRenaming")
         binding.positive.isEnabled = false

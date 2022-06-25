@@ -80,7 +80,7 @@ class SettingsFragment : ActionBarFragment("Settings", true) {
 
     /** Toggles the apply button's interactivity and color. */
     private fun toggleApplyButton(toggle: Boolean) {
-        val color = if(toggle) R.color.blue else R.color.dark_gray
+        val color = if(toggle) R.color.blue else R.color.davy
         binding.applyButton.setTextColor(context!!.getColor(color))
         binding.applyButton.isEnabled = toggle
     }

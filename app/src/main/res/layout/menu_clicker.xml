@@ -29,7 +29,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/gray"/>
+            android:background="@color/dark_gray"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/detectorForms"
@@ -41,7 +41,7 @@
         <LinearLayout
             android:id="@+id/topSection"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:background="@null"
             android:orientation="horizontal">
 

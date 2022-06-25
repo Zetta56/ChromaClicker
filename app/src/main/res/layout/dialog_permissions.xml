@@ -21,19 +21,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:text="@string/overlay_description" />
 
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/overlay_button"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
         android:background="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/cross"
-        android:contentDescription="@string/permission_state" />
+        android:contentDescription="@string/overlay_permission_state" />
 
     <LinearLayout
         android:layout_columnWeight="1"
@@ -48,19 +49,20 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:text="@string/accessibility_description" />
 
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/accessibility_button"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
         android:background="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/cross"
-        android:contentDescription="@string/permission_state" />
+        android:contentDescription="@string/accessibility_permission_state" />
 
     <LinearLayout
         android:layout_columnWeight="1"
@@ -75,18 +77,19 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="15sp"
             android:text="@string/projection_description" />
 
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/projection_button"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
         android:background="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/cross"
-        android:contentDescription="@string/permission_state" />
+        android:contentDescription="@string/projection_permission_state" />
 
 </GridLayout>

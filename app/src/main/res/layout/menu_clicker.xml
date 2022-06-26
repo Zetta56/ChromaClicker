@@ -12,23 +12,25 @@
 
     <LinearLayout
         android:id="@+id/menu"
-        android:layout_width="295dp"
-        android:layout_height="295dp"
+        android:layout_width="330dp"
+        android:layout_height="285dp"
         android:layout_centerInParent="true"
         android:background="@color/dark_charcoal"
-        android:orientation="vertical"
-        android:padding="15dp">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="55dp"
             android:text="@string/clicker_menu_title"
             android:textColor="@color/white"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:paddingHorizontal="15dp"
+            android:paddingTop="15dp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_marginHorizontal="15dp"
             android:background="@color/dark_gray"/>
 
         <androidx.recyclerview.widget.RecyclerView

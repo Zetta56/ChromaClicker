@@ -28,9 +28,10 @@
 
     <ImageButton
         android:id="@+id/overlay_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
+        android:padding="10dp"
         android:background="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/cross"
@@ -56,9 +57,10 @@
 
     <ImageButton
         android:id="@+id/accessibility_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
+        android:padding="10dp"
         android:background="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/cross"
@@ -84,9 +86,10 @@
 
     <ImageButton
         android:id="@+id/projection_button"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_gravity="center"
+        android:padding="10dp"
         android:background="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/cross"

@@ -105,6 +105,8 @@ class PermissionsDialog : DialogFragment() {
             val projectionManager = activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
             projectionLauncher.launch(projectionManager.createScreenCaptureIntent())
         }
+        // Close this dialog
+        binding.closeButton.setOnClickListener { dismiss() }
     }
 
     /**
@@ -116,10 +118,6 @@ class PermissionsDialog : DialogFragment() {
         loadButton(binding.overlayButton, Settings.canDrawOverlays(context))
         loadButton(binding.accessibilityButton, accessibilityGranted)
         loadButton(binding.projectionButton, AutoClickService.instance?.projection != null, accessibilityGranted)
-
-        if(hasPermissions(activity)) {
-            this.dismiss()
-        }
     }
 
     /**
@@ -130,18 +128,18 @@ class PermissionsDialog : DialogFragment() {
         // If unfulfilled prerequisites, show a greyed-out cross
         if(!prerequisites) {
             button.setImageResource(R.drawable.cross)
-            binding.projectionButton.setColorFilter(Color.parseColor("#888888"))
+            button.setColorFilter(Color.parseColor("#888888"))
             button.isClickable = false
-        // If unfulfilled permission, show a red cross
+        // If unfulfilled permission, show a greyed-out check
         } else if(!permission) {
-            button.setImageResource(R.drawable.cross)
-            binding.projectionButton.colorFilter = null
+            button.setImageResource(R.drawable.check)
+            button.setColorFilter(Color.parseColor("#888888"))
             button.isClickable = true
         // If fulfilled permission, show a green check
         } else {
             button.setImageResource(R.drawable.check)
-            binding.projectionButton.colorFilter = null
-            button.isClickable = false
+            button.colorFilter = null
+            button.isClickable = true
         }
     }
 }

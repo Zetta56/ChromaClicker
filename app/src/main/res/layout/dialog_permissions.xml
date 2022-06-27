@@ -1,98 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:theme="@style/PermissionsDialog"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:rowCount="3"
-    android:columnCount="2"
     android:padding="20dp"
-    android:useDefaultMargins="true">
+    android:theme="@style/PermissionsDialog">
 
-    <LinearLayout
-        android:layout_columnWeight="1"
-        android:orientation="vertical">
+    <TextView
+        android:id="@+id/overlayTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/overlay_permission"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="@string/overlay_permission" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:text="@string/overlay_description" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/overlayDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/overlay_description"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/overlayButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overlayTitle" />
 
     <ImageButton
-        android:id="@+id/overlay_button"
+        android:id="@+id/overlayButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
-        android:padding="10dp"
         android:background="@null"
+        android:contentDescription="@string/overlay_permission_state"
+        android:padding="10dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/cross"
-        android:contentDescription="@string/overlay_permission_state" />
+        android:src="@drawable/check"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overlayTitle" />
 
-    <LinearLayout
-        android:layout_columnWeight="1"
-        android:orientation="vertical">
+    <TextView
+        android:id="@+id/accessibilityTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/accessibility_permission"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overlayDescription" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="@string/accessibility_permission" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:text="@string/accessibility_description" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/accessibilityDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/accessibility_description"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/accessibilityButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/accessibilityTitle" />
 
     <ImageButton
-        android:id="@+id/accessibility_button"
+        android:id="@+id/accessibilityButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
-        android:padding="10dp"
         android:background="@null"
+        android:contentDescription="@string/accessibility_permission_state"
+        android:padding="10dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/cross"
-        android:contentDescription="@string/accessibility_permission_state" />
+        android:src="@drawable/check"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/accessibilityTitle" />
 
-    <LinearLayout
-        android:layout_columnWeight="1"
-        android:orientation="vertical">
+    <TextView
+        android:id="@+id/projectionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/projection_permission"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/accessibilityDescription" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="@string/projection_permission" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:text="@string/projection_description" />
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/projectionDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/projection_description"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toStartOf="@+id/projectionButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/projectionTitle" />
 
     <ImageButton
-        android:id="@+id/projection_button"
+        android:id="@+id/projectionButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center"
-        android:padding="10dp"
         android:background="@null"
+        android:contentDescription="@string/projection_permission_state"
+        android:padding="10dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/cross"
-        android:contentDescription="@string/projection_permission_state" />
+        android:src="@drawable/check"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/projectionTitle" />
 
-</GridLayout>
+    <TextView
+        android:id="@+id/policy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:autoLink="web"
+        android:clickable="true"
+        android:focusable="true"
+        android:linksClickable="true"
+        android:text="@string/privacy_policy"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/projectionDescription" />
+
+    <TextView
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="@string/close_permissions_dialog"
+        android:textSize="22sp"
+        android:textColor="@color/blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/policy" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

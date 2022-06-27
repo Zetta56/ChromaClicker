@@ -19,8 +19,8 @@
     </style>
 
     <style name="PermissionsDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/snow</item>
-        <item name="android:textColor">@color/raisin_black</item>
+        <item name="android:background">@color/dark_charcoal</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="TutorialPage">

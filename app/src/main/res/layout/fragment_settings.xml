@@ -1,115 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:fillViewport="true">
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:padding="20dp">
 
-        <GridLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/randomLabel"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:rowCount="4"
-            android:columnCount="2"
-            tools:context=".main.SettingsFragment">
+            android:layout_columnWeight="1"
+            android:text="@string/randomized"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="@+id/randomSwitch"
+            app:layout_constraintEnd_toStartOf="@+id/randomSwitch"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/randomized"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                android:layout_columnWeight="1" />
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/randomSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:layout_gravity="center_horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/randomSwitch"
-                android:layout_gravity="center_horizontal"
-                android:layout_columnWeight="1" />
+        <TextView
+            android:id="@+id/clickIntervalLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="@string/click_interval"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="@+id/clickInterval"
+            app:layout_constraintEnd_toStartOf="@+id/clickInterval"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/clickInterval" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/click_interval"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                android:layout_columnWeight="1" />
+        <EditText
+            android:id="@+id/clickInterval"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:backgroundTint="@color/dark_gray"
+            android:hint="@string/default_click_interval"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:text="@string/default_click_interval"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textColorHint="@color/dark_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/randomSwitch" />
 
-            <EditText
-                android:id="@+id/clickInterval"
-                android:layout_width="70dp"
-                android:layout_height="50dp"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textColorHint="@color/dark_gray"
-                android:backgroundTint="@color/dark_gray"
-                android:text="@string/default_click_interval"
-                android:hint="@string/default_click_interval"
-                android:layout_columnWeight="1"
-                android:inputType="number"
-                android:importantForAutofill="no" />
+        <TextView
+            android:id="@+id/detectIntervalLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:text="@string/detection_interval"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="@+id/detectInterval"
+            app:layout_constraintEnd_toStartOf="@+id/detectInterval"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clickInterval" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/detection_interval"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                android:layout_columnWeight="1"/>
+        <EditText
+            android:id="@+id/detectInterval"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_columnWeight="1"
+            android:backgroundTint="@color/dark_gray"
+            android:hint="@string/default_detection_interval"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:text="@string/default_detection_interval"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textColorHint="@color/dark_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/clickInterval" />
 
-            <EditText
-                android:id="@+id/detectInterval"
-                android:layout_width="70dp"
-                android:layout_height="50dp"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textColorHint="@color/dark_gray"
-                android:backgroundTint="@color/dark_gray"
-                android:text="@string/default_detection_interval"
-                android:hint="@string/default_detection_interval"
-                android:layout_columnWeight="1"
-                android:inputType="number"
-                android:importantForAutofill="no" />
+        <TextView
+            android:id="@+id/radiusLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:text="@string/circle_radius"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/detectInterval" />
 
-            <TextView
-                android:id="@+id/radiusLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/circle_radius"
-                android:textColor="@color/white"
-                android:textSize="22sp"
-                android:layout_columnSpan="2" />
+        <com.google.android.material.slider.Slider
+            android:id="@+id/radiusSlider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_columnSpan="2"
+            android:contentDescription="@string/circle_radius_slider"
+            android:stepSize="5"
+            android:value="30"
+            android:valueFrom="15"
+            android:valueTo="60"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radiusLabel"
+            app:thumbColor="@color/white"
+            app:trackColor="@color/dark_gray" />
 
-            <com.google.android.material.slider.Slider
-                android:id="@+id/radiusSlider"
-                android:contentDescription="@string/circle_radius_slider"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_columnSpan="2"
-                android:value="30"
-                android:valueFrom="15"
-                android:valueTo="60"
-                android:stepSize="5"
-                app:thumbColor="@color/white"
-                app:trackColor="@color/dark_gray" />
+        <Button
+            android:id="@+id/applyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:background="@android:color/transparent"
+            android:text="@string/apply_settings"
+            android:textColor="@color/blue"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        </GridLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
-
-    <Button
-        android:id="@+id/applyButton"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_gravity="end"
-        android:background="@android:color/transparent"
-        android:textColor="@color/blue"
-        android:textSize="18sp"
-        android:text="@string/apply_settings"/>
-
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>

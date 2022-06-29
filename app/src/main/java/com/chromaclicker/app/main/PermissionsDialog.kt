@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.widget.ImageButton
 import androidx.activity.result.ActivityResult
@@ -48,8 +49,10 @@ class PermissionsDialog : DialogFragment() {
         binding = DialogPermissionsBinding.inflate(LayoutInflater.from(activity))
         // Runs after user interacts with projection dialog
         projectionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            initializeAutoClicker(result)
+            setupAutoClicker(result)
         }
+        // Enable privacy policy link
+        binding.policy.movementMethod = LinkMovementMethod.getInstance()
         setClickListeners()
 
         // Customize dialog
@@ -68,23 +71,23 @@ class PermissionsDialog : DialogFragment() {
      * Initializes [AutoClickService] with a projection and status bar height. The projection must
      * come from the [result] of an accepted screen capture intent
      */
-    private fun initializeAutoClicker(result: ActivityResult) {
+    private fun setupAutoClicker(result: ActivityResult) {
+        val intent = Intent(activity, AutoClickService::class.java)
         if(result.resultCode == Activity.RESULT_OK) {
-            val intent = Intent(activity, AutoClickService::class.java)
+            intent.action = "setup"
+            intent.putExtra("projectionResult", result)
             // Get the status bar's height
             val rect = Rect()
             activity.window.decorView.getWindowVisibleDisplayFrame(rect)
-            // Configure intent
-            intent.action = "initialize"
             intent.putExtra("statusBarHeight", rect.top)
-            intent.putExtra("projectionResult", result)
-            activity.startService(intent)
-
-            // Reload buttons after a delay, compensating for time needed to load the projection
-            Handler(Looper.getMainLooper()).postDelayed({
-                loadButtons()
-            }, 500)
+        } else {
+            intent.action = "remove_projection"
         }
+        activity.startService(intent)
+        // Reload buttons after a delay, compensating for time needed to load the projection
+        Handler(Looper.getMainLooper()).postDelayed({
+            loadButtons()
+        }, 500)
     }
 
     /** Sets each button's click listeners */

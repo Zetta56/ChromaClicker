@@ -38,7 +38,7 @@ import kotlin.random.Random
 /**
  * This service acts as an auto-clicker and a color detector.
  * You can launch intents to this service that have following actions:
- * - initialize: You must launch this once before launching any other intents, as this initializes
+ * - setup: You must launch this once before launching any other intents, as this initializes
  * the bar heights and media projection. Extras: projectionResult (ActivityResult),
  * statusBarHeight (Int)
  * - toggle_clicker: Enables and disables the auto-clicker. Extras: enabled (Boolean), clickers
@@ -87,7 +87,8 @@ class AutoClickService : AccessibilityService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if(intent != null && intent.action != null) {
             when (intent.action) {
-                "initialize" -> initialize(intent)
+                "setup" -> setup(intent)
+                "remove_projection" -> projection = null
                 "toggle_clicker" -> toggleRunners(intent)
                 "send_pixel_color" -> getPixelColor(intent)
             }
@@ -99,7 +100,7 @@ class AutoClickService : AccessibilityService() {
      * Parses the passed intent and initializes this class's [navbarHeight], [statusBarHeight],
      * and [projection] attributes
      */
-    private fun initialize(intent: Intent) {
+    private fun setup(intent: Intent) {
         // Run this as a foreground service if SDK 29+
         if(Build.VERSION.SDK_INT >= 29) {
             createChannel(applicationContext)

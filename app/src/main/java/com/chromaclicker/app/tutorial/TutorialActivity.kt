@@ -13,7 +13,7 @@ import com.chromaclicker.app.databinding.ActivityTutorialBinding
 /** This activity populates and displays the tutorial. */
 class TutorialActivity : AppCompatActivity() {
 
-    /** Manages the tutorial layout's ViewPager2 */
+    /** Manages this layout's ViewPager2 */
     private class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
         // Initialize images and descriptions for each tutorial page
         val images = listOf(R.drawable.tutorial_one, R.drawable.tutorial_two, R.drawable.tutorial_three)
@@ -24,7 +24,7 @@ class TutorialActivity : AppCompatActivity() {
         }
 
         override fun createFragment(position: Int): Fragment {
-            return PageFragment(images[position], descriptions[position])
+            return TutorialPage(images[position], descriptions[position])
         }
     }
 

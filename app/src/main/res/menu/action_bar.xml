@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/questionMark"
-        android:icon="@drawable/question_mark"
+        android:icon="@drawable/ic_help"
         android:title="@string/action_tutorial"
         app:showAsAction="ifRoom"
         android:orderInCategory="0"/>

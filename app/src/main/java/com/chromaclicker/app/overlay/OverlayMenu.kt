@@ -127,13 +127,13 @@ class OverlayMenu(
         if(playing) {
             // Hide all circles and start auto-clicker with necessary extras
             circles.forEach { circle -> circle.visibility = View.INVISIBLE }
-            binding.playButton.setImageResource(R.drawable.pause)
+            binding.playButton.setImageResource(R.drawable.ic_pause)
             autoClickIntent.putExtra("settings", settings)
             autoClickIntent.putParcelableArrayListExtra("clickers", clickers)
         } else {
             // Show all circles and stop auto-clicker
             circles.forEach { circle -> circle.visibility = View.VISIBLE }
-            binding.playButton.setImageResource(R.drawable.play)
+            binding.playButton.setImageResource(R.drawable.ic_play)
         }
         // Label and launch auto-clicker intent
         autoClickIntent.putExtra("enabled", playing)

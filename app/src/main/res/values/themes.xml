@@ -18,7 +18,7 @@
         <item name="android:background">@color/dark_charcoal</item>
     </style>
 
-    <style name="PermissionsDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="PermissionsDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:background">@color/dark_charcoal</item>
         <item name="android:textColor">@color/white</item>
     </style>

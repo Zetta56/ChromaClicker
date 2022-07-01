@@ -3,28 +3,20 @@ package com.chromaclicker.app.main
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Rect
-import android.media.projection.MediaProjectionManager
-import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
-import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
-import android.widget.ImageButton
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.chromaclicker.app.R
 import com.chromaclicker.app.autoclick.AutoClickService
 import com.chromaclicker.app.databinding.DialogPermissionsBinding
 
-/** This dialog checks app permissions and requests missing permissions. */
+/** This dialog checks app permissions and sets up its view pager. */
 class PermissionsDialog : DialogFragment() {
     companion object {
         /** Returns whether user has all permissions needed to enable the overlay. */
@@ -40,20 +32,33 @@ class PermissionsDialog : DialogFragment() {
         }
     }
 
+    /** Manages this layout's ViewPager2 */
+    inner class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
+        // Initialize titles and descriptions for each tutorial page
+        private val titles = listOf(R.string.overlay_permission, R.string.accessibility_permission, R.string.projection_permission)
+        private val descriptions = listOf(R.string.overlay_description, R.string.accessibility_description, R.string.projection_description)
+
+        override fun getItemCount(): Int {
+            return titles.size
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            return PermissionPage(position, binding.nextButton, titles[position], descriptions[position])
+        }
+    }
+
     private lateinit var binding: DialogPermissionsBinding
-    private lateinit var projectionLauncher: ActivityResultLauncher<Intent>
     private lateinit var activity: Activity
+    private lateinit var projectionLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         activity = requireActivity()
+        // Set up view binding
         binding = DialogPermissionsBinding.inflate(LayoutInflater.from(activity))
-        // Runs after user interacts with projection dialog
-        projectionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            setupAutoClicker(result)
-        }
-        // Enable privacy policy link
-        binding.policy.movementMethod = LinkMovementMethod.getInstance()
-        setClickListeners()
+        binding.pager.adapter = PagerAdapter(activity as FragmentActivity)
+        binding.pager.isUserInputEnabled = false
+        binding.pager.currentItem = getFirstRejection()
+        setupNavigation()
 
         // Customize dialog
         val builder = AlertDialog.Builder(activity, R.style.PermissionsDialog)
@@ -62,87 +67,34 @@ class PermissionsDialog : DialogFragment() {
         return builder.create()
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadButtons()
+    /** Sets up the navigation buttons associated with the view pager */
+    private fun setupNavigation() {
+        binding.backButton.setOnClickListener {
+            if(binding.pager.currentItem == 0) {
+                dismiss()
+            } else {
+                binding.pager.currentItem -= 1
+            }
+        }
+        binding.nextButton.setOnClickListener {
+            if(binding.pager.currentItem == binding.pager.adapter!!.itemCount - 1) {
+                dismiss()
+            } else {
+                binding.pager.currentItem += 1
+            }
+        }
     }
 
     /**
-     * Initializes [AutoClickService] with a projection and status bar height. The projection must
-     * come from the [result] of an accepted screen capture intent
+     * Gets the index of the first rejected permission. This is useful for skipping permission
+     * screens for already-obtained permissions.
      */
-    private fun setupAutoClicker(result: ActivityResult) {
-        val intent = Intent(activity, AutoClickService::class.java)
-        if(result.resultCode == Activity.RESULT_OK) {
-            intent.action = "setup"
-            intent.putExtra("projectionResult", result)
-            // Get the status bar's height
-            val rect = Rect()
-            activity.window.decorView.getWindowVisibleDisplayFrame(rect)
-            intent.putExtra("statusBarHeight", rect.top)
-        } else {
-            intent.action = "remove_projection"
-        }
-        activity.startService(intent)
-        // Reload buttons after a delay, compensating for time needed to load the projection
-        Handler(Looper.getMainLooper()).postDelayed({
-            loadButtons()
-        }, 500)
-    }
-
-    /** Sets each button's click listeners */
-    private fun setClickListeners() {
-        // Launch this app's overlay permission screen
-        binding.overlayButton.setOnClickListener {
-            val uri = Uri.parse("package:${activity.packageName}")
-            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, uri)
-            activity.startActivity(intent)
-        }
-        // Launch this app's accessibility screen
-        binding.accessibilityButton.setOnClickListener {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            activity.startActivity(intent)
-        }
-        // Launch a dialog asking for a media projection
-        binding.projectionButton.setOnClickListener {
-            val projectionManager = activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-            projectionLauncher.launch(projectionManager.createScreenCaptureIntent())
-        }
-        // Close this dialog
-        binding.closeButton.setOnClickListener { dismiss() }
-    }
-
-    /**
-     * Updates all the buttons based on this app's current permissions. If all permission have
-     * been granted, this will dismiss the entire dialog.
-     */
-    private fun loadButtons() {
-        val accessibilityGranted = Settings.Secure.getInt(activity.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED) == 1
-        loadButton(binding.overlayButton, Settings.canDrawOverlays(context))
-        loadButton(binding.accessibilityButton, accessibilityGranted)
-        loadButton(binding.projectionButton, AutoClickService.instance?.projection != null, accessibilityGranted)
-    }
-
-    /**
-     * Updates [button] image, color, and interactivity, based on whether its associated
-     * [permission] and [prerequisites] have been granted
-     */
-    private fun loadButton(button: ImageButton, permission: Boolean, prerequisites: Boolean = true) {
-        // If unfulfilled prerequisites, show a greyed-out cross
-        if(!prerequisites) {
-            button.setImageResource(R.drawable.cross)
-            button.setColorFilter(Color.parseColor("#888888"))
-            button.isClickable = false
-        // If unfulfilled permission, show a greyed-out check
-        } else if(!permission) {
-            button.setImageResource(R.drawable.check)
-            button.setColorFilter(Color.parseColor("#888888"))
-            button.isClickable = true
-        // If fulfilled permission, show a green check
-        } else {
-            button.setImageResource(R.drawable.check)
-            button.colorFilter = null
-            button.isClickable = true
+    private fun getFirstRejection(): Int {
+        return when {
+            !Settings.canDrawOverlays(activity) -> 0
+            Settings.Secure.getInt(activity.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED) == 0 -> 1
+            AutoClickService.instance?.projection == null -> 2
+            else -> -1
         }
     }
 }

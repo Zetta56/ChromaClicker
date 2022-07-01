@@ -9,10 +9,11 @@
 
     <ImageButton
         android:id="@+id/powerButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_margin="50dp"
         android:background="@null"
-        android:src="@drawable/power"
+        android:src="@drawable/ic_power"
         android:contentDescription="@string/power"
         android:scaleType="fitCenter"
         android:paddingVertical="10dp"

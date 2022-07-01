@@ -1,135 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:theme="@style/PermissionsDialog">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="20dp"
-        android:theme="@style/PermissionsDialog">
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-        <TextView
-            android:id="@+id/overlayTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/overlay_permission"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/overlayDescription"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/overlay_description"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@+id/overlayButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/overlayTitle" />
-
-        <ImageButton
-            android:id="@+id/overlayButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:contentDescription="@string/overlay_permission_state"
-            android:padding="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/check"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/overlayTitle" />
-
-        <TextView
-            android:id="@+id/accessibilityTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/accessibility_permission"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/overlayDescription" />
-
-        <TextView
-            android:id="@+id/accessibilityDescription"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/accessibility_description"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@+id/accessibilityButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/accessibilityTitle" />
-
-        <ImageButton
-            android:id="@+id/accessibilityButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:contentDescription="@string/accessibility_permission_state"
-            android:padding="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/check"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/accessibilityTitle" />
-
-        <TextView
-            android:id="@+id/projectionTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/projection_permission"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/accessibilityDescription" />
-
-        <TextView
-            android:id="@+id/projectionDescription"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/projection_description"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@+id/projectionButton"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/projectionTitle" />
-
-        <ImageButton
-            android:id="@+id/projectionButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:contentDescription="@string/projection_permission_state"
-            android:padding="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/check"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/projectionTitle" />
-
-        <TextView
-            android:id="@+id/policy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="@string/privacy_policy"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/projectionDescription" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <Button
+            android:id="@+id/backButton"
             style="@style/Widget.AppCompat.Button.Borderless"
-            android:id="@+id/closeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_marginTop="15dp"
-            android:text="@string/close_permissions_dialog"
-            android:textSize="22sp"
-            android:textColor="@color/blue"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/policy" />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:text="@string/back_button"
+            android:textSize="16sp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/nextButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="20dp"
+            android:text="@string/next_button"
+            android:textSize="16sp" />
 
-</androidx.core.widget.NestedScrollView>
+    </LinearLayout>
+
+</LinearLayout>

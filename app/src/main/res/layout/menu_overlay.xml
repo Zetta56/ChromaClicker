@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/raisin_black"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:paddingVertical="5dp">
 
     <ImageButton
         android:id="@+id/playButton"
@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:background="@null"
         android:contentDescription="@string/play"
-        android:src="@drawable/play"
+        android:src="@drawable/ic_play"
         android:scaleType="fitCenter" />
 
     <ImageButton
@@ -22,32 +22,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/plus"
+        android:src="@drawable/ic_plus"
         android:background="@null"
         android:contentDescription="@string/plus"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="10dp" />
+        android:scaleType="fitCenter" />
 
     <ImageButton
         android:id="@+id/minusButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/minus"
+        android:src="@drawable/ic_minus"
         android:background="@null"
         android:contentDescription="@string/minus"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="10dp" />
+        android:scaleType="fitCenter" />
 
     <ImageButton
         android:id="@+id/saveButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:src="@drawable/save"
+        android:padding="5dp"
+        android:src="@drawable/ic_file"
         android:background="@null"
         android:contentDescription="@string/save"
-        android:scaleType="fitCenter"
-        android:layout_marginTop="10dp" />
+        android:scaleType="fitCenter" />
 
 </LinearLayout>

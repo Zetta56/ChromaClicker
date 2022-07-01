@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import com.chromaclicker.app.databinding.FragmentTutorialPageBinding
 
 /** Renders a page in the tutorial populated with an [image] and [description] */
-class PageFragment(
+class TutorialPage(
     private val image: Int,
     private val description: Int
 ) : Fragment() {

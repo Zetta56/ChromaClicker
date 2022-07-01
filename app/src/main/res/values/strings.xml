@@ -38,15 +38,14 @@
     <string name="default_detection_interval">5000</string>
     <string name="overlay_permission_state">overlay permission state</string>
     <string name="accessibility_permission_state">accessibility permission state</string>
-    <string name="projection_permission_state">projection_permission state</string>
+    <string name="projection_permission_state">projection permission state</string>
     <string name="overlay_permission">Can Draw Overlays</string>
-    <string name="overlay_description">This lets you manage your auto-clicker through floating menus shown over other apps</string>
-    <string name="accessibility_permission">Accessibility</string>
-    <string name="accessibility_description">This uses the accessibility service to perform click gestures, an essential part of this app\'s auto-clicker</string>
-    <string name="projection_permission">Media Projection</string>
-    <string name="projection_description">This uses the Media Projection API to detect pixel colors on your screen and click accordingly, one of this app\'s distinguishing features</string>
-    <string name="privacy_policy">The above permissions will not be used to collect or share your data. For more information, check out our <a href="https://sites.google.com/view/chroma-clicker-privacy-policy/home">privacy policy</a></string>
-    <string name="action_tutorial">Tutorial</string>
+    <string name="overlay_description">This is used to display simple menus over your other apps, a convenient way to manage and configure this auto-clicker</string>
+    <string name="accessibility_permission">Accessibility API</string>
+    <string name="accessibility_description">This app uses the accessibility service solely to perform click gestures, an essential part of the auto-clicker. This will not be used to collect nor transmit your data. For more information, please see our <a href="https://sites.google.com/view/chroma-clicker-privacy-policy/home">privacy policy</a></string>
+    <string name="projection_permission">Media Projection API</string>
+    <string name="projection_description">This app uses the Media Projection API to detect pixel colors on your screen and click accordingly, one of this app\'s distinguishing features</string>
+   <string name="action_tutorial">Tutorial</string>
     <string name="tutorial_image">tutorial</string>
     <string name="tutorial_one">
         Welcome! Let\'s get familiar with the home screen.\n
@@ -78,5 +77,10 @@
     <string name="action_label">action</string>
     <string name="rename_label">rename</string>
     <string name="delete_label">Delete</string>
-    <string name="close_permissions_dialog">Close</string>
+    <string name="close">Close</string>
+    <string name="back_button">Back</string>
+    <string name="next_button">Next</string>
+    <string name="finish">Finish</string>
+    <string name="consent">Allow Access</string>
+    <string name="granted">Allowed!</string>
 </resources>

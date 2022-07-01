@@ -9,8 +9,8 @@
         android:id="@+id/check"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:padding="10dp"
-        android:src="@drawable/check"
+        android:padding="5dp"
+        android:src="@drawable/ic_check"
         android:contentDescription="@string/check" />
 
     <TextView
@@ -27,8 +27,8 @@
         android:id="@+id/renameButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:padding="10dp"
-        android:src="@drawable/pencil"
+        android:padding="5dp"
+        android:src="@drawable/ic_pencil"
         android:scaleType="fitCenter"
         android:background="@null"
         android:contentDescription="@string/rename_label" />
@@ -37,8 +37,8 @@
         android:id="@+id/deleteButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:padding="10dp"
-        android:src="@drawable/cross"
+        android:padding="5dp"
+        android:src="@drawable/ic_cross"
         android:scaleType="fitCenter"
         android:background="@null"
         android:contentDescription="@string/delete_label" />

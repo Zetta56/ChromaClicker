@@ -44,9 +44,6 @@ class PermissionsActivity : AppCompatActivity() {
             return if(position == 0) {
                 PermissionsIntro()
             } else {
-                println(position)
-                println(titles[position])
-                println(descriptions[position])
                 PermissionPage(position, binding.root, titles[position], descriptions[position])
             }
         }

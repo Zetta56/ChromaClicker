@@ -53,14 +53,14 @@
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:text="@string/save_dialog_negative"
-            android:textColor="@color/gray" />
+            android:textColor="@color/blue" />
 
         <Button
             android:id="@+id/positive"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:text="@string/save_dialog_positive"
-            android:textColor="@color/submit_button_color"
+            android:textColor="@color/toggleable_button"
             android:enabled="false"
             style="?android:attr/buttonBarButtonStyle" />
 

@@ -27,7 +27,7 @@
         android:id="@+id/renameButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:padding="5dp"
+        android:padding="8dp"
         android:src="@drawable/ic_pencil"
         android:scaleType="fitCenter"
         android:background="@null"

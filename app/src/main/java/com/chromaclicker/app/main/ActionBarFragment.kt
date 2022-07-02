@@ -6,7 +6,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.chromaclicker.app.R
-import com.chromaclicker.app.tutorial.TutorialActivity
+import com.chromaclicker.app.guides.TutorialActivity
 
 /**
  * Fragments can inherit from this class to display an action bar. You can decide its [title] and

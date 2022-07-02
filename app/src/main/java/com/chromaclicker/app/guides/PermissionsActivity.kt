@@ -1,23 +1,21 @@
-package com.chromaclicker.app.main
+package com.chromaclicker.app.guides
 
 import android.app.Activity
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
-import androidx.activity.result.ActivityResultLauncher
-import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.chromaclicker.app.R
 import com.chromaclicker.app.autoclick.AutoClickService
-import com.chromaclicker.app.databinding.DialogPermissionsBinding
+import com.chromaclicker.app.databinding.ActivityPermissionsBinding
+import com.chromaclicker.app.main.PermissionPage
+import com.chromaclicker.app.main.PermissionsIntro
 
 /** This dialog checks app permissions and sets up its view pager. */
-class PermissionsDialog : DialogFragment() {
+class PermissionsActivity : AppCompatActivity() {
     companion object {
         /** Returns whether user has all permissions needed to enable the overlay. */
         fun hasPermissions(activity: Activity): Boolean {
@@ -35,66 +33,52 @@ class PermissionsDialog : DialogFragment() {
     /** Manages this layout's ViewPager2 */
     inner class PagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
         // Initialize titles and descriptions for each tutorial page
-        private val titles = listOf(R.string.overlay_permission, R.string.accessibility_permission, R.string.projection_permission)
-        private val descriptions = listOf(R.string.overlay_description, R.string.accessibility_description, R.string.projection_description)
+        private val titles = listOf(R.string.permission_intro_title, R.string.overlay_permission, R.string.accessibility_permission, R.string.projection_permission)
+        private val descriptions = listOf(R.string.permission_intro_description, R.string.overlay_description, R.string.accessibility_description, R.string.projection_description)
 
         override fun getItemCount(): Int {
             return titles.size
         }
 
         override fun createFragment(position: Int): Fragment {
-            return PermissionPage(position, binding.nextButton, titles[position], descriptions[position])
+            return if(position == 0) {
+                PermissionsIntro()
+            } else {
+                println(position)
+                println(titles[position])
+                println(descriptions[position])
+                PermissionPage(position, binding.root, titles[position], descriptions[position])
+            }
         }
     }
 
-    private lateinit var binding: DialogPermissionsBinding
-    private lateinit var activity: Activity
-    private lateinit var projectionLauncher: ActivityResultLauncher<Intent>
+    private lateinit var binding: ActivityPermissionsBinding
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        activity = requireActivity()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         // Set up view binding
-        binding = DialogPermissionsBinding.inflate(LayoutInflater.from(activity))
-        binding.pager.adapter = PagerAdapter(activity as FragmentActivity)
+        binding = ActivityPermissionsBinding.inflate(LayoutInflater.from(this))
+        binding.pager.adapter = PagerAdapter(this as FragmentActivity)
         binding.pager.isUserInputEnabled = false
-        binding.pager.currentItem = getFirstRejection()
         setupNavigation()
-
-        // Customize dialog
-        val builder = AlertDialog.Builder(activity, R.style.PermissionsDialog)
-        builder.setTitle("Permissions")
-        builder.setView(binding.root)
-        return builder.create()
+        setContentView(binding.root)
     }
 
     /** Sets up the navigation buttons associated with the view pager */
     private fun setupNavigation() {
         binding.backButton.setOnClickListener {
             if(binding.pager.currentItem == 0) {
-                dismiss()
+                finish()
             } else {
                 binding.pager.currentItem -= 1
             }
         }
         binding.nextButton.setOnClickListener {
             if(binding.pager.currentItem == binding.pager.adapter!!.itemCount - 1) {
-                dismiss()
+                finish()
             } else {
                 binding.pager.currentItem += 1
             }
-        }
-    }
-
-    /**
-     * Gets the index of the first rejected permission. This is useful for skipping permission
-     * screens for already-obtained permissions.
-     */
-    private fun getFirstRejection(): Int {
-        return when {
-            !Settings.canDrawOverlays(activity) -> 0
-            Settings.Secure.getInt(activity.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED) == 0 -> 1
-            AutoClickService.instance?.projection == null -> 2
-            else -> -1
         }
     }
 }

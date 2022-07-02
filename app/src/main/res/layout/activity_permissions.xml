@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:theme="@style/PermissionsDialog">
+    android:orientation="vertical">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
@@ -23,7 +22,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginTop="20dp"
-            android:text="@string/back_button"
+            android:text="@string/back"
+            android:textColor="@color/blue"
             android:textSize="16sp" />
 
         <Button
@@ -33,7 +33,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginTop="20dp"
-            android:text="@string/next_button"
+            android:text="@string/next"
+            android:textColor="@color/toggleable_button"
             android:textSize="16sp" />
 
     </LinearLayout>

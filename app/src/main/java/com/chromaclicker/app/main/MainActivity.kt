@@ -5,6 +5,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.chromaclicker.app.R
+import com.chromaclicker.app.guides.PermissionsActivity
 import com.chromaclicker.app.models.AppSettings
 import com.chromaclicker.app.models.Save
 import com.chromaclicker.app.overlay.OverlayService
@@ -25,8 +26,10 @@ class MainActivity : AppCompatActivity() {
      */
     fun toggleOverlay(toggle: Boolean, selectedSave: Save?): Boolean {
         // If this app is missing permissions, show the permissions dialog
-        if(!PermissionsDialog.hasPermissions(this)) {
-            PermissionsDialog().show(supportFragmentManager, "permissions")
+        if(!PermissionsActivity.hasPermissions(this)) {
+//            PermissionsDialog().show(supportFragmentManager, "permissions")
+            val intent = Intent(applicationContext, PermissionsActivity::class.java)
+            startActivity(intent)
             return false
         // If enabling, setup and launch the overlay intent
         } else if(toggle) {

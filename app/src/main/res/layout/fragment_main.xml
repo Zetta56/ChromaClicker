@@ -24,7 +24,7 @@
 
     <Button
         android:id="@+id/savesButton"
-        style="@style/buttonSpacing"
+        style="@style/filledCorners"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/saves"
@@ -61,6 +61,6 @@
         app:layout_constraintStart_toStartOf="parent"
         android:textAlignment="viewStart"
         android:textSize="28sp"
-        style="@style/buttonSpacing" />
+        style="@style/filledCorners" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.chromaclicker.app.tutorial
+package com.chromaclicker.app.guides
 
 import android.os.Bundle
 import android.view.LayoutInflater

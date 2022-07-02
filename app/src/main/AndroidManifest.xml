@@ -23,7 +23,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.chromaclicker.app.tutorial.TutorialActivity" />
+        <activity android:name="com.chromaclicker.app.guides.TutorialActivity" />
+
+        <activity android:name=".guides.PermissionsActivity" android:theme="@style/PermissionsActivity" />
 
         <activity
             android:name=".overlay.SaveDialog"

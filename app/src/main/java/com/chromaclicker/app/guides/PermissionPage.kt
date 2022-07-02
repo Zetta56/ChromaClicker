@@ -24,28 +24,39 @@ import com.chromaclicker.app.R
 import com.chromaclicker.app.autoclick.AutoClickService
 import com.chromaclicker.app.databinding.FragmentPermissionPageBinding
 
+class PermissionsIntro : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_permission_intro, container, false)
+    }
+}
+
 /**
  * This fragment displays each individual page, including its [title] and [description], in the
- * permissions dialog. This also requests the permission associated with its [page index][position]
- * and toggles the ["next" button][nextButton] according to the result.
+ * permissions activity and modifies its [container]'s navigation buttons accordingly. This also
+ * requests the permission associated with its [page index][position].
  */
 class PermissionPage(
     private val position: Int,
-    private val nextButton: Button,
+    private val container: ViewGroup,
     private val title: Int,
     private val description: Int
 ) : Fragment() {
 
     companion object {
         // Constants represent the permissions associated with each dialog page
-        const val OVERLAY = 0
-        const val ACCESSIBILITY = 1
-        const val PROJECTION = 2
+        const val OVERLAY = 1
+        const val ACCESSIBILITY = 2
+        const val PROJECTION = 3
     }
 
     private lateinit var activity: Activity
     private lateinit var binding: FragmentPermissionPageBinding
     private lateinit var projectionLauncher: ActivityResultLauncher<Intent>
+    private val nextButton = container.findViewById<Button>(R.id.nextButton)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -56,12 +67,13 @@ class PermissionPage(
         projectionLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             setupAutoClicker(result)
         }
-
+        // Configure general layout
         binding = FragmentPermissionPageBinding.inflate(LayoutInflater.from(context))
         binding.title.setText(title)
         binding.description.setText(description)
         binding.description.movementMethod = LinkMovementMethod.getInstance()
-        binding.requestButton.setOnClickListener { requestPermission() }
+        binding.agreeButton.setOnClickListener { requestPermission() }
+        binding.disagreeButton.setOnClickListener { (context as Activity).finish() }
         displayConsent()
         return binding.root
     }
@@ -98,11 +110,13 @@ class PermissionPage(
      */
     private fun displayConsent() {
         if(hasPermission()) {
-            binding.requestButton.setText(R.string.granted)
-            binding.requestButton.backgroundTintList = ContextCompat.getColorStateList(context!!, R.color.green)
+            binding.agreeButton.setText(R.string.granted)
+            binding.agreeButton.backgroundTintList = ContextCompat.getColorStateList(context!!, R.color.green)
+            binding.disagreeButton.visibility = View.GONE
         } else {
-            binding.requestButton.setText(R.string.consent)
-            binding.requestButton.backgroundTintList = ContextCompat.getColorStateList(context!!, R.color.dark_blue)
+            binding.agreeButton.setText(R.string.agree)
+            binding.agreeButton.backgroundTintList = ContextCompat.getColorStateList(context!!, R.color.dark_blue)
+            binding.disagreeButton.visibility = View.VISIBLE
         }
         nextButton.isEnabled = hasPermission()
     }
@@ -114,7 +128,7 @@ class PermissionPage(
             OVERLAY -> Settings.canDrawOverlays(activity)
             ACCESSIBILITY -> (Settings.Secure.getInt(activity.contentResolver, Settings.Secure.ACCESSIBILITY_ENABLED) == 1)
             PROJECTION -> (AutoClickService.instance?.projection != null)
-            else -> false
+            else -> true
         }
     }
 

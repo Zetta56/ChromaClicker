@@ -36,9 +36,8 @@
     <string name="circle_radius_slider">Circle Radius</string>
     <string name="default_click_interval">1000</string>
     <string name="default_detection_interval">5000</string>
-    <string name="overlay_permission_state">overlay permission state</string>
-    <string name="accessibility_permission_state">accessibility permission state</string>
-    <string name="projection_permission_state">projection permission state</string>
+    <string name="permission_intro_title">Please grant this app the following permissions, as they are vital to its core functionalities.</string>
+    <string name="permission_intro_description">Press Next to Continue</string>
     <string name="overlay_permission">Can Draw Overlays</string>
     <string name="overlay_description">This is used to display simple menus over your other apps, a convenient way to manage and configure this auto-clicker</string>
     <string name="accessibility_permission">Accessibility API</string>
@@ -78,9 +77,10 @@
     <string name="rename_label">rename</string>
     <string name="delete_label">Delete</string>
     <string name="close">Close</string>
-    <string name="back_button">Back</string>
-    <string name="next_button">Next</string>
+    <string name="back">Back</string>
+    <string name="next">Next</string>
     <string name="finish">Finish</string>
-    <string name="consent">Allow Access</string>
+    <string name="agree">Allow Access</string>
+    <string name="disagree">Don\'t Allow</string>
     <string name="granted">Allowed!</string>
 </resources>

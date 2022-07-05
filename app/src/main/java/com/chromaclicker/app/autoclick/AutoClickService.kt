@@ -171,11 +171,12 @@ class AutoClickService : AccessibilityService() {
                     for(clicker in clickers) {
                         if(clicker.isClicking) {
                             click(clicker.x, clicker.y)
+                            handler.postDelayed({}, 75)
                         }
                     }
                     // If intervals are randomized, clicks can come out between 750ms faster to 750ms slower
                     val delay = if(settings.random) Random.nextLong(-750, 750) else 0
-                    handler.postDelayed(this, max(settings.clickInterval + delay, 75))
+                    handler.postDelayed(this, max(settings.clickInterval + delay, 50))
                 }
             }
         }

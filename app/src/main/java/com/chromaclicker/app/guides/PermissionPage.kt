@@ -1,4 +1,4 @@
-package com.chromaclicker.app.main
+package com.chromaclicker.app.guides
 
 import android.app.Activity
 import android.content.Context

@@ -11,8 +11,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.chromaclicker.app.R
 import com.chromaclicker.app.autoclick.AutoClickService
 import com.chromaclicker.app.databinding.ActivityPermissionsBinding
-import com.chromaclicker.app.main.PermissionPage
-import com.chromaclicker.app.main.PermissionsIntro
 
 /** This dialog checks app permissions and sets up its view pager. */
 class PermissionsActivity : AppCompatActivity() {

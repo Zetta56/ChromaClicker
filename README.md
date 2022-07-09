@@ -1,6 +1,8 @@
 # ChromaClicker
-This is an auto-clicker with built-in color detection for the Android OS. In short, this functions by checking if all detected pixels on-screen match the 
-desired colors and then performing a click gesture.
+This is an auto-clicker with built-in color detection for the Android OS. In short, this performs a click gesture if all detected pixels on-screen match the 
+desired colors. 
+
+**This is available now on [Google Play](https://play.google.com/store/apps/details?id=com.chromaclicker.app)!**
 
 ## Features
 - Multi-point clicking

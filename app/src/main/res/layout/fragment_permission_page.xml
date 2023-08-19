@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:text="@string/disagree"
         android:textAllCaps="false"
-        android:textSize="14sp"
+        android:textSize="16sp"
         android:textColor="@color/blue"
         android:backgroundTint="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"

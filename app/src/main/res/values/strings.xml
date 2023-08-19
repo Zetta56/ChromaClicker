@@ -41,7 +41,7 @@
     <string name="overlay_permission">Can Draw Overlays</string>
     <string name="overlay_description">This is used to display simple menus over your other apps, a convenient way to manage and configure this auto-clicker</string>
     <string name="accessibility_permission">Accessibility API</string>
-    <string name="accessibility_description">This app uses the accessibility service solely to perform click gestures, an essential part of the auto-clicker. This will not be used to collect nor transmit your data. For more information, please see our <a href="https://sites.google.com/view/chroma-clicker-privacy-policy/home">privacy policy</a></string>
+    <string name="accessibility_description">This app uses the accessibility service solely to perform click gestures, an essential part of the auto-clicker. This will not be used to collect nor transmit your data. \n\nBy allowing this app to use the accessibility service, I agree to the <a href="https://sites.google.com/view/chroma-clicker-privacy-policy/home">privacy policy</a></string>
     <string name="projection_permission">Media Projection API</string>
     <string name="projection_description">This app uses the Media Projection API to detect pixel colors on your screen and click accordingly, one of this app\'s distinguishing features</string>
    <string name="action_tutorial">Tutorial</string>
@@ -80,7 +80,7 @@
     <string name="back">Back</string>
     <string name="next">Next</string>
     <string name="finish">Finish</string>
-    <string name="agree">Allow Access</string>
+    <string name="agree">Tap to Allow Access</string>
     <string name="disagree">Don\'t Allow</string>
     <string name="granted">Allowed!</string>
 </resources>
